@@ -1,1 +1,3 @@
-.m
+# 1.LANCER LE SERVEUR
+R/npm run dev -- --host
+
