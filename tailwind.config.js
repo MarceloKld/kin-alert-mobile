@@ -7,10 +7,16 @@ export default {
   theme: {
     extend: {
       animation: {
+        tap: "tap 0.2s ease-in-out",
         fadeIn: "fadeIn 0.6s ease-out",
         float: "float 3s ease-in-out infinite",
       },
       keyframes: {
+        tap: {
+           "0%": { transform: "scale(1)" },
+           "50%": { transform: "scale(0.9)" },
+           "100%": { transform: "scale(1)" },
+             },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-6px)" },

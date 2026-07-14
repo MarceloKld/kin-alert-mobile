@@ -1,40 +1,88 @@
 import { NavLink } from "react-router-dom";
+import { FaHome, FaChartBar, FaCog } from "react-icons/fa";
 
 function BottomNav() {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-inner flex justify-around py-2">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 
+                    w-[90%] max-w-md bg-gray-900 rounded-2xl 
+                    shadow-2xl px-6 py-3 flex justify-between items-center">
 
-      <NavLink 
+      <NavLink
         to="/home"
         className={({ isActive }) =>
-          isActive
-            ? "text-blue-700 font-semibold"
-            : "text-gray-500"
+          `flex flex-col items-center text-xs transition-all duration-300 ${
+            isActive
+              ? "text-blue-400"
+              : "text-gray-400"
+          }`
         }
       >
-        Accueil
+        {({ isActive }) => (
+          <>
+            <div
+              className={`p-3 rounded-full transition-all duration-300 active:animate-tap ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110"
+                  : ""
+              }`}
+            >
+              <FaHome size={18} />
+            </div>
+            <span className="mt-1">Accueil</span>
+          </>
+        )}
       </NavLink>
 
-      <NavLink 
+      <NavLink
         to="/dashboard"
         className={({ isActive }) =>
-          isActive
-            ? "text-blue-700 font-semibold"
-            : "text-gray-500"
+          `flex flex-col items-center text-xs transition-all duration-300 ${
+            isActive
+              ? "text-blue-400"
+              : "text-gray-400"
+          }`
         }
       >
-        Dashboard
+        {({ isActive }) => (
+          <>
+            <div
+              className={`p-3 rounded-full transition-all duration-300 active:animate-tap ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110"
+                  : ""
+              }`}
+            >
+              <FaChartBar size={18} />
+            </div>
+            <span className="mt-1">Dashboard</span>
+          </>
+        )}
       </NavLink>
 
-      <NavLink 
+      <NavLink
         to="/settings"
         className={({ isActive }) =>
-          isActive
-            ? "text-blue-700 font-semibold"
-            : "text-gray-500"
+          `flex flex-col items-center text-xs transition-all duration-300 ${
+            isActive
+              ? "text-blue-400"
+              : "text-gray-400"
+          }`
         }
       >
-        Paramètres
+        {({ isActive }) => (
+          <>
+            <div
+             className={`p-3 rounded-full transition-all duration-300 active:animate-tap ${
+                isActive
+                  ? "bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110"
+                  : ""
+              }`}
+            >
+              <FaCog size={18} />
+            </div>
+            <span className="mt-1">Paramètres</span>
+          </>
+        )}
       </NavLink>
 
     </div>
