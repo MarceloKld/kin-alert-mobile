@@ -1,5 +1,8 @@
 # 1.LANCER LE SERVEUR
 R/npm run dev -- --host
 
-# 2.ADRESSE IP
+# 2.ADRESSE IP GLOBAL SUR PC
 R/http://192.168.56.1:5173/
+
+# 3.ADRESSE IP
+R/npm run dev
