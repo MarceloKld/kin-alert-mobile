@@ -1,3 +1,5 @@
 # 1.LANCER LE SERVEUR
 R/npm run dev -- --host
 
+# 2.ADRESSE IP
+R/http://192.168.56.1:5173/
