@@ -32,7 +32,18 @@ function HomePage() {
 
   const [userPosition, setUserPosition] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState(null);
+// Fonction de filtrage des incidents à proximité
+  const getNearbyIncidents = () => {
+    if (!selectedPosition) return [];
 
+    return incidents.filter((incident) => {
+      const distance =
+        Math.abs(incident.position[0] - selectedPosition.lat) +
+        Math.abs(incident.position[1] - selectedPosition.lng);
+
+      return distance < 0.05; // seuil simple (démo)
+    });
+  };
   // ✅ Géolocalisation utilisateur
   useEffect(() => {
     if (navigator.geolocation) {
@@ -47,9 +58,19 @@ function HomePage() {
 
   // ✅ Mock incidents (temporaire)
   const incidents = [
-    { id: 1, position: [-4.31, 15.31], titre: "Accident" },
-    { id: 2, position: [-4.28, 15.29], titre: "Incendie" },
-  ];
+  {
+    id: 1,
+    position: [-4.31, 15.31],
+    titre: "Accident",
+    description: "Collision entre deux véhicules",
+  },
+  {
+    id: 2,
+    position: [-4.28, 15.29],
+    titre: "Incendie",
+    description: "Feu au marché central",
+  },
+];
 
   return (
     <div className="p-4 space-y-6">
@@ -106,6 +127,32 @@ function HomePage() {
           ))}
 
         </MapContainer>
+
+        {selectedPosition && (
+  <div className="mt-4 bg-white rounded-xl shadow p-4">
+    <h3 className="font-semibold text-gray-800 mb-3">
+      Accidents proches
+    </h3>
+
+    {getNearbyIncidents().length === 0 ? (
+      <p className="text-sm text-gray-500">
+        Aucun incident proche.
+      </p>
+    ) : (
+      getNearbyIncidents().map((incident) => (
+        <div
+          key={incident.id}
+          className="border-b py-2 text-sm"
+        >
+          <p className="font-medium">{incident.titre}</p>
+          <p className="text-gray-500">
+            {incident.description}
+          </p>
+        </div>
+      ))
+    )}
+  </div>
+)}
       </div>
 
     </div>
