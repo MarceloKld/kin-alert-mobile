@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./routes/PrivateRoute";
 
+import ReportIncidentPage from "./pages/ReportIncidentPage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
@@ -45,7 +46,19 @@ function App() {
             </MobileLayout>
           </PrivateRoute>
         }
+        
       />
+
+      <Route
+  path="/report"
+  element={
+    <PrivateRoute>
+      <MobileLayout>
+        <ReportIncidentPage />
+      </MobileLayout>
+    </PrivateRoute>
+  }
+/>
 
     </Routes>
   );
