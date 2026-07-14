@@ -1,7 +1,7 @@
 import { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.jpg";
+import logo from "../assets/logo.png";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ function LoginPage() {
                 transform transition-all duration-500 
                 animate-fadeIn">
                   <div className="flex justify-center mb-4">
-  <img src={logo} alt="KIN ALERT" className="w-16 h-16" />
+  <img src={logo} alt="KIN ALERT" className="w-19 h-16" />
 </div>
 
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
