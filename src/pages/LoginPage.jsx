@@ -41,7 +41,10 @@ function LoginPage() {
                 transform transition-all duration-500 
                 animate-fadeIn">
                   <div className="flex justify-center mb-4">
-  <img src={logo} alt="KIN ALERT" className="w-19 h-16" />
+ <img 
+  src={logo} 
+  alt="KIN ALERT" 
+  className="w-18 h-17 mb-3 drop-shadow-lg animate-pulse" />
 </div>
 
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
