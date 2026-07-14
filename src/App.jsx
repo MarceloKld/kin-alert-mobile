@@ -1,21 +1,52 @@
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import DashboardPage from "./pages/DashboardPage";
 import PrivateRoute from "./routes/PrivateRoute";
+
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
+import SettingsPage from "./pages/SettingsPage";
+
+import MobileLayout from "./layouts/MobileLayout";
 
 function App() {
   return (
     <Routes>
+
       <Route path="/" element={<LoginPage />} />
+
+      <Route
+        path="/home"
+        element={
+          <PrivateRoute>
+            <MobileLayout>
+              <HomePage />
+            </MobileLayout>
+          </PrivateRoute>
+        }
+      />
 
       <Route
         path="/dashboard"
         element={
           <PrivateRoute>
-            <DashboardPage />
+            <MobileLayout>
+              <DashboardPage />
+            </MobileLayout>
           </PrivateRoute>
         }
       />
+
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <MobileLayout>
+              <SettingsPage />
+            </MobileLayout>
+          </PrivateRoute>
+        }
+      />
+
     </Routes>
   );
 }

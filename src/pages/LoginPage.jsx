@@ -26,7 +26,7 @@ function LoginPage() {
     const response = await api.post("/login", { email, password });
 
     localStorage.setItem("token", response.data.token);
-    navigate("/dashboard");
+    navigate("/home");
   } catch (error) {
     console.error(error);
     setErrorMessage("Email ou mot de passe incorrect.");
