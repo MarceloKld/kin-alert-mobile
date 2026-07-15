@@ -71,10 +71,12 @@ const [longitude, setLongitude] = useState(
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
   setErrorMessage("");
+  setSuccessMessage("");
 
   if (!latitude || !longitude) {
-    setErrorMessage("Veuillez d'abord sélectionner une position sur la carte.");
+    setErrorMessage("Veuillez activer votre position.");
     return;
   }
 
@@ -240,12 +242,6 @@ const handleSubmit = async (e) => {
         {successMessage && (
   <div className="bg-green-100 text-green-700 p-2 rounded-lg text-sm">
     {successMessage}
-  </div>
-)}
-
-{errorMessage && (
-  <div className="bg-red-100 text-red-600 p-2 rounded-lg text-sm">
-    {errorMessage}
   </div>
 )}
 
