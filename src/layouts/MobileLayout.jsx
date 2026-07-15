@@ -9,10 +9,16 @@ function MobileLayout({ children, theme, setTheme }) {
     <div className="absolute top-4 right-4 z-50">
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        className="relative w-16 h-8 flex items-center 
+        className="relative w-16 h-5 flex items-center 
                    bg-gray-300 dark:bg-gray-700 
                    rounded-full px-2 transition duration-300 shadow-lg"
       >
+           {/* ✅ Icône gauche */}
+    {theme === "dark" ? (
+      <FaMoon className="text-white text-xs absolute left-2" />
+    ) : (
+      <FaSun className="text-yellow-500 text-xs absolute left-2" />
+    )}
         <div
           className={`bg-white w-6 h-6 rounded-full shadow-md 
                       transform transition duration-300 ${
