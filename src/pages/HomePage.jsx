@@ -4,12 +4,14 @@ import {
   MapContainer,
   TileLayer,
   Marker,
+  Popup,
 } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
 
 // ✅ Icônes personnalisées selon statut
@@ -182,30 +184,46 @@ return (
             />
           )}
 
-          {incidents
-            .filter(
-              (incident) =>
-                incident.localisation &&
-                typeof incident.localisation.latitude === "number" &&
-                typeof incident.localisation.longitude === "number"
-            )
-            .map((incident) => (
-              <Marker
-                key={incident.id}
-                position={[
-                  incident.localisation.latitude,
-                  incident.localisation.longitude,
-                ]}
-                icon={
-                  incident.statut === "valide"
-                    ? greenIcon
-                    : incident.statut === "en_attente"
-                    ? yellowIcon
-                    : redIcon
-                }
-              />
-              
-            ))}
+          <MarkerClusterGroup>
+  {incidents
+    ?.filter(
+      (incident) =>
+        incident.localisation &&
+        typeof incident.localisation.latitude === "number" &&
+        typeof incident.localisation.longitude === "number"
+    )
+    .map((incident) => (
+      <Marker
+        key={incident.id}
+        position={[
+          incident.localisation.latitude,
+          incident.localisation.longitude,
+        ]}
+        icon={
+          incident.statut === "valide"
+            ? greenIcon
+            : incident.statut === "en_attente"
+            ? yellowIcon
+            : redIcon
+        }
+      >
+       <Popup>
+    <div className="backdrop-blur-md bg-white/80 
+                    rounded-xl p-3 shadow-xl min-w-[160px]">
+      <p className="font-semibold text-gray-800">
+        {incident.titre}
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        {incident.type?.titre}
+      </p>
+      <p className="text-xs text-gray-400 mt-1">
+        Statut : {incident.statut}
+      </p>
+    </div>
+  </Popup>
+      </Marker>
+    ))}
+</MarkerClusterGroup>
         </MapContainer>
       </div>
     </div>
