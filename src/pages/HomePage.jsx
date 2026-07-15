@@ -8,8 +8,28 @@ import {
   useMapEvents,
 } from "react-leaflet";
 import L from "leaflet";
+import api from "../api/axios";
+import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+
+
+// ✅ Icônes personnalisées selon statut
+
+const greenIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
+  iconSize: [32, 32],
+});
+
+const yellowIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+  iconSize: [32, 32],
+});
+
+const redIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
+  iconSize: [32, 32],
+});
 
 // ✅ Fix icônes Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -32,6 +52,9 @@ function HomePage() {
 
   const [userPosition, setUserPosition] = useState(null);
   const [selectedPosition, setSelectedPosition] = useState(null);
+  const [incidents, setIncidents] = useState([]);
+
+
 // Fonction de filtrage des incidents à proximité
   const getNearbyIncidents = () => {
     if (!selectedPosition) return [];
@@ -46,31 +69,34 @@ function HomePage() {
   };
   // ✅ Géolocalisation utilisateur
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
         setUserPosition([
           position.coords.latitude,
           position.coords.longitude,
         ]);
-      });
-    }
-  }, []);
+      },
+      (error) => {
+        console.log("Erreur géolocalisation :", error);
+      }
+    );
+  }
+}, []);
 
-  // ✅ Mock incidents (temporaire)
-  const incidents = [
-  {
-    id: 1,
-    position: [-4.31, 15.31],
-    titre: "Accident",
-    description: "Collision entre deux véhicules",
-  },
-  {
-    id: 2,
-    position: [-4.28, 15.29],
-    titre: "Incendie",
-    description: "Feu au marché central",
-  },
-];
+  //Charger incidents depuis API
+  useEffect(() => {
+  api.get("/incidents?all=true")
+    .then((res) => {
+      // Laravel pagination probable
+      const data = res.data.data || res.data;
+      setIncidents(data);
+    })
+    .catch(() => console.log("Erreur chargement incidents"));
+}, []);
+
+ 
+
 
   return (
     <div className="p-4 space-y-6">
@@ -119,12 +145,38 @@ function HomePage() {
             </Marker>
           )}
 
-          {/* ✅ Marqueurs incidents */}
-          {incidents.map((incident) => (
-            <Marker key={incident.id} position={incident.position}>
-              <Popup>{incident.titre}</Popup>
-            </Marker>
-          ))}
+          
+          {incidents
+  .filter(
+    (incident) =>
+      incident.localisation &&
+      typeof incident.localisation.latitude === "number" &&
+      typeof incident.localisation.longitude === "number"
+  )
+  .map((incident) => (
+    <Marker
+  key={incident.id}
+  position={[
+    incident.localisation.latitude,
+    incident.localisation.longitude,
+  ]}
+  icon={
+    incident.statut === "valide"
+      ? greenIcon
+      : incident.statut === "en_attente"
+      ? yellowIcon
+      : redIcon
+  }
+>
+      <Popup>
+        <div className="text-sm">
+          <p className="font-semibold">{incident.titre}</p>
+          <p>{incident.type?.titre}</p>
+          <p className="text-gray-500">{incident.statut}</p>
+        </div>
+      </Popup>
+    </Marker>
+))}
 
         </MapContainer>
 
