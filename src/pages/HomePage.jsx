@@ -56,6 +56,7 @@ const navigate = useNavigate();
 const [userPosition, setUserPosition] = useState(null);
 const [selectedPosition, setSelectedPosition] = useState(null);
 const [incidents, setIncidents] = useState([]);
+const [statusFilter, setStatusFilter] = useState("all");
   
 
 
@@ -69,6 +70,12 @@ const [incidents, setIncidents] = useState([]);
         incident.localisation &&
         typeof incident.localisation.latitude === "number" &&
         typeof incident.localisation.longitude === "number"
+    )
+    // Nouveau filtre par statut inséré ici
+    .filter((incident) =>
+      statusFilter === "all"
+        ? true
+        : incident.statut === statusFilter
     )
     .filter((incident) => {
       const distance =
@@ -161,6 +168,30 @@ return (
 
     </div>
 
+    <div className="flex gap-3 px-4 mt-2 overflow-x-auto">
+
+  {["all", "valide", "en_attente", "rejete"].map((status) => (
+    <button
+      key={status}
+      onClick={() => setStatusFilter(status)}
+      className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+        statusFilter === status
+          ? "bg-black text-white"
+          : "bg-white/70 backdrop-blur-md text-gray-700"
+      }`}
+    >
+      {status === "all"
+        ? "Tous"
+        : status === "valide"
+        ? "Validé"
+        : status === "en_attente"
+        ? "En attente"
+        : "Rejeté"}
+    </button>
+  ))}
+
+</div>
+
     {/* ✅ Carte premium */}
     <div className="mt-6 px-4">
       <div className="rounded-3xl overflow-hidden shadow-2xl">
@@ -208,19 +239,28 @@ return (
         }
       >
        <Popup>
-    <div className="backdrop-blur-md bg-white/80 
-                    rounded-xl p-3 shadow-xl min-w-[160px]">
-      <p className="font-semibold text-gray-800">
-        {incident.titre}
-      </p>
-      <p className="text-xs text-gray-500 mt-1">
-        {incident.type?.titre}
-      </p>
-      <p className="text-xs text-gray-400 mt-1">
-        Statut : {incident.statut}
-      </p>
-    </div>
-  </Popup>
+  <div className="backdrop-blur-md bg-white/90 
+                  rounded-2xl p-4 shadow-2xl 
+                  animate-popupIn min-w-[180px]">
+    <p className="font-semibold text-gray-800">
+      {incident.titre}
+    </p>
+
+    <p className="text-xs text-gray-500 mt-1">
+      {incident.type?.titre}
+    </p>
+
+    <p className={`text-xs mt-2 font-medium ${
+      incident.statut === "valide"
+        ? "text-green-600"
+        : incident.statut === "en_attente"
+        ? "text-yellow-600"
+        : "text-red-600"
+    }`}>
+      {incident.statut}
+    </p>
+  </div>
+</Popup>
       </Marker>
     ))}
 </MarkerClusterGroup>
