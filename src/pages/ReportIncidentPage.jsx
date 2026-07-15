@@ -7,7 +7,7 @@ function ReportIncidentPage() {
   const location = useLocation();
 
   // ✅ Position envoyée depuis la carte
-  const initialPosition = location.state?.selectedPosition;
+  const initialPosition = location?.state?.selectedPosition || null;
 
   const [titre, setTitre] = useState("");
   const [description, setDescription] = useState("");
@@ -44,49 +44,60 @@ function ReportIncidentPage() {
       .catch(() => console.log("Erreur chargement communes"));
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [successMessage, setSuccessMessage] = useState("");
 
-    if (!titre || !description || !typeIncidentId || !communeId) {
-      setErrorMessage("Tous les champs obligatoires doivent être remplis.");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setLoading(true);
-    setErrorMessage("");
+  if (!latitude || !longitude) {
+    setErrorMessage("Veuillez d'abord sélectionner une position sur la carte.");
+    return;
+  }
 
-    try {
-      const formData = new FormData();
+  if (!titre || !description || !typeIncidentId || !communeId) {
+    setErrorMessage("Tous les champs obligatoires doivent être remplis.");
+    return;
+  }
 
-      formData.append("titre", titre);
-      formData.append("description", description);
-      formData.append("type_incident_id", typeIncidentId);
-      formData.append("commune_id", communeId);
-      formData.append("latitude", latitude);
-      formData.append("longitude", longitude);
+  setLoading(true);
+  setErrorMessage("");
+  setSuccessMessage("");
 
-      // ✅ Upload multiple photos
-      if (photos && photos.length > 0) {
-        for (let i = 0; i < photos.length; i++) {
-          formData.append("photo[]", photos[i]);
-        }
+  try {
+    const formData = new FormData();
+
+    formData.append("titre", titre);
+    formData.append("description", description);
+    formData.append("type_incident_id", typeIncidentId);
+    formData.append("commune_id", communeId);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
+
+    if (photos && photos.length > 0) {
+      for (let i = 0; i < photos.length; i++) {
+        formData.append("photo[]", photos[i]);
       }
-
-      await api.post("/incidents", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      navigate("/dashboard");
-
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Erreur lors de la création de l'incident.");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    await api.post("/incidents", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    setSuccessMessage("✅ Incident créé avec succès !");
+    
+    setTimeout(() => {
+      navigate("/dashboard");
+    }, 1500);
+
+  } catch (error) {
+    console.error(error);
+    setErrorMessage("❌ Erreur lors de la création de l'incident.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -161,6 +172,19 @@ function ReportIncidentPage() {
           />
         </div>
 
+        {photos && photos.length > 0 && (
+  <div className="grid grid-cols-3 gap-2 mt-2">
+    {Array.from(photos).map((file, index) => (
+      <img
+        key={index}
+        src={URL.createObjectURL(file)}
+        alt="preview"
+        className="w-full h-24 object-cover rounded-lg"
+      />
+    ))}
+  </div>
+)}
+
         {/* ✅ Position */}
         <div className="text-sm text-gray-500">
           {latitude && longitude
@@ -174,6 +198,18 @@ function ReportIncidentPage() {
             {errorMessage}
           </div>
         )}
+
+        {successMessage && (
+  <div className="bg-green-100 text-green-700 p-2 rounded-lg text-sm">
+    {successMessage}
+  </div>
+)}
+
+{errorMessage && (
+  <div className="bg-red-100 text-red-600 p-2 rounded-lg text-sm">
+    {errorMessage}
+  </div>
+)}
 
         {/* ✅ Bouton */}
         <button
