@@ -81,6 +81,7 @@ function ReportIncidentPage() {
       navigate("/dashboard");
 
     } catch (error) {
+      console.error(error);
       setErrorMessage("Erreur lors de la création de l'incident.");
     } finally {
       setLoading(false);
