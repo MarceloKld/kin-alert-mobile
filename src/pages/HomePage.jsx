@@ -115,9 +115,6 @@ return (
   <div className="flex flex-col min-h-screen bg-gray-100">
 
     <div className="p-4">
-      <h2 className="text-xl font-semibold text-gray-800 mb-3">
-        Accueil
-      </h2>
 
       <button
         onClick={() =>
