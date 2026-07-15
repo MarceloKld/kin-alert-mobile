@@ -3,10 +3,12 @@ import { FaHome, FaChartBar, FaCog } from "react-icons/fa";
 
 function BottomNav() {
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 
-                    w-[90%] max-w-md bg-gray-900 rounded-2xl 
-                    shadow-2xl px-6 py-3 flex justify-between items-center">
-
+    <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 
+                w-[90%] max-w-md 
+                backdrop-blur-xl bg-white/60 
+                border border-white/30
+                rounded-3xl shadow-2xl 
+                px-6 py-3 flex justify-between">
       <NavLink
         to="/home"
         className={({ isActive }) =>

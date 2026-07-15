@@ -1,6 +1,6 @@
 function SettingsPage() {
   return (
-    <div className="p-4">
+    <div className="p-4 animate-fadeIn">
       <h2 className="text-xl font-semibold text-gray-800">
         Paramètres
       </h2>

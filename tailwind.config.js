@@ -8,7 +8,7 @@ export default {
     extend: {
       animation: {
         tap: "tap 0.2s ease-in-out",
-        fadeIn: "fadeIn 0.6s ease-out",
+        fadeIn: "fadeIn 1.9s ease-out",
         float: "float 3s ease-in-out infinite",
       },
       keyframes: {

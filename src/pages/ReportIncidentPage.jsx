@@ -126,7 +126,7 @@ const handleSubmit = async (e) => {
 };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 p-4 animate-fadeIn">
 
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
         Signaler un incident

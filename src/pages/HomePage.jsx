@@ -4,7 +4,6 @@ import {
   MapContainer,
   TileLayer,
   Marker,
-  Popup,
 } from "react-leaflet";
 import L from "leaflet";
 import api from "../api/axios";
@@ -110,111 +109,111 @@ const [incidents, setIncidents] = useState([]);
 }, []);
 
  
-
 return (
-  <div className="flex flex-col min-h-screen bg-gray-100">
+  <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 pb-28 animate-fadeIn">
 
-    <div className="p-4">
+    {/* ✅ Actions principales */}
+    <div className="px-4 pt-6 space-y-4">
 
+      {/* 🚨 Signalement */}
       <button
         onClick={() =>
-  navigate("/report", { state: { selectedPosition } })
-}
-        className="w-full bg-red-600 text-white py-4 rounded-xl text-lg font-bold shadow-lg hover:bg-red-700 transition mb-4"
+          navigate("/report", { state: { selectedPosition } })
+        }
+        className="w-full backdrop-blur-md bg-white/70 
+                   rounded-2xl shadow-lg py-4 
+                   flex items-center justify-center gap-3
+                   text-red-600 font-semibold text-lg
+                   transition active:scale-95"
       >
         🚨 Signaler un incident
       </button>
+
+      {/* 📍 Localisation */}
+      <button
+        onClick={() => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                const coords = [
+                  position.coords.latitude,
+                  position.coords.longitude,
+                ];
+                setUserPosition(coords);
+                setSelectedPosition({
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude,
+                });
+              }
+            );
+          }
+        }}
+        className="w-full backdrop-blur-md bg-blue-500/90 
+                   rounded-2xl shadow-lg py-4 
+                   flex items-center justify-center gap-3
+                   text-white font-semibold
+                   transition active:scale-95"
+      >
+        📍 Activer ma localisation
+      </button>
+
     </div>
 
+    {/* ✅ Carte premium */}
+    <div className="mt-6 px-4">
+      <div className="rounded-3xl overflow-hidden shadow-2xl">
+        <MapContainer
+          center={userPosition || [-4.3, 15.3]}
+          zoom={13}
+          style={{ height: "60vh", width: "100%" }}
+        >
+          <TileLayer
+            attribution="© OpenStreetMap"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-    <button
-  onClick={() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords = [
-            position.coords.latitude,
-            position.coords.longitude,
-          ];
-          setUserPosition(coords);
-          setSelectedPosition({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.log("Erreur géolocalisation :", error);
-        }
-      );
-    }
-  }}
-  className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold shadow mb-4"
->
-  📍 Activer ma localisation
-</button>
+          {selectedPosition && (
+            <Marker
+              position={[
+                selectedPosition.lat,
+                selectedPosition.lng,
+              ]}
+              icon={blueIcon}
+            />
+          )}
 
-
-
-    {/* ✅ Carte plus grande */}
-    <div className="px-4">
-      <div className="bg-white rounded-xl shadow overflow-hidden">
-       <MapContainer
-  center={userPosition || [-4.3, 15.3]}
-  zoom={13}
-  style={{ height: "65vh", width: "100%" }}
->
-  <TileLayer
-    attribution='&copy; OpenStreetMap contributors'
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  />
-
-  {selectedPosition && (
-    <Marker
-  position={[selectedPosition.lat, selectedPosition.lng]}
-  icon={blueIcon}
->
-      <Popup>Ma position</Popup>
-    </Marker>
-  )}
-
-  {incidents
-    .filter(
-      (incident) =>
-        incident.localisation &&
-        typeof incident.localisation.latitude === "number" &&
-        typeof incident.localisation.longitude === "number"
-    )
-    .map((incident) => (
-      <Marker
-        key={incident.id}
-        position={[
-          incident.localisation.latitude,
-          incident.localisation.longitude,
-        ]}
-        icon={
-          incident.statut === "valide"
-            ? greenIcon
-            : incident.statut === "en_attente"
-            ? yellowIcon
-            : redIcon
-        }
-      >
-        <Popup>
-          <div className="text-sm">
-            <p className="font-semibold">{incident.titre}</p>
-            <p>{incident.type?.titre}</p>
-            <p className="text-gray-500">{incident.statut}</p>
-          </div>
-        </Popup>
-      </Marker>
-    ))}
-</MapContainer>
+          {incidents
+            .filter(
+              (incident) =>
+                incident.localisation &&
+                typeof incident.localisation.latitude === "number" &&
+                typeof incident.localisation.longitude === "number"
+            )
+            .map((incident) => (
+              <Marker
+                key={incident.id}
+                position={[
+                  incident.localisation.latitude,
+                  incident.localisation.longitude,
+                ]}
+                icon={
+                  incident.statut === "valide"
+                    ? greenIcon
+                    : incident.statut === "en_attente"
+                    ? yellowIcon
+                    : redIcon
+                }
+              />
+              
+            ))}
+        </MapContainer>
       </div>
     </div>
 
-    {/* ✅ Liste indépendante scrollable */}
+    {/* ✅ Liste premium scroll indépendante */}
     {selectedPosition && (
-      <div className="bg-white mt-4 mx-4 rounded-xl shadow p-4 max-h-60 overflow-y-auto">
+      <div className="mt-6 mx-4 bg-white/70 backdrop-blur-md 
+                      rounded-3xl shadow-lg p-4 max-h-60 overflow-y-auto">
         <h3 className="font-semibold text-gray-800 mb-3">
           Accidents proches
         </h3>
@@ -227,12 +226,26 @@ return (
           getNearbyIncidents().map((incident) => (
             <div
               key={incident.id}
-              className="border-b py-2"
+              className="flex justify-between items-center py-3 border-b last:border-none"
             >
-              <p className="font-medium">{incident.titre}</p>
-              <p className="text-sm text-gray-500">
-                {incident.type?.titre}
-              </p>
+              <div>
+                <p className="font-medium text-gray-800">
+                  {incident.titre}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {incident.type?.titre}
+                </p>
+              </div>
+
+              <div
+                className={`w-3 h-3 rounded-full ${
+                  incident.statut === "valide"
+                    ? "bg-green-500"
+                    : incident.statut === "en_attente"
+                    ? "bg-yellow-400"
+                    : "bg-red-500"
+                }`}
+              />
             </div>
           ))
         )}

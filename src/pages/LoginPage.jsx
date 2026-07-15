@@ -36,7 +36,7 @@ function LoginPage() {
 };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 animate-fadeIn">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 
                 transform transition-all duration-500 
                 animate-fadeIn">
