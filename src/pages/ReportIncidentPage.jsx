@@ -14,8 +14,13 @@ function ReportIncidentPage() {
   const [typeIncidentId, setTypeIncidentId] = useState("");
   const [communeId, setCommuneId] = useState("");
   const [photos, setPhotos] = useState([]);
-  const latitude = initialPosition ? initialPosition.lat : null;
-const longitude = initialPosition ? initialPosition.lng : null;
+  const [latitude, setLatitude] = useState(
+  initialPosition ? initialPosition.lat : null
+);
+
+const [longitude, setLongitude] = useState(
+  initialPosition ? initialPosition.lng : null
+);
 
   const [types, setTypes] = useState([]);
   const [communes, setCommunes] = useState([]);
@@ -46,6 +51,21 @@ const longitude = initialPosition ? initialPosition.lng : null;
       })
       .catch(() => console.log("Erreur chargement communes"));
   }, []);
+
+
+  useEffect(() => {
+  if (!latitude && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (error) => {
+        console.log("Erreur géolocalisation :", error);
+      }
+    );
+  }
+}, []);
 
 
 
