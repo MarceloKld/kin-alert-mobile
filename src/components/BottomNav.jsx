@@ -5,10 +5,12 @@ function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 
                 w-[90%] max-w-md 
-                backdrop-blur-xl bg-white/60 
-                border border-white/30
+                backdrop-blur-xl 
+                bg-white/60 dark:bg-gray-900/60 
+                border border-white/30 dark:border-gray-700/40
                 rounded-3xl shadow-2xl 
-                px-6 py-3 flex justify-between">
+                px-6 py-3 flex justify-between 
+                transition-colors duration-500 flex justify-between">
       <NavLink
         to="/home"
         className={({ isActive }) =>

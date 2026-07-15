@@ -119,7 +119,10 @@ const [statusFilter, setStatusFilter] = useState("all");
 
  
 return (
-  <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 pb-28 animate-fadeIn">
+  <div className="min-h-screen 
+                bg-gradient-to-b from-gray-100 to-gray-200 
+                dark:from-gray-900 dark:to-gray-800 
+                pb-28 transition-colors duration-500 animate-fadeIn">
 
     {/* ✅ Actions principales */}
     <div className="px-4 pt-6 space-y-4">
@@ -177,7 +180,7 @@ return (
       className={`px-4 py-2 rounded-full text-sm font-medium transition ${
         statusFilter === status
           ? "bg-black text-white"
-          : "bg-white/70 backdrop-blur-md text-gray-700"
+          : "text-gray-700 dark:text-gray-200 dark:bg-gray-800/70 backdrop-blur-md text-gray-700"
       }`}
     >
       {status === "all"
