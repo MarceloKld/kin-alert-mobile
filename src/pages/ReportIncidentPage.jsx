@@ -14,17 +14,20 @@ function ReportIncidentPage() {
   const [typeIncidentId, setTypeIncidentId] = useState("");
   const [communeId, setCommuneId] = useState("");
   const [photos, setPhotos] = useState([]);
-  const [latitude, setLatitude] = useState(
-    initialPosition ? initialPosition.lat : null
-  );
-  const [longitude, setLongitude] = useState(
-    initialPosition ? initialPosition.lng : null
-  );
+  const latitude = initialPosition ? initialPosition.lat : null;
+const longitude = initialPosition ? initialPosition.lng : null;
 
   const [types, setTypes] = useState([]);
   const [communes, setCommunes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
+
+    const removePhoto = (indexToRemove) => {
+  setPhotos((prevPhotos) =>
+    prevPhotos.filter((_, index) => index !== indexToRemove)
+  );
+};
 
   // ✅ Charger types incidents
   useEffect(() => {
@@ -44,10 +47,11 @@ function ReportIncidentPage() {
       .catch(() => console.log("Erreur chargement communes"));
   }, []);
 
-  const [successMessage, setSuccessMessage] = useState("");
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+  setErrorMessage("");
 
   if (!latitude || !longitude) {
     setErrorMessage("Veuillez d'abord sélectionner une position sur la carte.");
@@ -163,24 +167,38 @@ const handleSubmit = async (e) => {
             Photo(s) (optionnelle)
           </label>
           <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            multiple
-            onChange={(e) => setPhotos(e.target.files)}
-            className="w-full"
-          />
+  type="file"
+  accept="image/*"
+  capture="environment"
+  multiple
+  onChange={(e) => setPhotos(Array.from(e.target.files))}
+  className="w-full"
+/>
         </div>
 
         {photos && photos.length > 0 && (
   <div className="grid grid-cols-3 gap-2 mt-2">
-    {Array.from(photos).map((file, index) => (
-      <img
-        key={index}
-        src={URL.createObjectURL(file)}
-        alt="preview"
-        className="w-full h-24 object-cover rounded-lg"
-      />
+    {photos.map((file, index) => (
+      <div key={index} className="relative">
+
+        <img
+          src={URL.createObjectURL(file)}
+          alt="preview"
+          className="w-full h-24 object-cover rounded-lg"
+        />
+
+        {/* ✅ Bouton suppression */}
+        <button
+          type="button"
+          onClick={() => removePhoto(index)}
+          className="absolute top-1 right-1 bg-red-600 text-white 
+                     rounded-full w-6 h-6 text-xs flex items-center 
+                     justify-center shadow"
+        >
+          ✕
+        </button>
+
+      </div>
     ))}
   </div>
 )}
