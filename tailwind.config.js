@@ -13,6 +13,7 @@ export default {
         float: "float 3s ease-in-out infinite",
         popupIn: "popupIn 0.25s ease-out",
         fadeUp: "fadeUp 0.4s ease-out",
+        slideIn: "slideIn 0.3s ease-out",
       },
       keyframes: {
         tap: {
@@ -36,6 +37,11 @@ export default {
     "0%": { opacity: "0", transform: "translateY(10px)" },
     "100%": { opacity: "1", transform: "translateY(0)" },
   },
+
+  slideIn: {
+      "0%": { opacity: "0", transform: "translateY(-20px)" },
+      "100%": { opacity: "1", transform: "translateY(0)" },
+    },
       },
     },
   },
