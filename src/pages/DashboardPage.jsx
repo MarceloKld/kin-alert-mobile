@@ -11,6 +11,8 @@ function DashboardPage() {
 const [successMessage, setSuccessMessage] = useState("");
 const [loadingComment, setLoadingComment] = useState(false);
 const [loading, setLoading] = useState(false);
+const [myIncidents, setMyIncidents] = useState([]);
+const [loadingMy, setLoadingMy] = useState(false);
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -61,6 +63,26 @@ const [loading, setLoading] = useState(false);
   }
 };
 
+//Charger MES incidents
+useEffect(() => {
+
+  const loadMyIncidents = async () => {
+    setLoadingMy(true);
+
+    try {
+      const res = await api.get("/incidents?mine=true");
+      setMyIncidents(res.data.data || res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingMy(false);
+    }
+  };
+
+  loadMyIncidents();
+
+}, []);
+
   // ✅ Commenter incident
   const submitComment = async () => {
   if (!commentText) return;
@@ -82,6 +104,12 @@ const [loading, setLoading] = useState(false);
     setLoadingComment(false);
   }
 };
+
+
+
+
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b 
@@ -114,19 +142,27 @@ const [loading, setLoading] = useState(false);
     Mes Signalements
   </h3>
 
-  <div className="flex justify-between text-sm">
+  {loadingMy ? (
+    <div className="space-y-2">
+      <div className="h-3 bg-gray-600 rounded w-1/3 animate-pulse"></div>
+      <div className="h-3 bg-gray-700 rounded w-1/4 animate-pulse"></div>
+    </div>
+  ) : (
+    <div className="flex justify-between text-sm">
 
-    <span className="text-green-400">
-      ✅ {incidents.filter(i => i.statut === "valide").length} Validés
-    </span>
+      <span className="text-green-400">
+        ✅ {myIncidents.filter(i => i.statut === "valide").length} Validés
+      </span>
 
-    <span className="text-yellow-400">
-      ⏳ {incidents.filter(i => i.statut === "en_attente").length} En attente
-    </span>
+      <span className="text-yellow-400">
+        ⏳ {myIncidents.filter(i => i.statut === "en_attente").length} En attente
+      </span>
 
-  </div>
+    </div>
+  )}
 
 </div>
+
 {loading && (
   <div className="space-y-4 mt-6">
     {[1,2,3].map((i) => (

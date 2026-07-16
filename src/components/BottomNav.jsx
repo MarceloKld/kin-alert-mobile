@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Bell, User, Settings } from "lucide-react";
+import { Bell, User, Settings, LayoutGrid } from "lucide-react";
 
 function BottomNav() {
   return (
@@ -48,6 +48,23 @@ function BottomNav() {
           <User size={20} />
           <span className="text-xs mt-1">MES INFOS</span>
         </NavLink>
+        
+
+        {/* ✅ MES SIGNALEMENTS */}
+        <NavLink
+  to="/mes-signalements"
+  className={({ isActive }) =>
+    `flex flex-col items-center justify-center 
+     px-4 py-2 rounded-2xl transition ${
+       isActive
+         ? "bg-orange-500 text-white"
+         : "text-gray-400"
+     }`
+  }
+>
+  <LayoutGrid size={20} />
+  <span className="text-xs mt-1">MES SIGNAL.</span>
+</NavLink>
 
         {/* ✅ PARAMÈTRES */}
         <NavLink

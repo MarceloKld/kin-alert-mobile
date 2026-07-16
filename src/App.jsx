@@ -9,6 +9,7 @@ import SettingsPage from "./pages/SettingsPage";
 
 import MobileLayout from "./layouts/MobileLayout";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
+import MesSignalementsPage from "./pages/MesSignalementsPage";
 
 function App() {
 
@@ -72,6 +73,17 @@ function App() {
     </PrivateRoute>
   }
 />
+<Route
+  path="/mes-signalements"
+  element={
+    <PrivateRoute>
+      <MobileLayout>
+        <MesSignalementsPage />
+      </MobileLayout>
+    </PrivateRoute>
+  }
+/>
+
 
     </Routes>
   );
