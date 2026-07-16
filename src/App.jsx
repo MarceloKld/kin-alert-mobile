@@ -9,6 +9,7 @@ import SettingsPage from "./pages/SettingsPage";
 
 import MobileLayout from "./layouts/MobileLayout";
 import { useEffect, useState } from "react";
+import IncidentDetailPage from "./pages/IncidentDetailPage";
 
 function App() {
   const [theme, setTheme] = useState(
@@ -69,6 +70,17 @@ function App() {
     <PrivateRoute>
       <MobileLayout theme={theme} setTheme={setTheme}>
         <ReportIncidentPage />
+      </MobileLayout>
+    </PrivateRoute>
+  }
+/>
+
+<Route
+  path="/incident/:id"
+  element={
+    <PrivateRoute>
+      <MobileLayout theme={theme} setTheme={setTheme}>
+        <IncidentDetailPage />
       </MobileLayout>
     </PrivateRoute>
   }
