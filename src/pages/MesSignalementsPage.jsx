@@ -121,11 +121,22 @@ const openIncident = async (id) => {
 </div>
 
 {showModal && (
-  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm 
-                  flex items-center justify-center z-50">
+  <div className="fixed inset-0 flex items-center justify-center z-50">
 
-    <div className="bg-[#142E4C] text-white 
-                    rounded-2xl p-6 w-[90%] max-w-md">
+    {/* ✅ Overlay BLUR uniquement */}
+    <div
+  className="absolute inset-0 backdrop-blur-sm bg-black/1"
+  onClick={() => setShowModal(false)}
+/>
+
+    {/* ✅ Modal */}
+    <div className="relative bg-[#142E4C] 
+                rounded-3xl 
+                p-6 
+                w-[90%] 
+                max-w-md 
+                shadow-2xl 
+                animate-popupIn">
 
       {loadingDetail ? (
         <div className="flex justify-center py-10">
@@ -134,11 +145,11 @@ const openIncident = async (id) => {
         </div>
       ) : (
         <>
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-lg font-semibold text-white">
             {selectedIncident?.titre}
           </h2>
 
-          <p className="text-sm text-gray-300 mt-2">
+          <p className="text-sm text-gray-200 mt-2">
             {selectedIncident?.description}
           </p>
 
@@ -156,6 +167,7 @@ const openIncident = async (id) => {
       </button>
 
     </div>
+
   </div>
 )}
         </div>
