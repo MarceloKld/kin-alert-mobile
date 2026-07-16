@@ -38,6 +38,9 @@ const [userPosition, setUserPosition] = useState(null);
 const [selectedPosition, ] = useState(null);
 const [incidents, setIncidents] = useState([]);
 const [mapFilter, setMapFilter] = useState("all");
+const [loadingConfirm, setLoadingConfirm] = useState(null);
+const [loadingComment, setLoadingComment] = useState(false);
+const [commentText, setCommentText] = useState("");
   
   // ✅ Géolocalisation utilisateur
   useEffect(() => {
@@ -67,7 +70,35 @@ const [mapFilter, setMapFilter] = useState("all");
     .catch(() => console.log("Erreur chargement incidents"));
 }, []);
 
- 
+ const confirmIncident = async (id) => {
+  setLoadingConfirm(id);
+
+  try {
+    await api.post(`/incidents/${id}/confirm`);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoadingConfirm(null);
+  }
+};
+
+const submitComment = async (id) => {
+  if (!commentText) return;
+
+  setLoadingComment(true);
+
+  try {
+    await api.post(`/incidents/${id}/comments`, {
+      contenu: commentText,
+    });
+
+    setCommentText("");
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoadingComment(false);
+  }
+};
 
 
 
@@ -170,24 +201,74 @@ return (
   )
   .map((incident) => (
     <Marker
-      key={incident.id}
-      position={[
-        incident.localisation.latitude,
-        incident.localisation.longitude,
-      ]}
-      icon={redIcon}
-    >
-      <Popup>
-        <div className="bg-white rounded-xl p-3 shadow-lg">
-          <p className="font-semibold">
-            {incident.titre}
-          </p>
-          <p className="text-xs text-gray-500">
-            {incident.type?.titre}
-          </p>
-        </div>
-      </Popup>
-    </Marker>
+  key={incident.id}
+  position={[
+    incident.localisation.latitude,
+    incident.localisation.longitude,
+  ]}
+  icon={redIcon}
+>
+  <Popup>
+
+    <div className="w-56 text-sm space-y-2">
+
+      {/* ✅ TITRE */}
+      <h3 className="font-semibold text-base">
+        {incident.titre}
+      </h3>
+
+      {/* ✅ TYPE */}
+      <p className="text-xs text-gray-500">
+        {incident.type?.titre}
+      </p>
+
+      {/* ✅ LOCALISATION */}
+      <p className="text-xs text-gray-400">
+        📍 {incident.localisation?.commune?.nom}
+      </p>
+
+      {/* ✅ STATUT */}
+      <span
+        className={`text-xs px-2 py-1 rounded-full ${
+          incident.statut === "valide"
+            ? "bg-green-500/20 text-green-600"
+            : incident.statut === "en_attente"
+            ? "bg-yellow-500/20 text-yellow-600"
+            : "bg-red-500/20 text-red-600"
+        }`}
+      >
+        {incident.statut}
+      </span>
+
+      {/* ✅ CONFIRM BUTTON */}
+      <button
+        onClick={() => confirmIncident(incident.id)}
+        className="w-full bg-blue-500 text-white py-1 rounded-lg text-xs"
+      >
+        {loadingConfirm === incident.id ? "..." : "Confirmer"}
+      </button>
+
+      {/* ✅ COMMENT AREA */}
+      <textarea
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        placeholder="Votre commentaire..."
+        className="w-full p-2 rounded bg-gray-100 text-xs"
+        rows="2"
+      />
+
+      <button
+        onClick={() => submitComment(incident.id)}
+        disabled={loadingComment}
+        className="w-full bg-gray-700 text-white py-1 rounded-lg text-xs"
+      >
+        {loadingComment ? "..." : "Envoyer"}
+      </button>
+
+    </div>
+
+  </Popup>
+</Marker>
 ))}
           </MapContainer>
 
