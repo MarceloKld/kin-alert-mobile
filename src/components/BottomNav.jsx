@@ -10,7 +10,7 @@ function BottomNav() {
                 border border-white/30 dark:border-gray-700/40
                 rounded-3xl shadow-2xl 
                 px-6 py-3 flex justify-between 
-                transition-colors duration-500 flex justify-between">
+                transition-colors duration-500 flex justify-between ">
       <NavLink
         to="/home"
         className={({ isActive }) =>

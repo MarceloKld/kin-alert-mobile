@@ -64,7 +64,7 @@ const openIncident = async (id) => {
     <div className="min-h-screen px-4 pb-28 
                     bg-gradient-to-b 
                     from-gray-100 to-gray-200 
-                    dark:from-gray-900 dark:to-gray-800 
+                     dark:to-gray-800 
                     transition-colors duration-500">
 
       {/* ✅ Filtres */}
@@ -110,7 +110,7 @@ const openIncident = async (id) => {
             <div className="flex justify-between items-start">
 
               <div>
-                <h3 className="font-semibold text-gray-800 dark:text-white">
+                <h3 className="font-semibold text-gray-800 ">
                   {incident.titre}
                 </h3>
 
@@ -174,7 +174,7 @@ const openIncident = async (id) => {
   ) : (
     <>
       <h2 className="text-xl font-semibold 
-                     text-gray-800 dark:text-white">
+                     text-gray-800 ">
         {selectedIncident?.titre}
       </h2>
 
@@ -193,7 +193,7 @@ const openIncident = async (id) => {
 
   <button
     onClick={() => setShowModal(false)}
-    className="mt-6 w-full bg-gray-900 dark:bg-white 
+    className="mt-6 w-full bg-gray-900  
                dark:text-black text-white py-2 
                rounded-lg"
   >

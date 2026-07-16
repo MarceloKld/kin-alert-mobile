@@ -11,33 +11,14 @@ import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import MarkerClusterGroup from "react-leaflet-cluster";
 
 
 // ✅ Icônes personnalisées selon statut
 
-const greenIcon = new L.Icon({
-  iconUrl: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-  iconSize: [32, 32],
-});
-
-const yellowIcon = new L.Icon({
-  iconUrl: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-  iconSize: [32, 32],
-});
 
 const redIcon = new L.Icon({
   iconUrl: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
   iconSize: [32, 32],
-});
-
-const blueIcon = new L.Icon({
-  iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-  shadowUrl:
-    "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
 });
 
 
@@ -54,41 +35,10 @@ function HomePage() {
 const navigate = useNavigate();
 
 const [userPosition, setUserPosition] = useState(null);
-const [selectedPosition, setSelectedPosition] = useState(null);
+const [selectedPosition, ] = useState(null);
 const [incidents, setIncidents] = useState([]);
-const [statusFilter, setStatusFilter] = useState("all");
+const [mapFilter, setMapFilter] = useState("all");
   
-
-
-// Fonction de filtrage des incidents à proximité
-  const getNearbyIncidents = () => {
-  if (!selectedPosition) return [];
-
-  return incidents
-    .filter(
-      (incident) =>
-        incident.localisation &&
-        typeof incident.localisation.latitude === "number" &&
-        typeof incident.localisation.longitude === "number"
-    )
-    // Nouveau filtre par statut inséré ici
-    .filter((incident) =>
-      statusFilter === "all"
-        ? true
-        : incident.statut === statusFilter
-    )
-    .filter((incident) => {
-      const distance =
-        Math.abs(
-          incident.localisation.latitude - selectedPosition.lat
-        ) +
-        Math.abs(
-          incident.localisation.longitude - selectedPosition.lng
-        );
-
-      return distance < 0.05; // seuil simple
-    });
-};
   // ✅ Géolocalisation utilisateur
   useEffect(() => {
   if (navigator.geolocation) {
@@ -118,200 +68,158 @@ const [statusFilter, setStatusFilter] = useState("all");
 }, []);
 
  
+
+
+
+
 return (
-  <div className="min-h-screen 
-                bg-gradient-to-b from-gray-100 to-gray-200 
-                dark:from-gray-900 dark:to-gray-800 
-                pb-28 transition-colors duration-500 animate-fadeIn">
+  <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-hidden">
 
-    {/* ✅ Actions principales */}
-    <div className="px-4 pt-6 space-y-4">
+    {/* ✅ HEADER ORANGE */}
+    <div className="bg-gradient-to-b from-orange-500 to-orange-600 
+                    text-white pt-6 pb-4 px-5">
 
-      {/* 🚨 Signalement */}
-      <button
-        onClick={() =>
-          navigate("/report", { state: { selectedPosition } })
-        }
-        className="w-full backdrop-blur-md bg-white/70 
-                   rounded-2xl shadow-lg py-4 
-                   flex items-center justify-center gap-3
-                   text-red-600 font-semibold text-lg
-                   transition active:scale-95"
-      >
-        🚨 Signaler un incident
-      </button>
+      <div className="flex justify-between items-center">
 
-      {/* 📍 Localisation */}
-      <button
-        onClick={() => {
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const coords = [
-                  position.coords.latitude,
-                  position.coords.longitude,
-                ];
-                setUserPosition(coords);
-                setSelectedPosition({
-                  lat: position.coords.latitude,
-                  lng: position.coords.longitude,
-                });
-              }
-            );
-          }
-        }}
-        className="w-full backdrop-blur-md bg-blue-500/90 
-                   rounded-2xl shadow-lg py-4 
-                   flex items-center justify-center gap-3
-                   text-white font-semibold
-                   transition active:scale-95"
-      >
-        📍 Activer ma localisation
-      </button>
+        <div className="relative">
+          <span className="absolute -top-2 -right-2 
+                           bg-red-600 text-white 
+                           text-xs rounded-full px-1">
+            3
+          </span>
+          🔔
+        </div>
+
+        <h1 className="text-lg font-semibold">
+          Kin -Alertes
+        </h1>
+
+        <div className="relative">
+          <span className="absolute -top-2 -right-2 
+                           bg-red-600 text-white 
+                           text-xs rounded-full px-1">
+            6
+          </span>
+          🚨
+        </div>
+
+      </div>
 
     </div>
 
-    <div className="flex gap-3 px-4 mt-2 overflow-x-auto">
 
-  {["all", "valide", "en_attente", "rejete"].map((status) => (
+    <div className="bg-[#0E223A] px-4 py-3">
+
+  <div className="flex gap-3 overflow-x-auto">
+
+    {["all", "valide", "en_attente", "rejete"].map((status) => {
+
+  const count = incidents.filter(
+    (i) => status === "all" ? true : i.statut === status
+  ).length;
+
+  return (
     <button
       key={status}
-      onClick={() => setStatusFilter(status)}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-        statusFilter === status
-          ? "bg-black text-white"
-          : "text-gray-700 dark:text-gray-200 dark:bg-gray-800/70 backdrop-blur-md text-gray-700"
+      onClick={() => setMapFilter(status)}
+      className={`px-4 py-2 rounded-full text-sm font-medium ${
+        mapFilter === status
+          ? "bg-orange-500 text-white"
+          : "bg-white/20 text-white border border-white/40"
       }`}
     >
       {status === "all"
-        ? "Tous"
-        : status === "valide"
-        ? "Validé"
-        : status === "en_attente"
-        ? "En attente"
-        : "Rejeté"}
+        ? `Tous (${count})`
+        : `${status} (${count})`}
     </button>
-  ))}
+  );
+})}
+
+  </div>
 
 </div>
 
-    {/* ✅ Carte premium */}
-    <div className="mt-6 px-4">
-      <div className="rounded-3xl overflow-hidden shadow-2xl">
-        <MapContainer
-          center={userPosition || [-4.3, 15.3]}
-          zoom={13}
-          style={{ height: "60vh", width: "100%" }}
-        >
-          <TileLayer
-            attribution="© OpenStreetMap"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
+    {/* ✅ ZONE BLEU FONCÉ */}
+    <div className="flex-1 bg-[#0E223A] pt-4 relative">
 
-          {selectedPosition && (
-            <Marker
-              position={[
-                selectedPosition.lat,
-                selectedPosition.lng,
-              ]}
-              icon={blueIcon}
+      {/* ✅ CARTE */}
+      <div className="mt-2">
+        <div className="rounded-t-3xl overflow-hidden shadow-2xl">
+
+          <MapContainer
+  center={userPosition || [-4.3, 15.3]}
+  zoom={13}
+  style={{ height: "50vh", width: "100%" }}
+>
+            <TileLayer
+              attribution="© OpenStreetMap"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-          )}
 
-          <MarkerClusterGroup>
-  {incidents
-    ?.filter(
-      (incident) =>
-        incident.localisation &&
-        typeof incident.localisation.latitude === "number" &&
-        typeof incident.localisation.longitude === "number"
-    )
-    .map((incident) => (
-      <Marker
-        key={incident.id}
-        position={[
-          incident.localisation.latitude,
-          incident.localisation.longitude,
-        ]}
-        icon={
-          incident.statut === "valide"
-            ? greenIcon
-            : incident.statut === "en_attente"
-            ? yellowIcon
-            : redIcon
-        }
-      >
-       <Popup>
-  <div className="backdrop-blur-md bg-white/90 
-                  rounded-2xl p-4 shadow-2xl 
-                  animate-popupIn min-w-[180px]">
-    <p className="font-semibold text-gray-800">
-      {incident.titre}
-    </p>
-
-    <p className="text-xs text-gray-500 mt-1">
-      {incident.type?.titre}
-    </p>
-
-    <p className={`text-xs mt-2 font-medium ${
-      incident.statut === "valide"
-        ? "text-green-600"
-        : incident.statut === "en_attente"
-        ? "text-yellow-600"
-        : "text-red-600"
-    }`}>
-      {incident.statut}
-    </p>
-  </div>
-</Popup>
-      </Marker>
-    ))}
-</MarkerClusterGroup>
-        </MapContainer>
-      </div>
-    </div>
-
-    {/* ✅ Liste premium scroll indépendante */}
-    {selectedPosition && (
-      <div className="mt-6 mx-4 bg-white/70 backdrop-blur-md 
-                      rounded-3xl shadow-lg p-4 max-h-60 overflow-y-auto">
-        <h3 className="font-semibold text-gray-800 mb-3">
-          Accidents proches
-        </h3>
-
-        {getNearbyIncidents().length === 0 ? (
-          <p className="text-sm text-gray-500">
-            Aucun incident proche.
+            {incidents
+  .filter(
+    (incident) =>
+      incident.localisation &&
+      typeof incident.localisation.latitude === "number" &&
+      typeof incident.localisation.longitude === "number"
+  )
+  .filter((incident) =>
+    mapFilter === "all"
+      ? true
+      : incident.statut === mapFilter
+  )
+  .map((incident) => (
+    <Marker
+      key={incident.id}
+      position={[
+        incident.localisation.latitude,
+        incident.localisation.longitude,
+      ]}
+      icon={redIcon}
+    >
+      <Popup>
+        <div className="bg-white rounded-xl p-3 shadow-lg">
+          <p className="font-semibold">
+            {incident.titre}
           </p>
-        ) : (
-          getNearbyIncidents().map((incident) => (
-            <div
-              key={incident.id}
-              className="flex justify-between items-center py-3 border-b last:border-none"
-            >
-              <div>
-                <p className="font-medium text-gray-800">
-                  {incident.titre}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {incident.type?.titre}
-                </p>
-              </div>
+          <p className="text-xs text-gray-500">
+            {incident.type?.titre}
+          </p>
+        </div>
+      </Popup>
+    </Marker>
+))}
+          </MapContainer>
 
-              <div
-                className={`w-3 h-3 rounded-full ${
-                  incident.statut === "valide"
-                    ? "bg-green-500"
-                    : incident.statut === "en_attente"
-                    ? "bg-yellow-400"
-                    : "bg-red-500"
-                }`}
-              />
-            </div>
-          ))
-        )}
+        </div>
       </div>
-    )}
+
+      {/* ✅ BOUTON CENTRAL */}
+      <div className="absolute left-1/2 
+                -translate-x-1/2 
+                bottom-25">
+
+        <button
+          onClick={() =>
+            navigate("/report", { state: { selectedPosition } })
+          }
+          className="w-36 h-36 rounded-full 
+             bg-gradient-to-b 
+             from-orange-400 to-orange-600 
+             shadow-[0_15px_40px_rgba(255,140,0,0.5)]
+             text-white font-bold text-base
+             flex flex-col items-center justify-center
+             leading-tight
+             transition active:scale-95"
+        >
+          SIGNALER
+          <br />
+          UNE ALERTE
+        </button>
+
+      </div>
+
+    </div>
 
   </div>
 );

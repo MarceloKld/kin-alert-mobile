@@ -33,7 +33,7 @@ function IncidentDetailPage() {
                       rounded-3xl shadow-lg p-6">
 
         <h2 className="text-xl font-semibold 
-                       text-gray-800 dark:text-white">
+                       text-gray-800 ">
           {incident.titre}
         </h2>
 

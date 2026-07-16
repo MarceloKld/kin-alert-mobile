@@ -8,23 +8,10 @@ import DashboardPage from "./pages/DashboardPage";
 import SettingsPage from "./pages/SettingsPage";
 
 import MobileLayout from "./layouts/MobileLayout";
-import { useEffect, useState } from "react";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
 
 function App() {
-  const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "light"
-  );
 
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-
-    localStorage.setItem("theme", theme);
-  }, [theme]);
   return (
     <Routes>
 
@@ -34,7 +21,7 @@ function App() {
         path="/home"
         element={
           <PrivateRoute>
-            <MobileLayout theme={theme} setTheme={setTheme}>
+            <MobileLayout>
               <HomePage />
             </MobileLayout>
           </PrivateRoute>
@@ -45,7 +32,7 @@ function App() {
         path="/dashboard"
         element={
           <PrivateRoute>
-           <MobileLayout theme={theme} setTheme={setTheme}>
+           <MobileLayout>
               <DashboardPage />
             </MobileLayout>
           </PrivateRoute>
@@ -56,7 +43,7 @@ function App() {
         path="/settings"
         element={
           <PrivateRoute>
-            <MobileLayout theme={theme} setTheme={setTheme}>
+           <MobileLayout>
               <SettingsPage />
             </MobileLayout>
           </PrivateRoute>
@@ -68,7 +55,7 @@ function App() {
   path="/report"
   element={
     <PrivateRoute>
-      <MobileLayout theme={theme} setTheme={setTheme}>
+      <MobileLayout>
         <ReportIncidentPage />
       </MobileLayout>
     </PrivateRoute>
@@ -79,7 +66,7 @@ function App() {
   path="/incident/:id"
   element={
     <PrivateRoute>
-      <MobileLayout theme={theme} setTheme={setTheme}>
+      <MobileLayout>
         <IncidentDetailPage />
       </MobileLayout>
     </PrivateRoute>
