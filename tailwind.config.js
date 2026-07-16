@@ -9,14 +9,14 @@ export default {
     extend: {
       animation: {
         tap: "tap 0.2s ease-in-out",
-        fadeIn: "fadeIn 1.9s ease-out",
+        fadeIn: "fadeIn 0.7s ease-out",
         float: "float 3s ease-in-out infinite",
         popupIn: "popupIn 0.25s ease-out",
       },
       keyframes: {
         tap: {
            "0%": { transform: "scale(1)" },
-           "50%": { transform: "scale(0.9)" },
+           "50%": { transform: "scale(0.7)" },
            "100%": { transform: "scale(1)" },
              },
         float: {
