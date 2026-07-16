@@ -13,6 +13,7 @@ const [loadingComment, setLoadingComment] = useState(false);
 const [loading, setLoading] = useState(false);
 const [myIncidents, setMyIncidents] = useState([]);
 const [loadingMy, setLoadingMy] = useState(false);
+const [toast, setToast] = useState(null);
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -50,17 +51,29 @@ const [loadingMy, setLoadingMy] = useState(false);
       )
     );
 
-    setSuccessMessage("✅ Confirmation enregistrée");
+    setToast({
+  type: "success",
+  message: "✅ Confirmation enregistrée",
+});
+
+setTimeout(() => {
+  setToast(null);
+}, 3000);
 
   } catch (error) {
-    if (error.response?.data?.message) {
-      setErrorMessage(error.response.data.message);
-    } else {
-      setErrorMessage("Erreur lors de la confirmation.");
-    }
-  } finally {
-    setLoadingConfirm(null);
-  }
+  const message =
+    error.response?.data?.message ||
+    "Erreur lors de la confirmation.";
+
+  setToast({
+    type: "error",
+    message,
+  });
+
+  setTimeout(() => {
+    setToast(null);
+  }, 3000);
+}
 };
 
 //Charger MES incidents
@@ -115,6 +128,24 @@ useEffect(() => {
     <div className="min-h-screen bg-gradient-to-b 
                     from-[#0E223A] to-[#091522] 
                     text-white pb-28 px-4">
+                      {toast && (
+  <div className="fixed top-6 right-6 z-50 
+                  animate-slideIn">
+
+    <div className={`px-4 py-3 rounded-xl shadow-2xl 
+                    text-white text-sm 
+                    ${
+                      toast.type === "error"
+                        ? "bg-red-500"
+                        : "bg-green-500"
+                    }`}>
+
+      {toast.message}
+
+    </div>
+
+  </div>
+)}
 
       <h1 className="text-xl font-semibold pt-6">
         Mes Infos
