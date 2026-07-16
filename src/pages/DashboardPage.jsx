@@ -1,34 +1,26 @@
-
-import api from "../api/axios";
 import { useEffect, useState } from "react";
+import api from "../api/axios";
 
 function DashboardPage() {
 
   const [incidents, setIncidents] = useState([]);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [loading, setLoading] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState(null);
-const [showModal, setShowModal] = useState(false);
-const [loadingDetail, setLoadingDetail] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [loadingConfirm, setLoadingConfirm] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+const [successMessage, setSuccessMessage] = useState("");
+const [loadingComment, setLoadingComment] = useState(false);
+const [loading, setLoading] = useState(false);
 
-  // ✅ Déclare la fonction AVANT useEffect
-useEffect(() => {
+  // ✅ Charger incidents
+  useEffect(() => {
 
   const loadIncidents = async () => {
     setLoading(true);
 
     try {
-      let url;
-
-      if (statusFilter === "all") {
-        url = "/incidents?all=true";
-      } else {
-        url = `/incidents?statut=${statusFilter}`;
-      }
-
-      const res = await api.get(url);
+      const res = await api.get("/incidents?all=true");
       setIncidents(res.data.data || res.data);
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -38,174 +30,216 @@ useEffect(() => {
 
   loadIncidents();
 
-}, [statusFilter]);
-
-const openIncident = async (id) => {
-
-  setShowModal(true);
-  setLoadingDetail(true);
-  setSelectedIncident(null);
+}, []);
+  // ✅ Confirmer incident
+  const confirmIncident = async (id) => {
+  setLoadingConfirm(id);
+  setErrorMessage("");
+  setSuccessMessage("");
 
   try {
-    const res = await api.get(`/incidents/${id}`);
-    setSelectedIncident(res.data.data || res.data);
+    await api.post(`/incidents/${id}/confirm`);
+
+    setIncidents((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? { ...i, nombre_confirmations: i.nombre_confirmations + 1 }
+          : i
+      )
+    );
+
+    setSuccessMessage("✅ Confirmation enregistrée");
+
   } catch (error) {
-    console.error(error);
-    console.error("Erreur chargement détail");
+    if (error.response?.data?.message) {
+      setErrorMessage(error.response.data.message);
+    } else {
+      setErrorMessage("Erreur lors de la confirmation.");
+    }
   } finally {
-    setLoadingDetail(false);
+    setLoadingConfirm(null);
   }
 };
 
+  // ✅ Commenter incident
+  const submitComment = async () => {
+  if (!commentText) return;
 
+  setLoadingComment(true);
 
+  try {
+    await api.post(`/incidents/${selectedIncident.id}/comments`, {
+      contenu: commentText,
+    });
+
+    setCommentText("");
+    setSelectedIncident(null);
+
+  } catch (error) {
+    console.error(error);
+    setErrorMessage("Erreur lors de l'envoi du commentaire.");
+  } finally {
+    setLoadingComment(false);
+  }
+};
 
   return (
-    <div className="min-h-screen px-4 pb-28 
-                    bg-gradient-to-b 
-                    from-gray-100 to-gray-200 
-                     dark:to-gray-800 
-                    transition-colors duration-500">
+    <div className="min-h-screen bg-gradient-to-b 
+                    from-[#0E223A] to-[#091522] 
+                    text-white pb-28 px-4">
 
-      {/* ✅ Filtres */}
-      <div className="flex gap-3 overflow-x-auto py-4">
+      <h1 className="text-xl font-semibold pt-6">
+        Mes Infos
+      </h1>
 
-        {["all", "valide", "en_attente", "rejete"].map((status) => (
-          <button
-            key={status}
-            onClick={() => setStatusFilter(status)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-              statusFilter === status
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-white/70 dark:bg-gray-800/70 text-gray-700 dark:text-gray-200"
-            }`}
-          >
-            {status === "all"
-              ? "Tous"
-              : status === "valide"
-              ? "Validé"
-              : status === "en_attente"
-              ? "En attente"
-              : "Rejeté"}
-          </button>
-        ))}
-
-      </div>
-
-      {/* ✅ Liste incidents */}
-      {loading ? (
-        <p className="text-center text-gray-500">Chargement...</p>
-      ) : incidents.length === 0 ? (
-        <p className="text-center text-gray-500">
-          Aucun incident trouvé.
-        </p>
-      ) : (
-        incidents.map((incident) => (
-          <div
-            key={incident.id}
-            className="bg-white dark:bg-gray-800 
-                       rounded-2xl shadow-lg 
-                       p-4 mb-4 transition-colors">
-
-            <div className="flex justify-between items-start">
-
-              <div>
-                <h3 className="font-semibold text-gray-800 ">
-                  {incident.titre}
-                </h3>
-
-                <p className="text-sm text-gray-500 dark:text-gray-300">
-                  {incident.type?.titre} • {incident.localisation?.commune?.nom}
-                </p>
-              </div>
-
-              <span
-                className={`text-xs px-3 py-1 rounded-full ${
-                  incident.statut === "valide"
-                    ? "bg-green-100 text-green-700"
-                    : incident.statut === "en_attente"
-                    ? "bg-yellow-100 text-yellow-700"
-                    : "bg-red-100 text-red-700"
-                }`}
-              >
-                {incident.statut}
-              </span>
-
-            </div>
-
-            <div className="flex justify-between items-center mt-4 text-sm text-gray-600 dark:text-gray-300">
-              <span>
-                ✅ {incident.nombre_confirmations} confirmations
-              </span>
-              <span>
-                {incident.date_creation}
-              </span>
-            </div>
-
-            <button
-  onClick={() => openIncident(incident.id)}
-  className="mt-4 w-full bg-gray-900 dark:bg-white 
-             dark:text-black text-white 
-             py-2 rounded-lg text-sm transition 
-             active:scale-95 duration-150"
->
-  Voir les détails
-</button>
-{showModal && selectedIncident && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center">
-
-    {/* ✅ Overlay flou */}
-    <div
-      className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-      onClick={() => setShowModal(false)}
-    />
-
-    {/* ✅ Modal */}
-    <div className="relative bg-white dark:bg-gray-800 
-                rounded-3xl shadow-2xl p-6 
-                w-[90%] max-w-md 
-                animate-popupIn">
-
-  {loadingDetail ? (
-    <div className="flex justify-center items-center py-10">
-      <div className="w-8 h-8 border-4 border-blue-500 
-                      border-t-transparent rounded-full animate-spin" />
-    </div>
-  ) : (
-    <>
-      <h2 className="text-xl font-semibold 
-                     text-gray-800 ">
-        {selectedIncident?.titre}
-      </h2>
-
-      <p className="text-sm text-gray-500 dark:text-gray-300 mt-2">
-        {selectedIncident?.description}
-      </p>
-
-      <div className="mt-4 text-sm space-y-1">
-        <p><strong>Type :</strong> {selectedIncident?.type?.titre}</p>
-        <p><strong>Commune :</strong> {selectedIncident?.localisation?.commune?.nom}</p>
-        <p><strong>Statut :</strong> {selectedIncident?.statut}</p>
-        <p><strong>Confirmations :</strong> {selectedIncident?.nombre_confirmations}</p>
-      </div>
-    </>
-  )}
-
-  <button
-    onClick={() => setShowModal(false)}
-    className="mt-6 w-full bg-gray-900  
-               dark:text-black text-white py-2 
-               rounded-lg"
-  >
-    Fermer
-  </button>
-
-    </div>
+      {errorMessage && (
+  <div className="bg-red-500 text-white p-3 rounded-lg mb-4 text-sm">
+    {errorMessage}
   </div>
 )}
+
+{successMessage && (
+  <div className="bg-green-500 text-white p-3 rounded-lg mb-4 text-sm">
+    {successMessage}
+  </div>
+)}
+
+      <h2 className="text-lg mt-6 mb-4">
+        Fil d'Actualité
+      </h2>
+
+      <div className="bg-[#142E4C] rounded-2xl p-4 mb-6">
+
+  <h3 className="text-lg font-semibold mb-3">
+    Mes Signalements
+  </h3>
+
+  <div className="flex justify-between text-sm">
+
+    <span className="text-green-400">
+      ✅ {incidents.filter(i => i.statut === "valide").length} Validés
+    </span>
+
+    <span className="text-yellow-400">
+      ⏳ {incidents.filter(i => i.statut === "en_attente").length} En attente
+    </span>
+
+  </div>
+
+</div>
+{loading && (
+  <div className="space-y-4 mt-6">
+    {[1,2,3].map((i) => (
+      <div
+        key={i}
+        className="bg-[#142E4C] rounded-2xl p-4 animate-pulse"
+      >
+        <div className="h-4 bg-gray-600 rounded w-1/2 mb-3"></div>
+        <div className="h-3 bg-gray-700 rounded w-3/4"></div>
+      </div>
+    ))}
+  </div>
+)}
+
+      {!loading && incidents.map((incident) => (
+        <div
+          key={incident.id}
+          className="bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg animate-fadeUp">
+
+          <div className="flex justify-between items-center">
+
+            <div>
+              <p className="text-sm text-gray-300">
+                {incident.type?.titre}
+              </p>
+              <h3 className="font-semibold">
+                {incident.titre}
+              </h3>
+              <p className="text-xs text-gray-400">
+                📍 {incident.localisation?.commune?.nom}
+              </p>
+            </div>
+
+            <span className="text-xs text-gray-400">
+              {incident.date_creation}
+            </span>
           </div>
-        ))
+
+          <div className="flex gap-3 mt-4">
+
+            <button
+              onClick={() => confirmIncident(incident.id)}
+              className="bg-blue-500 px-4 py-2 rounded-lg text-sm"
+            >
+              {loadingConfirm === incident.id
+                ? "..."
+                : "Confirmer"}
+            </button>
+
+            <button
+              onClick={() => setSelectedIncident(incident)}
+              className="bg-gray-600 px-4 py-2 rounded-lg text-sm"
+            >
+              Commenter
+            </button>
+
+          </div>
+{incident.commentaires && incident.commentaires.length > 0 && (
+  <div className="mt-4 bg-[#0E223A] rounded-xl p-3 text-sm">
+    {incident.commentaires.map((comment) => (
+      <div key={comment.id} className="border-b border-gray-600 py-1">
+        <p className="text-gray-300">
+          {comment.contenu}
+        </p>
+      </div>
+    ))}
+  </div>
+)}
+        </div>
+      ))}
+
+      {/* ✅ Modal Commentaire */}
+      {selectedIncident && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
+
+          <div className="bg-[#142E4C] p-6 rounded-2xl w-[90%] max-w-sm">
+
+            <h3 className="font-semibold mb-4">
+              Commenter
+            </h3>
+
+            <textarea
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[#0E223A] text-white"
+              rows="3"
+            />
+
+            <div className="flex justify-end gap-3 mt-4">
+
+              <button
+                onClick={() => setSelectedIncident(null)}
+                className="text-gray-400"
+              >
+                Annuler
+              </button>
+
+              <button
+  onClick={submitComment}
+  className="bg-blue-500 px-4 py-2 rounded-lg"
+  disabled={loadingComment}
+>
+  {loadingComment ? "..." : "Envoyer"}
+</button>
+
+            </div>
+
+          </div>
+
+        </div>
       )}
+
+      
 
     </div>
   );
