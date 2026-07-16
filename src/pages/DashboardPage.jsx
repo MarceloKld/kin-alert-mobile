@@ -70,7 +70,7 @@ useEffect(() => {
     setLoadingMy(true);
 
     try {
-      const res = await api.get("/incidents?mine=true");
+      const res = await api.get("/my-incidents");
       setMyIncidents(res.data.data || res.data);
     } catch (error) {
       console.error(error);
