@@ -211,8 +211,15 @@ useEffect(() => {
       {!loading && incidents.map((incident) => (
         <div
           key={incident.id}
-          className="bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg animate-fadeUp">
-
+         className="relative bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg animate-fadeUp overflow-hidden">
+{/* Petite barre latérale colorée selon le statut */}
+    <div className={`absolute left-0 top-0 bottom-0 w-1 ${
+      incident.statut === "valide"
+        ? "bg-green-400"
+        : incident.statut === "en_attente"
+        ? "bg-yellow-400"
+        : "bg-red-400"
+    }`} />
           <div className="flex justify-between items-center">
 
             <div>
@@ -226,10 +233,29 @@ useEffect(() => {
                 📍 {incident.localisation?.commune?.nom}
               </p>
             </div>
+{/* ✅ BADGE STATUT */}
+  <span
+    className={`text-[11px] px-3 py-1 rounded-full font-medium 
+                backdrop-blur-sm border transition ${
+      incident.statut === "valide"
+        ? "bg-green-500/10 text-green-400 border-green-400/30"
+        : incident.statut === "en_attente"
+        ? "bg-yellow-500/10 text-yellow-400 border-yellow-400/30"
+        : "bg-red-500/10 text-red-400 border-red-400/30"
+    }`}
+  >
+    {incident.statut === "valide"
+      ? "Validé"
+      : incident.statut === "en_attente"
+      ? "En attente"
+      : "Rejeté"}
+  </span>
+            
 
             <span className="text-xs text-gray-400">
               {incident.date_creation}
             </span>
+            
           </div>
 
           <div className="flex gap-3 mt-4">
