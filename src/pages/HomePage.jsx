@@ -74,21 +74,33 @@ const { showToast } = useToast();
 }, []);
 
  const confirmIncident = async (id) => {
+  if (!id) return;
+
   setLoadingConfirm(id);
 
   try {
     await api.post(`/incidents/${id}/confirm`);
 
+    // ✅ Mise à jour locale sans fermer popup
+    setIncidents((prev) =>
+      prev.map((i) =>
+        i.id === id
+          ? {
+              ...i,
+              nombre_confirmations: i.nombre_confirmations + 1,
+              statut: "valide", // ou logique backend réelle
+            }
+          : i
+      )
+    );
+
     showToast("✅ Confirmation enregistrée", "success");
 
   } catch (error) {
-
     const message =
       error.response?.data?.message ||
       "Erreur lors de la confirmation.";
-
     showToast(message, "error");
-
   } finally {
     setLoadingConfirm(null);
   }
@@ -108,6 +120,7 @@ const submitComment = async (id) => {
     showToast("✅ Commentaire envoyé", "success");
 
   } catch (error) {
+    console.error(error);
     showToast("Erreur lors de l'envoi du commentaire", "error");
   } finally {
     setLoadingComment(false);
@@ -222,7 +235,7 @@ return (
   ]}
   icon={redIcon}
 >
-  <Popup>
+  <Popup autoClose={false} closeOnClick={false}>
 
     <div className="w-56 text-sm space-y-2">
 
@@ -256,11 +269,24 @@ return (
 
       {/* ✅ CONFIRM BUTTON */}
       <button
-        onClick={() => confirmIncident(incident.id)}
-        className="w-full bg-blue-500 text-white py-1 rounded-lg text-xs"
-      >
-        {loadingConfirm === incident.id ? "..." : "Confirmer"}
-      </button>
+  onClick={(e) => {
+  e.stopPropagation();     // ✅ IMPORTANT
+  confirmIncident(incident.id);
+}}
+  disabled={loadingConfirm === incident.id}
+  className="w-full bg-blue-500 text-white py-2 rounded-lg text-xs
+             flex items-center justify-center gap-2
+             disabled:opacity-60"
+>
+  {loadingConfirm === incident.id ? (
+    <>
+      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+      <span>Confirmation...</span>
+    </>
+  ) : (
+    <span>Confirmer</span>
+  )}
+</button>
 
       {/* ✅ COMMENT AREA */}
       <textarea
@@ -272,12 +298,24 @@ return (
       />
 
       <button
-        onClick={() => submitComment(incident.id)}
-        disabled={loadingComment}
-        className="w-full bg-gray-700 text-white py-1 rounded-lg text-xs"
-      >
-        {loadingComment ? "..." : "Envoyer"}
-      </button>
+  onClick={(e) => {
+  e.stopPropagation();     // ✅ IMPORTANT
+  submitComment(incident.id);
+}}
+  disabled={loadingComment}
+  className="w-full bg-gray-700 text-white py-2 rounded-lg text-xs
+             flex items-center justify-center gap-2
+             disabled:opacity-60"
+>
+  {loadingComment ? (
+    <>
+      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+      <span>Envoi...</span>
+    </>
+  ) : (
+    <span>Envoyer</span>
+  )}
+</button>
 
     </div>
 
