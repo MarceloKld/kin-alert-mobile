@@ -87,6 +87,9 @@ const confirmIncident = async () => {
 
   setLoadingConfirm(true);
   setModalMessage(null);
+  setTimeout(() => {
+  setModalMessage(null);
+}, 5000);
 
   try {
     await api.post(`/incidents/${selectedIncident.id}/confirm`);
