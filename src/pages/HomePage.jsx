@@ -11,7 +11,7 @@ import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
+import { useToast } from "../context/ToastContext";
 
 // ✅ Icônes personnalisées selon statut
 
@@ -41,6 +41,9 @@ const [mapFilter, setMapFilter] = useState("all");
 const [loadingConfirm, setLoadingConfirm] = useState(null);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
+const { showToast } = useToast();
+
+
   
   // ✅ Géolocalisation utilisateur
   useEffect(() => {
@@ -75,8 +78,17 @@ const [commentText, setCommentText] = useState("");
 
   try {
     await api.post(`/incidents/${id}/confirm`);
+
+    showToast("✅ Confirmation enregistrée", "success");
+
   } catch (error) {
-    console.error(error);
+
+    const message =
+      error.response?.data?.message ||
+      "Erreur lors de la confirmation.";
+
+    showToast(message, "error");
+
   } finally {
     setLoadingConfirm(null);
   }
@@ -93,8 +105,10 @@ const submitComment = async (id) => {
     });
 
     setCommentText("");
+    showToast("✅ Commentaire envoyé", "success");
+
   } catch (error) {
-    console.error(error);
+    showToast("Erreur lors de l'envoi du commentaire", "error");
   } finally {
     setLoadingComment(false);
   }
