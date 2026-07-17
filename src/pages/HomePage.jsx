@@ -282,11 +282,18 @@ return (
 </span>
 
 {/* ✅ COMPTEUR CONFIRMATIONS */}
-<p className="text-xs text-gray-400 mt-2">
-  ✅ {incident.nombre_confirmations} confirmation
+<p
+  className={`text-xs mt-2 flex items-center gap-1 
+    ${
+      incident.statut === "valide"
+        ? "text-green-400"
+        : "text-gray-400"
+    }`}
+>
+ <span className="animate-pulse text-green-400">✔</span>
+  {incident.nombre_confirmations} confirmation
   {incident.nombre_confirmations > 1 && "s"}
 </p>
-
       {/* ✅ CONFIRM BUTTON */}
       <button
   onClick={(e) => {
