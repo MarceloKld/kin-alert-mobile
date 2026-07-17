@@ -38,11 +38,12 @@ const [userPosition, setUserPosition] = useState(null);
 const [selectedPosition, ] = useState(null);
 const [incidents, setIncidents] = useState([]);
 const [mapFilter, setMapFilter] = useState("all");
-const [loadingConfirm, setLoadingConfirm] = useState(null);
+const [selectedIncident, setSelectedIncident] = useState(null);
+const [showModal, setShowModal] = useState(false);
+const [loadingConfirm, setLoadingConfirm] = useState(false);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
 const { showToast } = useToast();
-const [comments, setComments] = useState({});
 
 
   
@@ -74,74 +75,54 @@ const [comments, setComments] = useState({});
     .catch(() => console.log("Erreur chargement incidents"));
 }, []);
 
- const confirmIncident = async (id) => {
-  if (!id) return;
+const openIncidentModal = (incident) => {
+  setSelectedIncident(incident);
+  setShowModal(true);
+};
 
-  setLoadingConfirm(id);
+
+const confirmIncident = async () => {
+  if (!selectedIncident?.id) return;
+
+  setLoadingConfirm(true);
 
   try {
-    await api.post(`/incidents/${id}/confirm`);
-
-    // ✅ Mise à jour locale sans fermer popup
-    setIncidents((prev) =>
-  prev.map((i) =>
-    i.id === id
-      ? {
-          ...i,
-          nombre_confirmations: i.nombre_confirmations + 1,
-          statut: "valide",
-          isConfirmed: true,   // ✅ nouveau flag
-        }
-      : i
-  )
-);
+    await api.post(`/incidents/${selectedIncident.id}/confirm`);
 
     showToast("✅ Confirmation enregistrée", "success");
 
   } catch (error) {
-    const message =
+    showToast(
       error.response?.data?.message ||
-      "Erreur lors de la confirmation.";
-    showToast(message, "error");
+      "Erreur lors de la confirmation",
+      "error"
+    );
   } finally {
-    setLoadingConfirm(null);
+    setLoadingConfirm(false);
   }
 };
 
-const submitComment = async (id) => {
-  if (!commentText) return;
+const submitComment = async () => {
+  if (!selectedIncident || !commentText) return;
 
   setLoadingComment(true);
 
   try {
-    await api.post(`/incidents/${id}/comments`, {
+    await api.post(`/incidents/${selectedIncident.id}/comments`, {
       contenu: commentText,
     });
 
-    setCommentText("");
     showToast("✅ Commentaire envoyé", "success");
-
+    setCommentText("");
   } catch (error) {
     console.error(error);
-    showToast("Erreur lors de l'envoi du commentaire", "error");
+    showToast("Erreur lors de l'envoi", "error");
   } finally {
     setLoadingComment(false);
   }
 };
 
-const loadComments = async (incidentId) => {
-  try {
-    const res = await api.get(`/incidents/${incidentId}/comments`);
 
-    setComments((prev) => ({
-      ...prev,
-      [incidentId]: res.data,
-    }));
-
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 
 
@@ -251,157 +232,45 @@ return (
   ]}
   icon={redIcon}
 >
-  <Popup autoClose={false} closeOnClick={false}>
+<Popup>
+  <div className="w-56 text-sm space-y-2">
 
-    <div className="w-56 text-sm space-y-2">
+    <h3 className="font-semibold text-base">
+      {incident.titre}
+    </h3>
 
-      {/* ✅ TITRE */}
-      <h3 className="font-semibold text-base">
-        {incident.titre}
-      </h3>
+    <p className="text-xs text-gray-500">
+      {incident.type?.titre}
+    </p>
 
-      {/* ✅ TYPE */}
-      <p className="text-xs text-gray-500">
-        {incident.type?.titre}
-      </p>
+    <p className="text-xs text-gray-400">
+      📍 {incident.localisation?.commune?.nom}
+    </p>
 
-      {/* ✅ LOCALISATION */}
-      <p className="text-xs text-gray-400">
-        📍 {incident.localisation?.commune?.nom}
-      </p>
+    <span
+      className={`text-xs px-2 py-1 rounded-full ${
+        incident.statut === "valide"
+          ? "bg-green-500/20 text-green-600"
+          : incident.statut === "en_attente"
+          ? "bg-yellow-500/20 text-yellow-600"
+          : "bg-red-500/20 text-red-600"
+      }`}
+    >
+      {incident.statut}
+    </span>
 
-      {/* ✅ STATUT */}
-      <span
-  className={`text-xs px-2 py-1 rounded-full animate-statusChange ${
-    incident.statut === "valide"
-      ? "bg-green-500/20 text-green-600"
-      : incident.statut === "en_attente"
-      ? "bg-yellow-500/20 text-yellow-600"
-      : "bg-red-500/20 text-red-600"
-  }`}
->
-  {incident.commentaires && incident.commentaires.length > 0 && (
-  <div className="mt-4 space-y-2 max-h-24 overflow-y-auto">
-    {incident.commentaires.map((comment) => (
-      <div
-        key={comment.id}
-        className="bg-[#0E223A] p-2 rounded-lg text-xs text-gray-300"
-      >
-        {comment.contenu}
-      </div>
-    ))}
-  </div>
-)}
-
-  {incident.statut}
-</span>
-
-{/* ✅ COMPTEUR CONFIRMATIONS */}
-<p
-  className={`text-xs mt-2 flex items-center gap-1 
-    ${
-      incident.statut === "valide"
-        ? "text-green-400"
-        : "text-gray-400"
-    }`}
->
- <span className="animate-pulse text-green-400">✔</span>
-  {incident.nombre_confirmations} confirmation
-  {incident.nombre_confirmations > 1 && "s"}
-</p>
-      {/* ✅ CONFIRM BUTTON */}
-      <button
-  onClick={(e) => {
-    e.stopPropagation();
-    confirmIncident(incident.id);
-  }}
-  disabled={
-    loadingConfirm === incident.id ||
-    incident.isConfirmed ||
-    incident.statut === "valide"
-  }
-  className={`w-full py-2 rounded-lg text-xs flex items-center justify-center gap-2
-    ${
-      incident.isConfirmed || incident.statut === "valide"
-        ? "bg-gray-600 text-gray-300 cursor-not-allowed"
-        : "bg-blue-500 text-white"
-    }`}
->
-  {loadingConfirm === incident.id ? (
-    <>
-      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      Confirmation...
-    </>
-  ) : incident.isConfirmed || incident.statut === "valide" ? (
-    "Déjà confirmé"
-  ) : (
-    "Confirmer"
-  )}
-</button>
-
-      {/* ✅ COMMENT AREA */}
-      <textarea
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        placeholder="Votre commentaire..."
-        className="w-full p-2 rounded bg-gray-100 text-xs"
-        rows="2"
-      />
-
-      <button
-  onClick={(e) => {
-  e.stopPropagation();     // ✅ IMPORTANT
-  submitComment(incident.id);
-}}
-  disabled={loadingComment}
-  className="w-full bg-gray-700 text-white py-2 rounded-lg text-xs
-             flex items-center justify-center gap-2
-             disabled:opacity-60"
->
-  {loadingComment ? (
-    <>
-      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      <span>Envoi...</span>
-    </>
-  ) : (
-    <span>Envoyer</span>
-  )}
-</button>
-
-<button
-  onClick={(e) => {
-    e.stopPropagation();
-    loadComments(incident.id);
-  }}
-  className="w-full bg-gray-800 text-white py-1 rounded-lg text-xs"
->
-  Voir les commentaires
-</button>
-
-{comments[incident.id] && (
-  <div className="mt-3 max-h-24 overflow-y-auto space-y-2">
-
-    {comments[incident.id].length === 0 ? (
-      <p className="text-gray-400 text-xs">
-        Aucun commentaire
-      </p>
-    ) : (
-      comments[incident.id].map((comment) => (
-        <div
-          key={comment.id}
-          className="bg-gray-100 p-2 rounded text-xs text-gray-700"
-        >
-          {comment.contenu}
-        </div>
-      ))
-    )}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        openIncidentModal(incident);
+      }}
+      className="mt-2 w-full bg-blue-500 text-white py-1 rounded-lg text-xs"
+    >
+      Voir détails
+    </button>
 
   </div>
-)}
-
-    </div>
-
-  </Popup>
+</Popup>
 </Marker>
 ))}
           </MapContainer>
@@ -435,7 +304,75 @@ return (
       </div>
 
     </div>
+{showModal && selectedIncident && (
+ <div className="fixed inset-0 flex items-center justify-center z-[9999]">
 
+    <div
+      className="absolute inset-0 backdrop-blur-sm bg-black/10"
+      onClick={() => setShowModal(false)}
+    />
+
+    <div className="relative bg-[#142E4C] text-white 
+                    rounded-3xl p-6 w-[90%] max-w-md shadow-2xl">
+
+      <h2 className="text-lg font-semibold">
+        {selectedIncident.titre}
+      </h2>
+
+      <p className="text-sm text-gray-300 mt-2">
+        {selectedIncident.description}
+      </p>
+
+      <p className="text-xs text-gray-400 mt-1">
+        📍 {selectedIncident.localisation?.commune?.nom}
+      </p>
+
+      <span
+        className={`text-xs px-2 py-1 rounded-full ${
+          selectedIncident.statut === "valide"
+            ? "bg-green-500/20 text-green-600"
+            : selectedIncident.statut === "en_attente"
+            ? "bg-yellow-500/20 text-yellow-600"
+            : "bg-red-500/20 text-red-600"
+        }`}
+      >
+        {selectedIncident.statut}
+      </span>
+
+      <button
+        onClick={confirmIncident}
+        disabled={loadingConfirm}
+        className="mt-4 w-full bg-blue-500 py-2 rounded-lg text-sm"
+      >
+        {loadingConfirm ? "..." : "Confirmer"}
+      </button>
+
+      <textarea
+        value={commentText}
+        onChange={(e) => setCommentText(e.target.value)}
+        placeholder="Votre commentaire..."
+        className="w-full mt-3 p-3 rounded-lg bg-[#0E223A] text-white text-sm"
+        rows="3"
+      />
+
+      <button
+        onClick={submitComment}
+        disabled={loadingComment}
+        className="mt-3 w-full bg-gray-700 py-2 rounded-lg text-sm"
+      >
+        {loadingComment ? "..." : "Envoyer"}
+      </button>
+
+      <button
+        onClick={() => setShowModal(false)}
+        className="mt-4 w-full text-gray-400 text-sm"
+      >
+        Fermer
+      </button>
+
+    </div>
+  </div>
+)}
   </div>
 );
 }
