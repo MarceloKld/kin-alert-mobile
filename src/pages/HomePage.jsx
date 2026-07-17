@@ -44,6 +44,7 @@ const [loadingConfirm, setLoadingConfirm] = useState(false);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
 const { showToast } = useToast();
+const [modalMessage, setModalMessage] = useState(null);
 
 
   
@@ -85,38 +86,52 @@ const confirmIncident = async () => {
   if (!selectedIncident?.id) return;
 
   setLoadingConfirm(true);
+  setModalMessage(null);
 
   try {
     await api.post(`/incidents/${selectedIncident.id}/confirm`);
 
-    showToast("✅ Confirmation enregistrée", "success");
+    setModalMessage({
+      type: "success",
+      text: "✅ Confirmation enregistrée",
+    });
 
   } catch (error) {
-    showToast(
-      error.response?.data?.message ||
-      "Erreur lors de la confirmation",
-      "error"
-    );
+    setModalMessage({
+      type: "error",
+      text:
+        error.response?.data?.message ||
+        "Erreur lors de la confirmation",
+    });
   } finally {
     setLoadingConfirm(false);
   }
 };
 
 const submitComment = async () => {
-  if (!selectedIncident || !commentText) return;
+  if (!selectedIncident?.id || !commentText) return;
 
   setLoadingComment(true);
+  setModalMessage(null);
 
   try {
     await api.post(`/incidents/${selectedIncident.id}/comments`, {
       contenu: commentText,
     });
 
-    showToast("✅ Commentaire envoyé", "success");
     setCommentText("");
+
+    setModalMessage({
+      type: "success",
+      text: "✅ Commentaire envoyé",
+    });
+
   } catch (error) {
     console.error(error);
-    showToast("Erreur lors de l'envoi", "error");
+    setModalMessage({
+      type: "error",
+      text: "Erreur lors de l'envoi du commentaire",
+    });
   } finally {
     setLoadingComment(false);
   }
@@ -312,13 +327,24 @@ return (
   onClick={() => setShowModal(false)}
 />
 
+
     <div className="relative bg-[#142E4C] text-white 
                     rounded-3xl p-6 w-[90%] max-w-md shadow-2xl">
 
       <h2 className="text-lg font-semibold">
         {selectedIncident.titre}
       </h2>
-      
+      {modalMessage && (
+        <div
+          className={`mt-3 px-3 py-2 rounded-lg text-xs ${
+            modalMessage.type === "success"
+              ? "bg-green-500/20 text-green-400"
+              : "bg-red-500/20 text-red-400"
+          }`}
+        >
+          {modalMessage.text}
+        </div>
+      )}
 
       <p className="text-sm text-gray-300 mt-2">
         {selectedIncident.description}
