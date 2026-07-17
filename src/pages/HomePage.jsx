@@ -42,6 +42,7 @@ const [loadingConfirm, setLoadingConfirm] = useState(null);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
 const { showToast } = useToast();
+const [comments, setComments] = useState({});
 
 
   
@@ -125,6 +126,20 @@ const submitComment = async (id) => {
     showToast("Erreur lors de l'envoi du commentaire", "error");
   } finally {
     setLoadingComment(false);
+  }
+};
+
+const loadComments = async (incidentId) => {
+  try {
+    const res = await api.get(`/incidents/${incidentId}/comments`);
+
+    setComments((prev) => ({
+      ...prev,
+      [incidentId]: res.data,
+    }));
+
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -352,6 +367,37 @@ return (
     <span>Envoyer</span>
   )}
 </button>
+
+<button
+  onClick={(e) => {
+    e.stopPropagation();
+    loadComments(incident.id);
+  }}
+  className="w-full bg-gray-800 text-white py-1 rounded-lg text-xs"
+>
+  Voir les commentaires
+</button>
+
+{comments[incident.id] && (
+  <div className="mt-3 max-h-24 overflow-y-auto space-y-2">
+
+    {comments[incident.id].length === 0 ? (
+      <p className="text-gray-400 text-xs">
+        Aucun commentaire
+      </p>
+    ) : (
+      comments[incident.id].map((comment) => (
+        <div
+          key={comment.id}
+          className="bg-gray-100 p-2 rounded text-xs text-gray-700"
+        >
+          {comment.contenu}
+        </div>
+      ))
+    )}
+
+  </div>
+)}
 
     </div>
 
