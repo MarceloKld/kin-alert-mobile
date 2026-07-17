@@ -43,7 +43,6 @@ const [showModal, setShowModal] = useState(false);
 const [loadingConfirm, setLoadingConfirm] = useState(false);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
-const { showToast } = useToast();
 const [modalMessage, setModalMessage] = useState(null);
 
 
