@@ -11,7 +11,6 @@ import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import { useToast } from "../context/ToastContext";
 
 // ✅ Icônes personnalisées selon statut
 
