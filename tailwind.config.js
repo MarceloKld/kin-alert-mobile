@@ -14,8 +14,13 @@ export default {
         popupIn: "popupIn 0.25s ease-out",
         fadeUp: "fadeUp 0.4s ease-out",
         slideIn: "slideIn 0.3s ease-out",
+        statusChange: "statusChange 0.4s ease-out",
       },
       keyframes: {
+        statusChange: {
+    "0%": { transform: "scale(0.9)", opacity: "0.5" },
+    "100%": { transform: "scale(1)", opacity: "1" },
+  },
         tap: {
            "0%": { transform: "scale(1)" },
            "50%": { transform: "scale(0.7)" },

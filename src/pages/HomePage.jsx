@@ -83,16 +83,17 @@ const { showToast } = useToast();
 
     // ✅ Mise à jour locale sans fermer popup
     setIncidents((prev) =>
-      prev.map((i) =>
-        i.id === id
-          ? {
-              ...i,
-              nombre_confirmations: i.nombre_confirmations + 1,
-              statut: "valide", // ou logique backend réelle
-            }
-          : i
-      )
-    );
+  prev.map((i) =>
+    i.id === id
+      ? {
+          ...i,
+          nombre_confirmations: i.nombre_confirmations + 1,
+          statut: "valide",
+          isConfirmed: true,   // ✅ nouveau flag
+        }
+      : i
+  )
+);
 
     showToast("✅ Confirmation enregistrée", "success");
 
@@ -256,35 +257,63 @@ return (
 
       {/* ✅ STATUT */}
       <span
-        className={`text-xs px-2 py-1 rounded-full ${
-          incident.statut === "valide"
-            ? "bg-green-500/20 text-green-600"
-            : incident.statut === "en_attente"
-            ? "bg-yellow-500/20 text-yellow-600"
-            : "bg-red-500/20 text-red-600"
-        }`}
+  className={`text-xs px-2 py-1 rounded-full animate-statusChange ${
+    incident.statut === "valide"
+      ? "bg-green-500/20 text-green-600"
+      : incident.statut === "en_attente"
+      ? "bg-yellow-500/20 text-yellow-600"
+      : "bg-red-500/20 text-red-600"
+  }`}
+>
+  {incident.commentaires && incident.commentaires.length > 0 && (
+  <div className="mt-4 space-y-2 max-h-24 overflow-y-auto">
+    {incident.commentaires.map((comment) => (
+      <div
+        key={comment.id}
+        className="bg-[#0E223A] p-2 rounded-lg text-xs text-gray-300"
       >
-        {incident.statut}
-      </span>
+        {comment.contenu}
+      </div>
+    ))}
+  </div>
+)}
+
+  {incident.statut}
+</span>
+
+{/* ✅ COMPTEUR CONFIRMATIONS */}
+<p className="text-xs text-gray-400 mt-2">
+  ✅ {incident.nombre_confirmations} confirmation
+  {incident.nombre_confirmations > 1 && "s"}
+</p>
 
       {/* ✅ CONFIRM BUTTON */}
       <button
   onClick={(e) => {
-  e.stopPropagation();     // ✅ IMPORTANT
-  confirmIncident(incident.id);
-}}
-  disabled={loadingConfirm === incident.id}
-  className="w-full bg-blue-500 text-white py-2 rounded-lg text-xs
-             flex items-center justify-center gap-2
-             disabled:opacity-60"
+    e.stopPropagation();
+    confirmIncident(incident.id);
+  }}
+  disabled={
+    loadingConfirm === incident.id ||
+    incident.isConfirmed ||
+    incident.statut === "valide"
+  }
+  className={`w-full py-2 rounded-lg text-xs flex items-center justify-center gap-2
+    ${
+      incident.isConfirmed || incident.statut === "valide"
+        ? "bg-gray-600 text-gray-300 cursor-not-allowed"
+        : "bg-blue-500 text-white"
+    }`}
 >
   {loadingConfirm === incident.id ? (
     <>
       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-      <span>Confirmation...</span>
+      Confirmation...
     </>
+  ) : incident.isConfirmed || incident.statut === "valide" ? (
+    "Déjà confirmé"
   ) : (
-    <span>Confirmer</span>
+    "Confirmer"
   )}
 </button>
 
