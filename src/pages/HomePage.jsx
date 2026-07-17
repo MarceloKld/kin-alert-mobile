@@ -276,6 +276,20 @@ return (
     >
       {incident.statut}
     </span>
+    {/* ✅ COMPTEUR CONFIRMATIONS */}
+<div className="mt-3 flex items-center justify-between text-xs">
+          <span className="text-gray-400">
+            Confirmations
+          </span>
+
+          <span className={`font-medium ${
+            incident.statut === "valide"
+              ? "text-green-400"
+              : "text-gray-300"
+          }`}>
+            ✓ {incident.nombre_confirmations}
+          </span>
+        </div>
 
     <button
       onClick={(e) => {
