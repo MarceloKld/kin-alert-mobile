@@ -307,10 +307,10 @@ return (
 {showModal && selectedIncident && (
  <div className="fixed inset-0 flex items-center justify-center z-[9999]">
 
-    <div
-      className="absolute inset-0 backdrop-blur-sm bg-black/10"
-      onClick={() => setShowModal(false)}
-    />
+   <div
+  className="absolute inset-0 backdrop-blur-[3px] bg-black/5"
+  onClick={() => setShowModal(false)}
+/>
 
     <div className="relative bg-[#142E4C] text-white 
                     rounded-3xl p-6 w-[90%] max-w-md shadow-2xl">
@@ -318,6 +318,7 @@ return (
       <h2 className="text-lg font-semibold">
         {selectedIncident.titre}
       </h2>
+      
 
       <p className="text-sm text-gray-300 mt-2">
         {selectedIncident.description}
@@ -327,18 +328,26 @@ return (
         📍 {selectedIncident.localisation?.commune?.nom}
       </p>
 
-      <span
-        className={`text-xs px-2 py-1 rounded-full ${
-          selectedIncident.statut === "valide"
-            ? "bg-green-500/20 text-green-600"
-            : selectedIncident.statut === "en_attente"
-            ? "bg-yellow-500/20 text-yellow-600"
-            : "bg-red-500/20 text-red-600"
-        }`}
-      >
-        {selectedIncident.statut}
-      </span>
+      <div className="mt-3 flex justify-between items-center">
 
+  <span
+    className={`text-xs px-3 py-1 rounded-full ${
+      selectedIncident.statut === "valide"
+        ? "bg-green-500/20 text-green-400"
+        : selectedIncident.statut === "en_attente"
+        ? "bg-yellow-500/20 text-yellow-400"
+        : "bg-red-500/20 text-red-400"
+    }`}
+  >
+    {selectedIncident.statut}
+  </span>
+
+  <span className="text-xs text-gray-400">
+    ✅ {selectedIncident.nombre_confirmations} confirmation
+    {selectedIncident.nombre_confirmations > 1 && "s"}
+  </span>
+
+</div>
       <button
         onClick={confirmIncident}
         disabled={loadingConfirm}
