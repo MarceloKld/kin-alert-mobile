@@ -231,14 +231,51 @@ useEffect(() => {
   </div>
 )}
 
-      <h1 className="text-xl font-semibold pt-6">
-        Mes Infos
-      </h1>
+      {/* ==========================
+    HEADER DASHBOARD PREMIUM
+========================== */}
 
-     
-      <h2 className="text-lg mt-6 mb-4">
-        Fil d'Actualité
-      </h2>
+<div className="pt-6 mb-6">
+
+  {/* Ligne principale */}
+  <div className="flex items-center gap-3">
+
+    <div className="w-10 h-10 flex items-center justify-center 
+                    rounded-2xl 
+                    bg-gradient-to-br 
+                    from-indigo-500 to-blue-600 
+                    shadow-lg">
+      📊
+    </div>
+
+    <div>
+      <h1 className="text-2xl font-bold tracking-tight">
+        Mes Infos
+        <div className="w-15 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mt-1"></div>
+      </h1>
+      <p className="text-xs text-gray-400">
+        Vue globale de votre activité
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+
+{/* ==========================
+    SECTION ACTUALITÉ
+========================== */}
+
+<div className="flex items-center gap-2 mb-4">
+
+  <span className="text-blue-400 text-sm">📰</span>
+
+  <h2 className="text-base font-semibold tracking-tight">
+    Fil d’Actualité
+  </h2>
+
+</div>
 
      {!loadingStats && stats && (
   <div className="flex gap-2 mb-5 overflow-x-auto">
