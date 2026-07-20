@@ -156,7 +156,7 @@ return (
                 via-orange-600 
                 to-orange-700
                 text-white 
-                pt-7 pb-6 px-5
+                pt-3 pb-6 px-5
                 shadow-lg">
 
   <div className="flex justify-between items-center">
