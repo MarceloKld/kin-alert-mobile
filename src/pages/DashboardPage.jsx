@@ -14,6 +14,7 @@ const [loading, setLoading] = useState(false);
 const [myIncidents, setMyIncidents] = useState([]);
 const [loadingMy, setLoadingMy] = useState(false);
 const [toast, setToast] = useState(null);
+const [statusFilter, setStatusFilter] = useState("all");
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -167,30 +168,27 @@ useEffect(() => {
         Fil d'Actualité
       </h2>
 
-      <div className="bg-[#142E4C] rounded-2xl p-4 mb-6">
+      <div className="flex gap-3 mb-6 overflow-x-auto">
 
-  <h3 className="text-lg font-semibold mb-3">
-    Mes Signalements
-  </h3>
-
-  {loadingMy ? (
-    <div className="space-y-2">
-      <div className="h-3 bg-gray-600 rounded w-1/3 animate-pulse"></div>
-      <div className="h-3 bg-gray-700 rounded w-1/4 animate-pulse"></div>
-    </div>
-  ) : (
-    <div className="flex justify-between text-sm">
-
-      <span className="text-green-400">
-        ✅ {myIncidents.filter(i => i.statut === "valide").length} Validés
-      </span>
-
-      <span className="text-yellow-400">
-        ⏳ {myIncidents.filter(i => i.statut === "en_attente").length} En attente
-      </span>
-
-    </div>
-  )}
+  {["all", "valide", "en_attente", "rejete"].map((status) => (
+    <button
+      key={status}
+      onClick={() => setStatusFilter(status)}
+      className={`px-4 py-2 rounded-full text-sm ${
+        statusFilter === status
+          ? "bg-orange-500 text-white"
+          : "bg-[#1A3A5A] text-gray-300"
+      }`}
+    >
+      {status === "all"
+        ? "Tous"
+        : status === "valide"
+        ? "Validé"
+        : status === "en_attente"
+        ? "En attente"
+        : "Rejeté"}
+    </button>
+  ))}
 
 </div>
 
@@ -208,7 +206,13 @@ useEffect(() => {
   </div>
 )}
 
-      {!loading && incidents.map((incident) => (
+      {!loading && incidents
+  .filter((incident) =>
+    statusFilter === "all"
+      ? true
+      : incident.statut === statusFilter
+  )
+  .map((incident) => (
         <div
           key={incident.id}
          className="relative bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg animate-fadeUp overflow-hidden">
