@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import CountUp from "../components/CountUp";
+import IncidentsChart from "../components/IncidentsChart";
 
 function DashboardPage() {
 
@@ -16,13 +17,14 @@ const [statusFilter, setStatusFilter] = useState("all");
 const [commentsModal, setCommentsModal] = useState(null);
 const [comments, setComments] = useState([]);
 const [loadingComments, setLoadingComments] = useState(false);
+const [loadingStats, setLoadingStats] = useState(true);
 const [stats, setStats] = useState({
   total_incidents: 0,
   valide: 0,
   en_attente: 0,
   rejete: 0,
+  total_utilisateurs: 0,
 });
-const [loadingStats, setLoadingStats] = useState(true);
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -165,13 +167,19 @@ const openCommentsModal = async (incident) => {
 //Charger les stats
 useEffect(() => {
   const loadStats = async () => {
-    try {
-      const response = await api.get("/incidents/stats");
-      setStats(response.data);
-    } catch (error) {
-      console.error("Erreur stats", error);
-    }
-  };
+  try {
+    setLoadingStats(true);
+
+    const response = await api.get("/statistics/dashboard");
+
+    setStats(response.data);
+
+  } catch (error) {
+    console.error("Erreur stats", error);
+  } finally {
+    setLoadingStats(false);
+  }
+};
 
   loadStats();
 }, []);
@@ -233,42 +241,35 @@ useEffect(() => {
         Fil d'Actualité
       </h2>
 
-      <div className="flex gap-2 mb-5 overflow-x-auto">
-{loadingStats ? (
-        <div className="flex gap-2">
-          {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="w-20 h-7 bg-gray-600 rounded-full animate-pulse"
-            />
-          ))}
-        </div>
-      ) : (
-        [
-          { key: "all", label: "Tous", value: stats.total_incidents },
-          { key: "valide", label: "Validé", value: stats.valide },
-          { key: "en_attente", label: "Attente", value: stats.en_attente },
-          { key: "rejete", label: "Rejeté", value: stats.rejete },
-        ].map((item) => (
-          <button
-            key={item.key}
-            onClick={() => setStatusFilter(item.key)}
-            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
-              statusFilter === item.key
-                ? "bg-orange-500 text-white shadow-md"
-                : "bg-[#1A3A5A] text-gray-300"
-            }`}
-          >
-            <span>{item.label}</span>
-            <span className="bg-black/20 px-1.5 rounded-full text-[10px]">
-              <CountUp value={item.value} />
-            </span>
-          </button>
-        ))
-      )}
+     {!loadingStats && stats && (
+  <div className="flex gap-2 mb-5 overflow-x-auto">
 
-</div>
+    {[
+      { key: "all", label: "Tous", value: stats.total_incidents },
+      { key: "valide", label: "Validé", value: stats.valide },
+      { key: "en_attente", label: "Attente", value: stats.en_attente },
+      { key: "rejete", label: "Rejeté", value: stats.rejete },
+    ].map((item) => (
+      <button
+        key={item.key}
+        onClick={() => setStatusFilter(item.key)}
+        className={`px-3 py-1.5 rounded-full text-xs font-medium transition
+          ${
+            statusFilter === item.key
+              ? "bg-orange-500 text-white"
+              : "bg-[#1A3A5A] text-gray-300"
+          }`}
+      >
+        {item.label}
+        <span className="ml-1 text-[10px] opacity-80">
+          ({item.value})
+        </span>
+      </button>
+    ))}
 
+  </div>
+)}
+{!loadingStats && <IncidentsChart stats={stats} />}
 
 <div className="mt-4 bg-[#142E4C] p-4 rounded-xl">
 
