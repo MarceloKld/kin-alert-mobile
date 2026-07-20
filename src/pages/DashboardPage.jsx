@@ -7,14 +7,14 @@ function DashboardPage() {
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [commentText, setCommentText] = useState("");
   const [loadingConfirm, setLoadingConfirm] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
-const [successMessage, setSuccessMessage] = useState("");
+
 const [loadingComment, setLoadingComment] = useState(false);
 const [loading, setLoading] = useState(false);
-const [myIncidents, setMyIncidents] = useState([]);
-const [loadingMy, setLoadingMy] = useState(false);
 const [toast, setToast] = useState(null);
 const [statusFilter, setStatusFilter] = useState("all");
+const [commentsModal, setCommentsModal] = useState(null);
+const [comments, setComments] = useState([]);
+const [loadingComments, setLoadingComments] = useState(false);
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -38,84 +38,119 @@ const [statusFilter, setStatusFilter] = useState("all");
   // ✅ Confirmer incident
   const confirmIncident = async (id) => {
   setLoadingConfirm(id);
-  setErrorMessage("");
-  setSuccessMessage("");
 
   try {
     await api.post(`/incidents/${id}/confirm`);
 
+    // ✅ Mise à jour complète depuis backend si possible
+    setIncidents((prev) =>
+      prev.map((incident) =>
+        incident.id === id
+          ? {
+              ...incident,
+              nombre_confirmations:
+                (incident.nombre_confirmations || 0) + 1,
+            }
+          : incident
+      )
+    );
+
+    setToast({
+      type: "success",
+      message: "✅ Confirmation enregistrée",
+    });
+
+    setTimeout(() => setToast(null), 3000);
+
+  } catch (error) {
+    setToast({
+      type: "error",
+      message:
+        error.response?.data?.message ||
+        "Erreur lors de la confirmation",
+    });
+
+    setTimeout(() => setToast(null), 3000);
+
+  } finally {
+    setLoadingConfirm(null);
+  }
+};
+
+//Charger MES incidents
+
+
+
+
+  // ✅ Commenter incident
+  const submitComment = async () => {
+  if (!commentText.trim()) return;
+
+  setLoadingComment(true);
+
+  try {
+    const res = await api.post(
+      `/incidents/${selectedIncident.id}/comments`,
+      { contenu: commentText }
+    );
+
+    // ✅ Mettre à jour l'incident localement
     setIncidents((prev) =>
       prev.map((i) =>
-        i.id === id
-          ? { ...i, nombre_confirmations: i.nombre_confirmations + 1 }
+        i.id === selectedIncident.id
+          ? {
+              ...i,
+              commentaires: [...(i.commentaires || []), res.data],
+            }
           : i
       )
     );
 
     setToast({
-  type: "success",
-  message: "✅ Confirmation enregistrée",
-});
-
-setTimeout(() => {
-  setToast(null);
-}, 3000);
-
-  } catch (error) {
-  const message =
-    error.response?.data?.message ||
-    "Erreur lors de la confirmation.";
-
-  setToast({
-    type: "error",
-    message,
-  });
-
-  setTimeout(() => {
-    setToast(null);
-  }, 3000);
-}
-};
-
-//Charger MES incidents
-useEffect(() => {
-
-  const loadMyIncidents = async () => {
-    setLoadingMy(true);
-
-    try {
-      const res = await api.get("/my-incidents");
-      setMyIncidents(res.data.data || res.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingMy(false);
-    }
-  };
-
-  loadMyIncidents();
-
-}, []);
-
-  // ✅ Commenter incident
-  const submitComment = async () => {
-  if (!commentText) return;
-
-  setLoadingComment(true);
-
-  try {
-    await api.post(`/incidents/${selectedIncident.id}/comments`, {
-      contenu: commentText,
+      type: "success",
+      message: "✅ Commentaire envoyé",
     });
 
     setCommentText("");
     setSelectedIncident(null);
 
+    setTimeout(() => setToast(null), 3000);
+
   } catch (error) {
-    console.error(error);
-    setErrorMessage("Erreur lors de l'envoi du commentaire.");
+    setToast({
+      type: "error",
+      message:
+        error.response?.data?.message ||
+        "Erreur lors de l'envoi du commentaire",
+    });
+
+    setTimeout(() => setToast(null), 3000);
   } finally {
     setLoadingComment(false);
+  }
+};
+
+//charger commentaires
+const openCommentsModal = async (incident) => {
+  setCommentsModal(incident);
+  setLoadingComments(true);
+
+  try {
+    const response = await api.get(
+      `/incidents/${incident.id}/comments`
+    );
+
+    setComments(response.data);
+  } catch (error) {
+    console.error(error);
+    setToast({
+      type: "error",
+      message: "Erreur chargement commentaires",
+    });
+
+    setTimeout(() => setToast(null), 3000);
+  } finally {
+    setLoadingComments(false);
   }
 };
 
@@ -152,18 +187,7 @@ useEffect(() => {
         Mes Infos
       </h1>
 
-      {errorMessage && (
-  <div className="bg-red-500 text-white p-3 rounded-lg mb-4 text-sm">
-    {errorMessage}
-  </div>
-)}
-
-{successMessage && (
-  <div className="bg-green-500 text-white p-3 rounded-lg mb-4 text-sm">
-    {successMessage}
-  </div>
-)}
-
+     
       <h2 className="text-lg mt-6 mb-4">
         Fil d'Actualité
       </h2>
@@ -207,11 +231,10 @@ useEffect(() => {
 )}
 
       {!loading && incidents
-  .filter((incident) =>
-    statusFilter === "all"
-      ? true
-      : incident.statut === statusFilter
-  )
+  .filter((incident) => {
+  if (statusFilter === "all") return true;
+  return incident.statut === statusFilter;
+})
   .map((incident) => (
         <div
           key={incident.id}
@@ -260,6 +283,9 @@ useEffect(() => {
               {incident.date_creation}
             </span>
             
+            <p className="text-xs text-blue-300 mt-1">
+  👍 {incident.nombre_confirmations || 0} confirmations
+</p>
           </div>
 
           <div className="flex gap-3 mt-4">
@@ -279,19 +305,13 @@ useEffect(() => {
             >
               Commenter
             </button>
-
+<button
+  onClick={() => openCommentsModal(incident)}
+  className="bg-purple-600 px-4 py-2 rounded-lg text-sm"
+>
+  Voir commentaires
+</button>
           </div>
-{incident.commentaires && incident.commentaires.length > 0 && (
-  <div className="mt-4 bg-[#0E223A] rounded-xl p-3 text-sm">
-    {incident.commentaires.map((comment) => (
-      <div key={comment.id} className="border-b border-gray-600 py-1">
-        <p className="text-gray-300">
-          {comment.contenu}
-        </p>
-      </div>
-    ))}
-  </div>
-)}
         </div>
       ))}
 
@@ -336,7 +356,56 @@ useEffect(() => {
         </div>
       )}
 
-      
+      {commentsModal && (
+  <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-[#142E4C] p-6 rounded-2xl w-[95%] max-w-md max-h-[80vh] overflow-y-auto">
+
+      <h3 className="font-semibold mb-4">
+        Commentaires
+      </h3>
+
+      {loadingComments ? (
+        <div className="space-y-3">
+          {[1,2,3].map((i) => (
+            <div
+              key={i}
+              className="h-4 bg-gray-600 rounded animate-pulse"
+            />
+          ))}
+        </div>
+      ) : comments.length > 0 ? (
+        comments.map((comment) => (
+          <div
+            key={comment.id}
+            className="border-b border-gray-600 py-2 text-sm"
+          >
+            <p className="text-gray-300">
+              {comment.contenu}
+            </p>
+
+            <p className="text-xs text-gray-400 mt-1">
+              Par {comment.utilisateur?.nom}
+            </p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-400 text-sm">
+          Aucun commentaire
+        </p>
+      )}
+
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => setCommentsModal(null)}
+          className="text-gray-400"
+        >
+          Fermer
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
 
     </div>
   );
