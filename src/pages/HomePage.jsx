@@ -146,37 +146,71 @@ const submitComment = async () => {
 return (
   <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-hidden">
 
-    {/* ✅ HEADER ORANGE */}
-    <div className="bg-gradient-to-b from-orange-500 to-orange-600 
-                    text-white pt-6 pb-4 px-5">
+   {/* ==========================
+    HEADER HOME PREMIUM
+========================== */}
 
-      <div className="flex justify-between items-center">
+<div className="bg-gradient-to-br 
+                from-orange-500 
+                via-orange-600 
+                to-orange-700
+                text-white 
+                pt-7 pb-5 px-5
+                shadow-lg">
 
-        <div className="relative">
-          <span className="absolute -top-2 -right-2 
-                           bg-red-600 text-white 
-                           text-xs rounded-full px-1">
-            3
-          </span>
-          🔔
-        </div>
+  <div className="flex justify-between items-center">
 
-        <h1 className="text-lg font-semibold">
-          Kin -Alertes
-        </h1>
+    {/* Notifications */}
+    <div className="relative flex items-center justify-center 
+                    w-10 h-10 
+                    rounded-xl 
+                    bg-white/10 backdrop-blur-sm">
 
-        <div className="relative">
-          <span className="absolute -top-2 -right-2 
-                           bg-red-600 text-white 
-                           text-xs rounded-full px-1">
-            6
-          </span>
-          🚨
-        </div>
+      <span className="absolute -top-1 -right-1 
+                       bg-red-600 text-white 
+                       text-[10px] font-semibold 
+                       rounded-full 
+                       min-w-[18px] h-[18px] 
+                       flex items-center justify-center">
+        3
+      </span>
 
-      </div>
-
+      <span className="text-lg">🔔</span>
     </div>
+
+
+    {/* Titre */}
+    <div className="text-center">
+      <h1 className="text-xl font-bold tracking-wide">
+        Kin‑Alert
+      </h1>
+      <p className="text-[11px] text-orange-100">
+        Sécurité communautaire
+      </p>
+    </div>
+
+
+    {/* Alertes urgentes */}
+    <div className="relative flex items-center justify-center 
+                    w-10 h-10 
+                    rounded-xl 
+                    bg-white/10 backdrop-blur-sm">
+
+      <span className="absolute -top-1 -right-1 
+                       bg-red-600 text-white 
+                       text-[10px] font-semibold 
+                       rounded-full 
+                       min-w-[18px] h-[18px] 
+                       flex items-center justify-center">
+        6
+      </span>
+
+      <span className="text-lg">🚨</span>
+    </div>
+
+  </div>
+
+</div>
 
 
     <div className="bg-[#0E223A] px-4 py-3">
