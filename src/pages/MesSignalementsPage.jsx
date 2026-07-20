@@ -96,18 +96,61 @@ useEffect(() => {
       </h1>
 
       {/* ==========================
+    CARTE PREMIUM STATS USER
+========================== */}
+
+{stats && (
+  <div className="bg-gradient-to-r 
+                  from-[#1B3A5B] 
+                  to-[#12283F] 
+                  rounded-3xl 
+                  p-5 
+                  mb-6 
+                  shadow-xl 
+                  border border-blue-900/40">
+
+    <div className="flex justify-between items-center">
+
+      {/* Commentaires */}
+      <div className="text-center flex-1">
+        <p className="text-3xl font-bold text-blue-400">
+          {stats.total_commentaires_sur_mes_incidents}
+        </p>
+        <p className="text-xs text-gray-400 mt-1">
+          💬 Commentaires
+        </p>
+      </div>
+
+      {/* Séparateur */}
+      <div className="w-px h-10 bg-blue-900/40 mx-3"></div>
+
+      {/* Confirmations */}
+      <div className="text-center flex-1">
+        <p className="text-3xl font-bold text-green-400">
+          {stats.total_confirmations_sur_mes_incidents}
+        </p>
+        <p className="text-xs text-gray-400 mt-1">
+          ✅ Confirmations
+        </p>
+      </div>
+
+    </div>
+  </div>
+)}
+
+      {/* ==========================
           FILTRES + STATS
       =========================== */}
 
-     {stats && (
-  <div className="flex gap-2 mb-6 overflow-x-auto">
+    {stats && (
+  <div className="flex gap-2 mb-5 overflow-x-auto">
 
     <button
       onClick={() => setSelectedStatus("all")}
-      className={`px-4 py-2 rounded-xl text-xs ${
+      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
         selectedStatus === "all"
-          ? "bg-blue-500"
-          : "bg-[#142E4C]"
+          ? "bg-blue-500 text-white"
+          : "bg-[#142E4C] text-gray-400"
       }`}
     >
       Tous ({stats.total_mes_incidents})
@@ -115,10 +158,10 @@ useEffect(() => {
 
     <button
       onClick={() => setSelectedStatus("valide")}
-      className={`px-4 py-2 rounded-xl text-xs ${
+      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
         selectedStatus === "valide"
-          ? "bg-green-500"
-          : "bg-[#142E4C]"
+          ? "bg-green-500 text-white"
+          : "bg-[#142E4C] text-gray-400"
       }`}
     >
       Validés ({stats.mes_valides})
@@ -126,10 +169,10 @@ useEffect(() => {
 
     <button
       onClick={() => setSelectedStatus("en_attente")}
-      className={`px-4 py-2 rounded-xl text-xs ${
+      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
         selectedStatus === "en_attente"
-          ? "bg-yellow-500"
-          : "bg-[#142E4C]"
+          ? "bg-yellow-500 text-white"
+          : "bg-[#142E4C] text-gray-400"
       }`}
     >
       En attente ({stats.mes_en_attente})
@@ -137,10 +180,10 @@ useEffect(() => {
 
     <button
       onClick={() => setSelectedStatus("rejete")}
-      className={`px-4 py-2 rounded-xl text-xs ${
+      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
         selectedStatus === "rejete"
-          ? "bg-red-500"
-          : "bg-[#142E4C]"
+          ? "bg-red-500 text-white"
+          : "bg-[#142E4C] text-gray-400"
       }`}
     >
       Rejetés ({stats.mes_rejetes})
@@ -190,9 +233,19 @@ useEffect(() => {
               </p>
             </div>
 
-            <span className="text-xs text-blue-300">
-              {incident.statut}
-            </span>
+           <span
+  className={`text-xs font-semibold tracking-wide ${
+    incident.statut === "valide"
+      ? "text-green-400"
+      : incident.statut === "en_attente"
+      ? "text-yellow-400"
+      : "text-red-400"
+  }`}
+>
+  {incident.statut === "valide" && "✔ Validé"}
+  {incident.statut === "en_attente" && "⏳ En attente"}
+  {incident.statut === "rejete" && "✖ Rejeté"}
+</span>
           </div>
 
           <div className="flex justify-between items-center mt-3 text-xs text-gray-400">
