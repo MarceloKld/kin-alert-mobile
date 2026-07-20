@@ -11,6 +11,7 @@ import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { Bell, Siren } from "lucide-react";
 
 // ✅ Icônes personnalisées selon statut
 
@@ -146,8 +147,8 @@ const submitComment = async () => {
 return (
   <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-hidden">
 
-   {/* ==========================
-    HEADER HOME PREMIUM
+{/* ==========================
+    HEADER HOME PREMIUM SVG
 ========================== */}
 
 <div className="bg-gradient-to-br 
@@ -155,7 +156,7 @@ return (
                 via-orange-600 
                 to-orange-700
                 text-white 
-                pt-7 pb-5 px-5
+                pt-7 pb-6 px-5
                 shadow-lg">
 
   <div className="flex justify-between items-center">
@@ -175,7 +176,7 @@ return (
         3
       </span>
 
-      <span className="text-lg">🔔</span>
+      <Bell size={20} strokeWidth={2} className="animate-pulse"/>
     </div>
 
 
@@ -190,7 +191,7 @@ return (
     </div>
 
 
-    {/* Alertes urgentes */}
+    {/* Alertes */}
     <div className="relative flex items-center justify-center 
                     w-10 h-10 
                     rounded-xl 
@@ -205,7 +206,7 @@ return (
         6
       </span>
 
-      <span className="text-lg">🚨</span>
+      <Siren size={20} strokeWidth={2} className="text-red-200" />
     </div>
 
   </div>
