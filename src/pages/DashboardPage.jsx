@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import CountUp from "../components/CountUp";
 
 function DashboardPage() {
 
@@ -21,6 +22,7 @@ const [stats, setStats] = useState({
   en_attente: 0,
   rejete: 0,
 });
+const [loadingStats, setLoadingStats] = useState(true);
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -177,13 +179,18 @@ useEffect(() => {
 //Charger les stats au montage
 useEffect(() => {
   const loadDashboardStats = async () => {
-    try {
-      const response = await api.get("/statistics/dashboard");
-      setStats(response.data);
-    } catch (error) {
-      console.error("Erreur chargement statistiques", error);
-    }
-  };
+  try {
+    setLoadingStats(true);
+
+    const response = await api.get("/statistics/dashboard");
+    setStats(response.data);
+
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoadingStats(false);
+  }
+};
 
   loadDashboardStats();
 }, []);
@@ -227,31 +234,78 @@ useEffect(() => {
       </h2>
 
       <div className="flex gap-2 mb-5 overflow-x-auto">
+{loadingStats ? (
+        <div className="flex gap-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="w-20 h-7 bg-gray-600 rounded-full animate-pulse"
+            />
+          ))}
+        </div>
+      ) : (
+        [
+          { key: "all", label: "Tous", value: stats.total_incidents },
+          { key: "valide", label: "Validé", value: stats.valide },
+          { key: "en_attente", label: "Attente", value: stats.en_attente },
+          { key: "rejete", label: "Rejeté", value: stats.rejete },
+        ].map((item) => (
+          <button
+            key={item.key}
+            onClick={() => setStatusFilter(item.key)}
+            className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 ${
+              statusFilter === item.key
+                ? "bg-orange-500 text-white shadow-md"
+                : "bg-[#1A3A5A] text-gray-300"
+            }`}
+          >
+            <span>{item.label}</span>
+            <span className="bg-black/20 px-1.5 rounded-full text-[10px]">
+              <CountUp value={item.value} />
+            </span>
+          </button>
+        ))
+      )}
 
-  {[
-    { key: "all", label: "Tous", value: stats.total_incidents },
-    { key: "valide", label: "Validé", value: stats.valide },
-    { key: "en_attente", label: "Attente", value: stats.en_attente },
-    { key: "rejete", label: "Rejeté", value: stats.rejete },
-  ].map((item) => (
-    <button
-      key={item.key}
-      onClick={() => setStatusFilter(item.key)}
-      className={`flex items-center gap-1 px-3 py-1.5 rounded-full 
-                  text-xs font-medium transition-all duration-200
-        ${
-          statusFilter === item.key
-            ? "bg-orange-500 text-white shadow-md"
-            : "bg-[#1A3A5A] text-gray-300"
-        }`}
-    >
-      <span>{item.label}</span>
-      <span className="bg-black/20 px-1.5 rounded-full text-[10px]">
-        {item.value}
-      </span>
-    </button>
-  ))}
+</div>
 
+
+<div className="mt-4 bg-[#142E4C] p-4 rounded-xl">
+
+  <p className="text-xs text-gray-400 mb-3">
+    Répartition des incidents
+  </p>
+
+  <div className="space-y-2">
+
+    {[
+      { label: "Validé", value: stats.valide, color: "bg-green-500" },
+      { label: "Attente", value: stats.en_attente, color: "bg-yellow-500" },
+      { label: "Rejeté", value: stats.rejete, color: "bg-red-500" },
+    ].map((item) => {
+      const percent =
+        stats.total_incidents > 0
+          ? (item.value / stats.total_incidents) * 100
+          : 0;
+
+      return (
+        <div key={item.label}>
+          <div className="flex justify-between text-xs mb-1">
+            <span>{item.label}</span>
+            <span>{item.value}</span>
+          </div>
+
+          <div className="w-full bg-gray-700 h-2 rounded-full">
+            <div
+              className={`${item.color} h-2 rounded-full transition-all duration-700`}
+              style={{ width: `${percent}%` }}
+            />
+          </div>
+        </div>
+      );
+    })}
+
+  </div>
 </div>
 
 {loading && (
