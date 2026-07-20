@@ -15,6 +15,12 @@ const [statusFilter, setStatusFilter] = useState("all");
 const [commentsModal, setCommentsModal] = useState(null);
 const [comments, setComments] = useState([]);
 const [loadingComments, setLoadingComments] = useState(false);
+const [stats, setStats] = useState({
+  total_incidents: 0,
+  valide: 0,
+  en_attente: 0,
+  rejete: 0,
+});
 
   // ✅ Charger incidents
   useEffect(() => {
@@ -154,6 +160,34 @@ const openCommentsModal = async (incident) => {
   }
 };
 
+//Charger les stats
+useEffect(() => {
+  const loadStats = async () => {
+    try {
+      const response = await api.get("/incidents/stats");
+      setStats(response.data);
+    } catch (error) {
+      console.error("Erreur stats", error);
+    }
+  };
+
+  loadStats();
+}, []);
+
+//Charger les stats au montage
+useEffect(() => {
+  const loadDashboardStats = async () => {
+    try {
+      const response = await api.get("/statistics/dashboard");
+      setStats(response.data);
+    } catch (error) {
+      console.error("Erreur chargement statistiques", error);
+    }
+  };
+
+  loadDashboardStats();
+}, []);
+
 
 
 
@@ -192,25 +226,29 @@ const openCommentsModal = async (incident) => {
         Fil d'Actualité
       </h2>
 
-      <div className="flex gap-3 mb-6 overflow-x-auto">
+      <div className="flex gap-2 mb-5 overflow-x-auto">
 
-  {["all", "valide", "en_attente", "rejete"].map((status) => (
+  {[
+    { key: "all", label: "Tous", value: stats.total_incidents },
+    { key: "valide", label: "Validé", value: stats.valide },
+    { key: "en_attente", label: "Attente", value: stats.en_attente },
+    { key: "rejete", label: "Rejeté", value: stats.rejete },
+  ].map((item) => (
     <button
-      key={status}
-      onClick={() => setStatusFilter(status)}
-      className={`px-4 py-2 rounded-full text-sm ${
-        statusFilter === status
-          ? "bg-orange-500 text-white"
-          : "bg-[#1A3A5A] text-gray-300"
-      }`}
+      key={item.key}
+      onClick={() => setStatusFilter(item.key)}
+      className={`flex items-center gap-1 px-3 py-1.5 rounded-full 
+                  text-xs font-medium transition-all duration-200
+        ${
+          statusFilter === item.key
+            ? "bg-orange-500 text-white shadow-md"
+            : "bg-[#1A3A5A] text-gray-300"
+        }`}
     >
-      {status === "all"
-        ? "Tous"
-        : status === "valide"
-        ? "Validé"
-        : status === "en_attente"
-        ? "En attente"
-        : "Rejeté"}
+      <span>{item.label}</span>
+      <span className="bg-black/20 px-1.5 rounded-full text-[10px]">
+        {item.value}
+      </span>
     </button>
   ))}
 
@@ -250,40 +288,40 @@ const openCommentsModal = async (incident) => {
           <div className="flex justify-between items-center">
 
             <div>
-              <p className="text-sm text-gray-300">
+              <p className="text-xs uppercase tracking-widest text-blue-300 font-medium">
                 {incident.type?.titre}
               </p>
-              <h3 className="font-semibold">
+              <h3 className="text-lg font-semibold tracking-wide">
                 {incident.titre}
               </h3>
-              <p className="text-xs text-gray-400">
+              <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
                 📍 {incident.localisation?.commune?.nom}
               </p>
             </div>
 {/* ✅ BADGE STATUT */}
-  <span
-    className={`text-[11px] px-3 py-1 rounded-full font-medium 
-                backdrop-blur-sm border transition ${
+<span
+  className={`text-[10px] px-2 py-0.5 rounded-full font-medium
+    ${
       incident.statut === "valide"
-        ? "bg-green-500/10 text-green-400 border-green-400/30"
+        ? "bg-green-500/20 text-green-400"
         : incident.statut === "en_attente"
-        ? "bg-yellow-500/10 text-yellow-400 border-yellow-400/30"
-        : "bg-red-500/10 text-red-400 border-red-400/30"
+        ? "bg-yellow-500/20 text-yellow-400"
+        : "bg-red-500/20 text-red-400"
     }`}
-  >
-    {incident.statut === "valide"
-      ? "Validé"
-      : incident.statut === "en_attente"
-      ? "En attente"
-      : "Rejeté"}
-  </span>
+>
+  {incident.statut === "valide"
+    ? "Validé"
+    : incident.statut === "en_attente"
+    ? "Attente"
+    : "Rejeté"}
+</span>
             
 
-            <span className="text-xs text-gray-400">
+            <span className="text-[9px] text-gray-400 ">
               {incident.date_creation}
             </span>
             
-            <p className="text-xs text-blue-300 mt-1">
+           <p className="text-[11px] text-blue-400 mt-1 font-medium">
   👍 {incident.nombre_confirmations || 0} confirmations
 </p>
           </div>
@@ -291,25 +329,31 @@ const openCommentsModal = async (incident) => {
           <div className="flex gap-3 mt-4">
 
             <button
-              onClick={() => confirmIncident(incident.id)}
-              className="bg-blue-500 px-4 py-2 rounded-lg text-sm"
-            >
-              {loadingConfirm === incident.id
-                ? "..."
-                : "Confirmer"}
-            </button>
+  onClick={() => confirmIncident(incident.id)}
+  disabled={loadingConfirm === incident.id}
+  className="bg-gradient-to-r from-blue-500 to-indigo-600 
+             px-4 py-2 rounded-xl text-sm font-medium 
+             shadow-md hover:scale-105 transition-all duration-200
+             disabled:opacity-50"
+>
+  {loadingConfirm === incident.id ? "..." : "Confirmer"}
+</button>
 
             <button
-              onClick={() => setSelectedIncident(incident)}
-              className="bg-gray-600 px-4 py-2 rounded-lg text-sm"
-            >
-              Commenter
-            </button>
+  onClick={() => setSelectedIncident(incident)}
+  className="bg-gray-700 px-4 py-2 rounded-xl text-sm font-medium 
+             hover:bg-gray-600 transition-all duration-200"
+>
+  Commenter
+</button>
+
 <button
   onClick={() => openCommentsModal(incident)}
-  className="bg-purple-600 px-4 py-2 rounded-lg text-sm"
+  className="bg-gradient-to-r from-purple-600 to-pink-600 
+             px-4 py-2 rounded-xl text-sm font-medium 
+             shadow-md hover:scale-105 transition-all duration-200"
 >
-  Voir commentaires
+  Voir les commentaires
 </button>
           </div>
         </div>
