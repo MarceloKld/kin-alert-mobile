@@ -91,9 +91,27 @@ useEffect(() => {
                     from-[#0E223A] to-[#091522] 
                     text-white px-4 pb-28">
 
-      <h1 className="text-xl font-semibold pt-6 mb-6">
-        Mes Signalements
-      </h1>
+      <div className="flex items-center gap-3 pt-6 mb-6">
+
+  <div className="w-10 h-10 flex items-center justify-center 
+                  rounded-2xl 
+                  bg-gradient-to-br 
+                  from-blue-500 to-indigo-600 
+                  shadow-lg">
+    🚨
+  </div>
+
+  <div>
+    <h1 className="text-2xl font-bold tracking-tight">
+      Mes Signalements
+    </h1>
+    <p className="text-xs text-gray-400">
+      Historique de vos incidents déclarés
+    </p>
+  </div>
+
+</div>
+
 
       {/* ==========================
     CARTE PREMIUM STATS USER
