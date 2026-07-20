@@ -238,47 +238,64 @@ useEffect(() => {
       {!loading && Array.isArray(myIncidents) && Array.isArray(myIncidents) && myIncidents.map((incident) => (
         <div
           key={incident.id}
-          className="bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg"
+          className="bg-gradient-to-br 
+           from-[#142E4C] 
+           to-[#10283F] 
+           rounded-3xl 
+           p-5 
+           mb-5 
+           shadow-xl 
+           border border-blue-900/30 
+           transition-all duration-300 
+           hover:scale-[1.01]"
         >
 
-          <div className="flex justify-between">
-            <div>
-              <h3 className="font-semibold">
+         <div className="flex items-start gap-3">
+          {/* Icône accident */}
+          <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-red-500/20 to-orange-500/20 border border-red-500/20">
+            ⚠️
+          </div>
+
+          <div className="flex-1">
+            <div className="flex justify-between items-start">
+              <h3 className="font-semibold text-base tracking-tight">
                 {incident.titre}
               </h3>
-              <p className="text-xs text-gray-400 mt-1">
-                {incident.type?.titre}
-              </p>
+
+              {/* Statut amélioré */}
+              <span
+                className={`text-xs font-semibold ${
+                  incident.statut === "valide"
+                    ? "text-green-400"
+                    : incident.statut === "en_attente"
+                    ? "text-yellow-400"
+                    : "text-red-400"
+                }`}
+              >
+                {incident.statut === "valide" && "✓ Validé"}
+                {incident.statut === "en_attente" && "⏳ En attente"}
+                {incident.statut === "rejete" && "✕ Rejeté"}
+              </span>
             </div>
 
-           <span
-  className={`text-xs font-semibold tracking-wide ${
-    incident.statut === "valide"
-      ? "text-green-400"
-      : incident.statut === "en_attente"
-      ? "text-yellow-400"
-      : "text-red-400"
-  }`}
->
-  {incident.statut === "valide" && "✔ Validé"}
-  {incident.statut === "en_attente" && "⏳ En attente"}
-  {incident.statut === "rejete" && "✖ Rejeté"}
-</span>
+            <p className="text-xs text-gray-400 mt-1">
+              {incident.type?.titre}
+            </p>
+          </div>
+        </div>
+<div className="flex justify-between items-center mt-4">
+          <div className="flex items-center gap-2 text-xs text-gray-300">
+            <span className="text-green-400">✓</span>
+            {incident.nombre_confirmations} confirmations
           </div>
 
-          <div className="flex justify-between items-center mt-3 text-xs text-gray-400">
-            <span>
-              ✅ {incident.nombre_confirmations} confirmations
-            </span>
-
-            <button
-              onClick={() => openComments(incident.id)}
-              className="bg-blue-500 px-3 py-1 rounded-lg"
-            >
-              Voir commentaires
-            </button>
-          </div>
-
+          <button
+            onClick={() => openComments(incident.id)}
+            className="text-xs font-medium bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-2 rounded-xl shadow-md hover:opacity-90 transition-all text-white"
+          >
+            Voir commentaires
+          </button>
+        </div>
         </div>
       ))}
 
