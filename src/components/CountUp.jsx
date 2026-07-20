@@ -1,24 +1,32 @@
 import { useEffect, useState } from "react";
 
-function CountUp({ value, duration = 800 }) {
+function CountUp({ value = 0, duration = 800 }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    let start = 0;
-    const increment = value / (duration / 16);
+    if (value === 0) {
+      setCount(0);
+      return;
+    }
 
-    const timer = setInterval(() => {
-      start += increment;
+    let animationFrame;
+    const startTime = performance.now();
 
-      if (start >= value) {
-        setCount(value);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
+    const animate = (time) => {
+      const progress = Math.min((time - startTime) / duration, 1);
+      const current = Math.floor(progress * value);
+
+      setCount(current);
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
       }
-    }, 16);
+    };
 
-    return () => clearInterval(timer);
+    setCount(0);
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrame);
   }, [value, duration]);
 
   return <span>{count}</span>;

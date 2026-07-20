@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import CountUp from "../components/CountUp";
 import IncidentsChart from "../components/IncidentsChart";
 
 function DashboardPage() {
