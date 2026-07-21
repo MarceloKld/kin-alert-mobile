@@ -292,32 +292,53 @@ return (
 
     <div className="bg-[#0E223A] px-0.5 py-1">
 
-  <div className="flex gap-3 overflow-x-auto">
+  <div className="flex gap-2 overflow-x-auto px-2 pb-1 scrollbar-hide">
+  {["all", "valide", "en_attente", "rejete"].map((status) => {
 
-    {["all", "valide", "en_attente", "rejete"].map((status) => {
+    const count = incidents.filter(
+      (i) => status === "all" ? true : i.statut === status
+    ).length;
 
-  const count = incidents.filter(
-    (i) => status === "all" ? true : i.statut === status
-  ).length;
+    const isActive = mapFilter === status;
 
-  return (
-    <button
-      key={status}
-      onClick={() => setMapFilter(status)}
-      className={`px-4 py-2 rounded-full text-sm font-medium ${
-        mapFilter === status
-          ? "bg-orange-500 text-white"
-          : "bg-white/20 text-white border border-white/40"
-      }`}
-    >
-      {status === "all"
-        ? `Tous (${count})`
-        : `${status} (${count})`}
-    </button>
-  );
-})}
+    return (
+      <button
+        key={status}
+        onClick={() => setMapFilter(status)}
+        className={`
+          flex items-center gap-1
+          px-3 py-1.5
+          rounded-full
+          text-xs font-medium
+          whitespace-nowrap
+          transition-all duration-200
+          ${
+            isActive
+              ? "bg-orange-500 text-white shadow-md scale-105"
+              : "bg-white/10 text-white border border-white/20 hover:bg-white/20"
+          }
+        `}
+      >
+        {status === "all"
+          ? "Tous"
+          : status.replace("_", " ")}
 
-  </div>
+        <span
+          className={`
+            text-[10px] px-1.5 py-0.5 rounded-full
+            ${
+              isActive
+                ? "bg-white/20 text-white"
+                : "bg-white/10 text-gray-200"
+            }
+          `}
+        >
+          {count}
+        </span>
+      </button>
+    );
+  })}
+</div>
 
 </div>
 
