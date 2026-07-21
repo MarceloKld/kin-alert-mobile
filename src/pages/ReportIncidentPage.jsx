@@ -118,7 +118,12 @@ function ReportIncidentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-50 to-white p-4">
+    <div className="min-h-screen 
+                bg-gradient-to-br 
+                from-[#0E223A] 
+                via-[#122C4A] 
+                to-[#0A1C30] 
+                p-4">
 
       {/* ✅ Toast flottant */}
       {toast && (
@@ -130,13 +135,20 @@ function ReportIncidentPage() {
         </div>
       )}
 
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        🚨 Signaler un incident
-      </h2>
+     <h2 className="text-3xl font-extrabold text-center mb-8">
+  <span className="bg-gradient-to-r 
+                   from-orange-400 
+                   via-orange-500 
+                   to-red-500 
+                   bg-clip-text 
+                   text-transparent">
+    🚨 Signaler un incident
+  </span>
+</h2>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-5 rounded-2xl shadow-lg"
+        className="space-y-4 bg-[#142E4C] border border-white/10 p-5 rounded-2xl shadow-lg"
       >
 
         <input
