@@ -147,106 +147,265 @@ function ReportIncidentPage() {
 </h2>
 
       <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-[#142E4C] border border-white/10 p-5 rounded-2xl shadow-lg"
-      >
+  onSubmit={handleSubmit}
+  className="space-y-5
+             bg-white/5
+             backdrop-blur-xl
+             border border-white/10
+             p-6
+             rounded-3xl
+             shadow-[0_20px_50px_rgba(0,0,0,0.4)]
+             transition-all duration-300"
+>
 
         <input
-          type="text"
-          placeholder="Titre de l'incident"
-          value={titre}
-          onChange={(e) => setTitre(e.target.value)}
-          className="w-full border px-4 py-3 rounded-xl focus:ring-2 focus:ring-red-400"
-        />
+  type="text"
+  placeholder="Titre de l'incident"
+  value={titre}
+  onChange={(e) => setTitre(e.target.value)}
+  className="w-full 
+             bg-white/10 
+             text-white 
+             placeholder-gray-400
+             px-4 py-3 
+             rounded-xl 
+             border border-white/10
+             focus:outline-none 
+             focus:ring-2 
+             focus:ring-orange-500
+             focus:border-orange-500
+             transition-all duration-200"
+/>
 
         <textarea
-          placeholder="Description détaillée"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows="3"
-          className="w-full border px-4 py-3 rounded-xl focus:ring-2 focus:ring-red-400"
-        />
+  placeholder="Description détaillée"
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  rows="3"
+  className="w-full 
+             bg-white/10 
+             text-white 
+             placeholder-gray-400
+             px-4 py-3 
+             rounded-xl 
+             border border-white/10
+             focus:outline-none 
+             focus:ring-2 
+             focus:ring-orange-500
+             focus:border-orange-500
+             transition-all duration-200"
+/>
 
         {/* ✅ Avenue */}
         <input
-          type="text"
-          placeholder="Nom de l’avenue"
-          value={avenue}
-          onChange={(e) => setAvenue(e.target.value)}
-          className="w-full border px-4 py-3 rounded-xl focus:ring-2 focus:ring-red-400"
+  type="text"
+  placeholder="Nom de l’avenue"
+  value={avenue}
+  onChange={(e) => setAvenue(e.target.value)}
+  className="w-full 
+             bg-white/10 
+             text-white 
+             placeholder-gray-400
+             px-4 py-3 
+             rounded-xl 
+             border border-white/10
+             focus:outline-none 
+             focus:ring-2 
+             focus:ring-orange-500
+             focus:border-orange-500
+             transition-all duration-200"
+/>
+
+        {/* ✅ Type d'incident */}
+        <div className="relative">
+  <select
+    value={typeIncidentId}
+    onChange={(e) => setTypeIncidentId(e.target.value)}
+    className="w-full
+               bg-white/10
+               text-white
+               px-4 py-3
+               pr-10
+               rounded-xl
+               border border-white/10
+               focus:outline-none
+               focus:ring-2
+               focus:ring-orange-500
+               focus:border-orange-500
+               transition-all duration-200
+               appearance-none"
+  >
+    <option value="" className="text-black">
+      Choisir un type
+    </option>
+
+    {types.map((type) => (
+      <option key={type.id} value={type.id} className="text-black">
+        {type.titre}
+      </option>
+    ))}
+  </select>
+
+  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-300">
+    ▼
+  </div>
+</div>
+
+
+        {/* ✅ Commune */}
+        <div className="relative">
+  <select
+    value={communeId}
+    onChange={(e) => setCommuneId(e.target.value)}
+    className="w-full
+               bg-white/10
+               text-white
+               px-4 py-3
+               pr-10
+               rounded-xl
+               border border-white/10
+               focus:outline-none
+               focus:ring-2
+               focus:ring-orange-500
+               focus:border-orange-500
+               transition-all duration-200
+               appearance-none"
+  >
+    <option value="" className="text-black">
+      Choisir une commune
+    </option>
+
+    {communes.map((commune) => (
+      <option key={commune.id} value={commune.id} className="text-black">
+        {commune.nom}
+      </option>
+    ))}
+  </select>
+
+  <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-300">
+    ▼
+  </div>
+</div>
+
+
+        {/* ✅ Photos Premium */}
+<div className="space-y-3">
+
+  <label className="block text-sm text-gray-300 font-medium">
+    📷 Ajouter des photos
+    <span className="ml-2 text-xs bg-white/10 px-2 py-1 rounded-full">
+      {photos.length}
+    </span>
+  </label>
+
+  <div className="relative">
+
+    <input
+      type="file"
+      accept="image/*"
+      capture="environment"
+      multiple
+      onChange={(e) => setPhotos(Array.from(e.target.files))}
+      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+    />
+
+    <div className="w-full 
+                    bg-white/10 
+                    border border-white/10
+                    rounded-xl 
+                    py-4 
+                    flex flex-col 
+                    items-center 
+                    justify-center 
+                    text-gray-300 
+                    transition 
+                    hover:bg-white/20">
+
+      <span className="text-lg">⬆</span>
+      <span className="text-sm mt-1">
+        Cliquez pour ajouter des photos
+      </span>
+
+    </div>
+
+  </div>
+
+</div>
+
+       {/* ✅ Preview Premium */}
+{photos.length > 0 && (
+  <div className="grid grid-cols-3 gap-3 mt-2">
+
+    {photos.map((file, index) => (
+      <div
+        key={index}
+        className="relative group rounded-2xl overflow-hidden 
+                   shadow-lg transition-transform duration-200 
+                   hover:scale-[1.03]"
+      >
+
+        {/* Image */}
+        <img
+          src={URL.createObjectURL(file)}
+          alt="preview"
+          className="w-full h-28 object-cover"
         />
 
-        <select
-          value={typeIncidentId}
-          onChange={(e) => setTypeIncidentId(e.target.value)}
-          className="w-full border px-4 py-3 rounded-xl"
+        {/* Overlay sombre au hover */}
+        <div className="absolute inset-0 
+                        bg-black/40 
+                        opacity-0 
+                        group-hover:opacity-100 
+                        transition duration-200" />
+
+        {/* Bouton suppression premium */}
+        <button
+          type="button"
+          onClick={() => removePhoto(index)}
+          className="absolute top-2 right-2
+                     bg-red-500/90 
+                     backdrop-blur-md
+                     text-white
+                     w-7 h-7
+                     rounded-full
+                     flex items-center justify-center
+                     text-sm
+                     shadow-md
+                     transition
+                     hover:bg-red-600"
         >
-          <option value="">Choisir un type</option>
-          {types.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.titre}
-            </option>
-          ))}
-        </select>
+          ✕
+        </button>
 
-        <select
-          value={communeId}
-          onChange={(e) => setCommuneId(e.target.value)}
-          className="w-full border px-4 py-3 rounded-xl"
-        >
-          <option value="">Choisir une commune</option>
-          {communes.map((commune) => (
-            <option key={commune.id} value={commune.id}>
-              {commune.nom}
-            </option>
-          ))}
-        </select>
+      </div>
+    ))}
 
-        {/* ✅ Photos */}
-        <div>
-          <label className="block text-sm text-gray-600 mb-2">
-            📷 Ajouter des photos ({photos.length})
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            multiple
-            onChange={(e) => setPhotos(Array.from(e.target.files))}
-            className="w-full"
-          />
-        </div>
+  </div>
+)}
 
-        {/* ✅ Preview */}
-        {photos.length > 0 && (
-          <div className="grid grid-cols-3 gap-2">
-            {photos.map((file, index) => (
-              <div key={index} className="relative">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  className="w-full h-24 object-cover rounded-xl"
-                />
-                <button
-                  type="button"
-                  onClick={() => removePhoto(index)}
-                  className="absolute top-1 right-1 bg-red-600 text-white 
-                             rounded-full w-6 h-6 text-xs flex items-center 
-                             justify-center shadow"
-                >
-                  ✕
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* ✅ Position Premium */}
+<div
+  className={`flex items-center justify-between
+              px-4 py-3
+              rounded-xl
+              text-sm
+              border
+              ${
+                latitude && longitude
+                  ? "bg-green-500/10 border-green-500/20 text-green-400"
+                  : "bg-white/5 border-white/10 text-gray-400"
+              }`}
+>
+  <span className="flex items-center gap-2">
+    📍 Position
+  </span>
 
-        {/* ✅ Position */}
-        <div className="text-sm text-gray-500 bg-gray-100 p-2 rounded-lg">
-          📍 {latitude && longitude
-            ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
-            : "Position non détectée"}
-        </div>
+  <span className="font-medium">
+    {latitude && longitude
+      ? `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+      : "Non détectée"}
+  </span>
+</div>
 
         <button
           type="submit"
