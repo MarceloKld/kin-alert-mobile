@@ -36,7 +36,7 @@ const navigate = useNavigate();
 
 const [userPosition, setUserPosition] = useState(null);
 const [selectedPosition, setSelectedPosition] = useState(null);
-const [positionMessage, setPositionMessage] = useState(null);
+const [toast, setToast] = useState(null);
 const [incidents, setIncidents] = useState([]);
 const [mapFilter, setMapFilter] = useState("all");
 const [selectedIncident, setSelectedIncident] = useState(null);
@@ -147,12 +147,17 @@ const submitComment = async () => {
 //Fonction sélectionner position
 const selectMyPosition = () => {
   if (!navigator.geolocation) {
-    setPositionMessage({
+    setToast({
       type: "error",
-      text: "La géolocalisation n'est pas supportée sur votre appareil."
+      message: "La géolocalisation n'est pas supportée sur votre appareil."
     });
     return;
   }
+
+  setToast({
+    type: "loading",
+    message: "Récupération de votre position..."
+  });
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -161,19 +166,31 @@ const selectMyPosition = () => {
 
       setSelectedPosition({ lat, lng });
 
-      setPositionMessage({
+      setToast({
         type: "success",
-        text: "✅ Position sélectionnée. Vous pouvez maintenant signaler une alerte."
+        message: "✅ Position sélectionnée. Vous pouvez maintenant signaler."
       });
     },
     () => {
-      setPositionMessage({
+      setToast({
         type: "error",
-        text: "Impossible de récupérer votre position. Activez le GPS."
+        message: "Impossible de récupérer votre position. Activez le GPS."
       });
     }
   );
 };
+
+//Faire disparaître automatiquement le toast
+useEffect(() => {
+  if (toast) {
+    const timer = setTimeout(() => {
+      setToast(null);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }
+}, [toast]);
+
 
 
 
@@ -183,6 +200,28 @@ const selectMyPosition = () => {
 
 return (
   <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-hidden">
+{toast && (
+  <div
+    className={`fixed top-4 right-4 
+    px-4 py-2 
+    rounded-lg 
+    shadow-lg 
+    text-sm 
+    font-medium 
+    text-white 
+    z-[9999]
+    ${
+      toast.type === "success"
+        ? "bg-green-600"
+        : toast.type === "error"
+        ? "bg-red-600"
+        : "bg-blue-600"
+    }`}
+  >
+    {toast.message}
+  </div>
+)}
+
 
 {/* ==========================
     HEADER HOME PREMIUM SVG
@@ -290,17 +329,6 @@ return (
     📍 Sélectionner ma position
   </button>
 
-  {positionMessage && (
-    <div
-      className={`mt-2 text-sm px-3 py- rounded-lg ${
-        positionMessage.type === "success"
-          ? "bg-green-500/20 text-green-300"
-          : "bg-red-500/20 text-red-300"
-      }`}
-    >
-      {positionMessage.text}
-    </div>
-  )}
 </div>
 
     {/* ✅ ZONE BLEU FONCÉ */}
@@ -417,9 +445,9 @@ return (
         <button
           onClick={() => {
   if (!selectedPosition) {
-    setPositionMessage({
+    setToast({
       type: "error",
-      text: "Veuillez d'abord sélectionner votre position avant de signaler une alerte."
+      message: "Veuillez d'abord sélectionner votre position."
     });
     return;
   }
