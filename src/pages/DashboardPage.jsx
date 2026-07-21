@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import IncidentsChart from "../components/IncidentsChart";
 
 function DashboardPage() {
 
@@ -305,45 +304,8 @@ useEffect(() => {
 
   </div>
 )}
-{!loadingStats && <IncidentsChart stats={stats} />}
 
-<div className="mt-4 bg-[#142E4C] p-4 rounded-xl">
 
-  <p className="text-xs text-gray-400 mb-3">
-    Répartition des incidents
-  </p>
-
-  <div className="space-y-2">
-
-    {[
-      { label: "Validé", value: stats.valide, color: "bg-green-500" },
-      { label: "Attente", value: stats.en_attente, color: "bg-yellow-500" },
-      { label: "Rejeté", value: stats.rejete, color: "bg-red-500" },
-    ].map((item) => {
-      const percent =
-        stats.total_incidents > 0
-          ? (item.value / stats.total_incidents) * 100
-          : 0;
-
-      return (
-        <div key={item.label}>
-          <div className="flex justify-between text-xs mb-1">
-            <span>{item.label}</span>
-            <span>{item.value}</span>
-          </div>
-
-          <div className="w-full bg-gray-700 h-2 rounded-full">
-            <div
-              className={`${item.color} h-2 rounded-full transition-all duration-700`}
-              style={{ width: `${percent}%` }}
-            />
-          </div>
-        </div>
-      );
-    })}
-
-  </div>
-</div>
 
 {loading && (
   <div className="space-y-4 mt-6">
