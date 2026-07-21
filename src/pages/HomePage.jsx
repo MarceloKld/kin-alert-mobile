@@ -35,7 +35,8 @@ function HomePage() {
 const navigate = useNavigate();
 
 const [userPosition, setUserPosition] = useState(null);
-const [selectedPosition, ] = useState(null);
+const [selectedPosition, setSelectedPosition] = useState(null);
+const [positionMessage, setPositionMessage] = useState(null);
 const [incidents, setIncidents] = useState([]);
 const [mapFilter, setMapFilter] = useState("all");
 const [selectedIncident, setSelectedIncident] = useState(null);
@@ -44,6 +45,10 @@ const [loadingConfirm, setLoadingConfirm] = useState(false);
 const [loadingComment, setLoadingComment] = useState(false);
 const [commentText, setCommentText] = useState("");
 const [modalMessage, setModalMessage] = useState(null);
+const blueTempIcon = new L.Icon({
+  iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+  iconSize: [32, 32],
+});
 
 
   
@@ -139,6 +144,38 @@ const submitComment = async () => {
   }
 };
 
+//Fonction sélectionner position
+const selectMyPosition = () => {
+  if (!navigator.geolocation) {
+    setPositionMessage({
+      type: "error",
+      text: "La géolocalisation n'est pas supportée sur votre appareil."
+    });
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      setSelectedPosition({ lat, lng });
+
+      setPositionMessage({
+        type: "success",
+        text: "✅ Position sélectionnée. Vous pouvez maintenant signaler une alerte."
+      });
+    },
+    () => {
+      setPositionMessage({
+        type: "error",
+        text: "Impossible de récupérer votre position. Activez le GPS."
+      });
+    }
+  );
+};
+
+
 
 
 
@@ -214,7 +251,7 @@ return (
 </div>
 
 
-    <div className="bg-[#0E223A] px-4 py-3">
+    <div className="bg-[#0E223A] px-0.5 py-1">
 
   <div className="flex gap-3 overflow-x-auto">
 
@@ -245,11 +282,32 @@ return (
 
 </div>
 
+<div className="px-4 mb-3">
+  <button
+    onClick={selectMyPosition}
+    className="w-full bg-blue-600 text-white py-2 rounded-xl font-semibold shadow-md active:scale-95 transition"
+  >
+    📍 Sélectionner ma position
+  </button>
+
+  {positionMessage && (
+    <div
+      className={`mt-2 text-sm px-3 py- rounded-lg ${
+        positionMessage.type === "success"
+          ? "bg-green-500/20 text-green-300"
+          : "bg-red-500/20 text-red-300"
+      }`}
+    >
+      {positionMessage.text}
+    </div>
+  )}
+</div>
+
     {/* ✅ ZONE BLEU FONCÉ */}
-    <div className="flex-1 bg-[#0E223A] pt-4 relative">
+    <div className="flex-1 bg-[#0E223A]  relative">
 
       {/* ✅ CARTE */}
-      <div className="mt-2">
+      <div className="mt-0">
         <div className="rounded-t-3xl overflow-hidden shadow-2xl">
 
           <MapContainer
@@ -338,6 +396,14 @@ return (
 </Popup>
 </Marker>
 ))}
+{selectedPosition && (
+          <Marker
+            position={[selectedPosition.lat, selectedPosition.lng]}
+            icon={blueTempIcon}
+          >
+            <Popup>📍 Votre position sélectionnée</Popup>
+          </Marker>
+        )}
           </MapContainer>
 
         </div>
@@ -349,9 +415,17 @@ return (
                 bottom-25">
 
         <button
-          onClick={() =>
-            navigate("/report", { state: { selectedPosition } })
-          }
+          onClick={() => {
+  if (!selectedPosition) {
+    setPositionMessage({
+      type: "error",
+      text: "Veuillez d'abord sélectionner votre position avant de signaler une alerte."
+    });
+    return;
+  }
+
+  navigate("/report", { state: { selectedPosition } });
+}}
           className="w-36 h-36 rounded-full 
              bg-gradient-to-b 
              from-orange-400 to-orange-600 
