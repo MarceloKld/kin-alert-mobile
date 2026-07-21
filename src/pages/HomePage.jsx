@@ -324,11 +324,17 @@ return (
 <div className="px-4 mb-3">
   <button
     onClick={selectMyPosition}
-    className="w-full bg-blue-600 text-white py-2 rounded-xl font-semibold shadow-md active:scale-95 transition"
+    disabled={!!selectedPosition}
+    className={`w-full py-2 rounded-xl font-semibold shadow-md transition 
+    active:scale-95
+    ${
+      selectedPosition
+        ? "bg-green-600 text-white cursor-not-allowed"
+        : "bg-blue-600 text-white"
+    }`}
   >
-    📍 Sélectionner ma position
+    {selectedPosition ? "✅ Position sélectionnée" : "📍 Sélectionner ma position"}
   </button>
-
 </div>
 
     {/* ✅ ZONE BLEU FONCÉ */}
