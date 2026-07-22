@@ -21,6 +21,14 @@ function RegisterPage() {
     password_confirmation: ""
   })
 
+  const getPasswordStrength = () => {
+  if (form.password.length > 8) return "strong"
+  if (form.password.length > 4) return "medium"
+  return "weak"
+}
+
+const strength = getPasswordStrength()
+
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -156,7 +164,13 @@ function RegisterPage() {
 
               {/* Barre force */}
               <div className="h-1 bg-white/20 rounded mt-2">
-                <div className="h-1 bg-green-400 rounded w-1/2"></div>
+                <div className={`h-1 rounded transition-all duration-300 ${
+      strength === "weak"
+        ? "w-1/4 bg-red-500"
+        : strength === "medium"
+        ? "w-2/4 bg-yellow-400"
+        : "w-full bg-green-400"
+    }`}></div>
               </div>
 
             </div>
