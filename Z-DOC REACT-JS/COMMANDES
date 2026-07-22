@@ -9,3 +9,14 @@ R/npm run dev
 
 # 4.ERREUR
 R/console.error(error);
+
+# 5.Ce type de chargement s’appelle comment ?
+R/ 👉 Skeleton Loader
+# C’est :
+
+Pas un spinner
+Pas un “Loading...”
+Mais une simulation du contenu pendant le chargement
+✅ C’est moderne
+✅ UX premium
+✅ Utilisé par Facebook, LinkedIn, Airbnb
