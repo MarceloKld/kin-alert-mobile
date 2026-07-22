@@ -8,6 +8,7 @@ import {
   PhoneIcon,
   LockClosedIcon
 } from "@heroicons/react/24/outline"
+import { ShieldCheckIcon } from "@heroicons/react/24/solid"
 
 function RegisterPage() {
 
@@ -85,11 +86,11 @@ const strength = getPasswordStrength()
 
             <div className="h-1 w-1/3 bg-yellow-400 rounded-full"></div>
 
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40">
-              🛡
-            </div>
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40 animate-float">
+  <ShieldCheckIcon className="w-8 h-8 text-white" />
+</div>
 
-            <div className="h-1 w-1/3 bg-white/20 rounded-full"></div>
+            <div className="h-1 w-1/3 bg-yellow-400 rounded-ful"></div>
 
           </div>
 
