@@ -2,6 +2,7 @@ import { useState } from "react"
 import axios from "../api/axios"
 import { Link, useNavigate } from "react-router-dom"
 import { ShieldExclamationIcon } from "@heroicons/react/24/solid"
+import logo from "../assets/logo.png"
 
 function LoginPage() {
 
