@@ -16,6 +16,7 @@ export default {
         slideIn: "slideIn 0.3s ease-out",
         statusChange: "statusChange 0.4s ease-out",
         bounceOnce: "bounceOnce 0.4s ease",
+        pulseGlow: "pulseGlow 2s infinite",
       },
       keyframes: {
         bounceOnce: {
@@ -53,6 +54,15 @@ export default {
       "0%": { opacity: "0", transform: "translateY(-20px)" },
       "100%": { opacity: "1", transform: "translateY(0)" },
     },
+    // <-- AJOUTE CE BLOC ICI :
+  pulseGlow: {
+    "0%, 100%": { boxShadow: "0 0 30px rgba(255,140,0,0.5)" },
+    "50%": { boxShadow: "0 0 60px rgba(255,140,0,1)" },
+  },
+
+
+
+  
       },
     },
   },

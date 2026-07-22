@@ -194,7 +194,7 @@ const strength = getPasswordStrength()
 )}
 
             {/* Bouton circulaire */}
-            <div className="flex justify-center mt-6 animate-float">
+            <div className="flex justify-center mt-6 animate-float animate-pulseGlow">
               <button
                 type="submit"
                 disabled={loading}
