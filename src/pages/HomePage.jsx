@@ -488,7 +488,7 @@ return (
              text-white font-bold text-base
              flex flex-col items-center justify-center
              leading-tight
-             transition active:scale-95"
+             transition active:scale-95 animate-float"
         >
           SIGNALER
           <br />
