@@ -51,7 +51,7 @@ const strength = getPasswordStrength()
 
     try {
       await axios.post("/register", form)
-      navigate("http://localhost:5173")
+      navigate("/")
    } catch (error) {
   if (error.response?.status === 422) {
     setErrors(error.response.data.errors || {})
