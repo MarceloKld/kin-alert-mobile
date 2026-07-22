@@ -1,111 +1,158 @@
-import { useState } from "react";
-import api from "../api/axios";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
+import { useState } from "react"
+import axios from "../api/axios"
+import { Link, useNavigate } from "react-router-dom"
+import { ShieldExclamationIcon } from "@heroicons/react/24/solid"
 
 function LoginPage() {
-  const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
-  const handleLogin = async (e) => {
-  e.preventDefault();
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  })
 
-  if (!email || !password) {
-    setErrorMessage("Tous les champs sont obligatoires.");
-    return;
+  const [errors, setErrors] = useState({})
+  const [serverError, setServerError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value
+    })
   }
 
-  setErrorMessage("");
-  setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setErrors({})
+    setServerError("")
 
-  try {
-    const response = await api.post("/login", { email, password });
+    try {
+      const response = await axios.post("/login", form)
 
-    localStorage.setItem("token", response.data.token);
-    navigate("/home");
-  } catch (error) {
-    console.error(error);
-    setErrorMessage("Email ou mot de passe incorrect.");
-  } finally {
-    setLoading(false);
+      // ✅ Stocker le token
+      localStorage.setItem("token", response.data.token)
+
+      navigate("/Home")
+
+    } catch (error) {
+
+      if (error.response?.status === 422) {
+        setErrors(error.response.data.errors || {})
+      } else if (error.response?.status === 401) {
+        setServerError("Email ou mot de passe incorrect.")
+      } else {
+        setServerError("Une erreur est survenue.")
+      }
+
+    } finally {
+      setLoading(false)
+    }
   }
-};
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 animate-fadeIn">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 
-                transform transition-all duration-500 
-                animate-fadeIn">
-                  <div className="flex justify-center mb-4">
- <img 
-  src={logo} 
-  alt="KIN ALERT" 
-  className="w-18 h-17 mb-3 drop-shadow-lg animate-pulse" />
-</div>
+    <div className="min-h-screen relative flex items-center justify-center">
 
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          KIN ALERT 🚨
-        </h1>
+      {/* Background image map */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/map-bg.jpg')"
+        }}
+      ></div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/70"></div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="admin@kinalert.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-md px-6">
+
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40">
+              <ShieldExclamationIcon className="w-8 h-8 text-white" />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+          <h1 className="text-3xl font-bold text-yellow-400 tracking-widest">
+            KIN ALERT
+          </h1>
 
-          {errorMessage && (
-  <div className="bg-red-100 text-red-600 text-sm p-3 rounded-lg">
-    {errorMessage}
-  </div>
-)}
+          <p className="text-gray-300 text-sm mt-2">
+            Plateforme communautaire d'alerte
+          </p>
+        </div>
 
-          <button
-  type="submit"
-  disabled={loading}
-  className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold 
-             hover:bg-blue-700 transition duration-200 
-             disabled:opacity-50 flex justify-center items-center"
->
-  {loading ? (
-    <div className="w-5 h-5 border-2 border-white border-t-transparent 
-                    rounded-full animate-spin"></div>
-  ) : (
-    "Se connecter"
-  )}
-</button>
+        {/* Card */}
+        <div className="bg-white/10 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl text-white">
 
-        </form>
+          {serverError && (
+            <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-4">
+              {serverError}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+
+            {/* Email */}
+            <div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Adresse Email"
+                value={form.email}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
+              />
+              {errors.email && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.email[0]}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <input
+                type="password"
+                name="password"
+                placeholder="Mot de passe"
+                value={form.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
+              />
+              {errors.password && (
+                <p className="text-red-400 text-sm mt-1">
+                  {errors.password[0]}
+                </p>
+              )}
+            </div>
+
+            {/* Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 font-semibold shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition duration-300"
+            >
+              {loading ? "Connexion..." : "Se connecter"}
+            </button>
+
+          </form>
+
+          <p className="text-center text-sm mt-6 text-gray-300">
+            Pas encore de compte ?{" "}
+            <Link to="/register" className="text-yellow-400 hover:underline">
+              Créer un compte
+            </Link>
+          </p>
+
+        </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default LoginPage;
+export default LoginPage
