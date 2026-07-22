@@ -49,7 +49,9 @@ const strength = getPasswordStrength()
       navigate("/login")
     } catch (error) {
       if (error.response?.status === 422) {
-        setErrors(error.response.data.errors)
+        setErrors(error.response.data.errors || {})
+      } else {
+        console.error(error)
       }
     } finally {
       setLoading(false)
@@ -100,7 +102,7 @@ const strength = getPasswordStrength()
     className="w-full pl-10 pr-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
   />
 </div>
-            {errors.nom && (
+           {errors.nom && errors.nom.length > 0 && (
   <p className="text-red-400 text-sm mt-1">
     {errors.nom[0]}
   </p>
@@ -119,9 +121,9 @@ const strength = getPasswordStrength()
             className="w-full pl-10 pr-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
   />
             </div>
-            {errors.nom && (
+           {errors.email && (
   <p className="text-red-400 text-sm mt-1">
-    {errors.nom[0]}
+    {errors.email[0]}
   </p>
 )}
 
@@ -137,9 +139,9 @@ const strength = getPasswordStrength()
              className="w-full pl-10 pr-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
   />
 </div>
-            {errors.nom && (
+           {errors.telephone && (
   <p className="text-red-400 text-sm mt-1">
-    {errors.nom[0]}
+    {errors.telephone[0]}
   </p>
 )}
 
@@ -156,9 +158,9 @@ const strength = getPasswordStrength()
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
   />
 </div>
-              {errors.nom && (
+            {errors.password && (
   <p className="text-red-400 text-sm mt-1">
-    {errors.nom[0]}
+    {errors.password[0]}
   </p>
 )}
 
@@ -187,9 +189,9 @@ const strength = getPasswordStrength()
              className="w-full pl-10 pr-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
   />
 </div>
-            {errors.nom && (
+          {errors.password_confirmation && (
   <p className="text-red-400 text-sm mt-1">
-    {errors.nom[0]}
+    {errors.password_confirmation[0]}
   </p>
 )}
 
