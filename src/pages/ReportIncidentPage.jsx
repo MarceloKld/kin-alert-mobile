@@ -123,7 +123,8 @@ function ReportIncidentPage() {
                 from-[#0E223A] 
                 via-[#122C4A] 
                 to-[#0A1C30] 
-                p-4">
+                p-4
+                pb-28">
 
       {/* ✅ Toast flottant */}
       {toast && (
@@ -412,7 +413,7 @@ function ReportIncidentPage() {
           disabled={loading}
           className="w-full bg-red-600 text-white py-3 rounded-xl font-semibold 
                      hover:bg-red-700 transition transform active:scale-95 
-                     disabled:opacity-50"
+                     disabled:opacity-50 animate-float"
         >
           {loading ? "Envoi..." : "Envoyer le signalement"}
         </button>
