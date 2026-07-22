@@ -31,6 +31,10 @@ const strength = getPasswordStrength()
 
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+  const [serverError, setServerError] = useState("")
+
+
+
 
   const handleChange = (e) => {
     setForm({
@@ -43,16 +47,17 @@ const strength = getPasswordStrength()
     e.preventDefault()
     setLoading(true)
     setErrors({})
+    setServerError("")
 
     try {
       await axios.post("/register", form)
-      navigate("/login")
-    } catch (error) {
-      if (error.response?.status === 422) {
-        setErrors(error.response.data.errors || {})
-      } else {
-        console.error(error)
-      }
+      navigate("http://localhost:5173")
+   } catch (error) {
+  if (error.response?.status === 422) {
+    setErrors(error.response.data.errors || {})
+  } else {
+    setServerError("Une erreur est survenue. Réessayez.")
+  }
     } finally {
       setLoading(false)
     }
@@ -61,6 +66,11 @@ const strength = getPasswordStrength()
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0e1a25] via-[#132c3a] to-[#1c3b4d] px-6 text-white">
 
+{serverError && (
+  <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-4">
+    {serverError}
+  </div>
+)}
       <div className="w-full max-w-md">
 
         {/* HEADER */}
@@ -211,14 +221,14 @@ const strength = getPasswordStrength()
         </div>
 
         {/* Footer */}
-        <p className="text-center text-sm mt-6 text-gray-300">
-          Avez-vous déjà un compte ?{" "}
-          <Link
-  to="/login"
-  className="text-yellow-400 hover:underline"
->
-           Se connecter
-</Link>
+<p className="text-center text-sm mt-6 text-gray-300">
+  Avez-vous déjà un compte ?{" "}
+  <Link
+    to="http://localhost:5173"
+    className="text-yellow-400 hover:underline"
+  >
+    Se connecter
+  </Link>
         </p>
 
       </div>
