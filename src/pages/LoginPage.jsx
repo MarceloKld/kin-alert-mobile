@@ -2,6 +2,7 @@ import { useState } from "react"
 import axios from "../api/axios"
 import { Link, useNavigate } from "react-router-dom"
 import { ShieldExclamationIcon } from "@heroicons/react/24/solid"
+import { KeyIcon } from "@heroicons/react/24/outline"
 
 function LoginPage() {
 
@@ -130,6 +131,16 @@ function LoginPage() {
                 </p>
               )}
             </div>
+
+            <div className="flex justify-end mt-2">
+ <Link
+  to="/forgot-password"
+  className="flex items-center gap-1 text-sm text-yellow-400 hover:text-yellow-300 transition"
+>
+  <KeyIcon className="w-4 h-4" />
+  Mot de passe oublié ?
+</Link>
+</div>
 
             {/* Button */}
             <button
