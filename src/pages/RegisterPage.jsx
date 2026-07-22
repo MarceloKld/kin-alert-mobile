@@ -65,36 +65,43 @@ const strength = getPasswordStrength()
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0e1a25] via-[#132c3a] to-[#1c3b4d] px-6 text-white">
+  <div className="min-h-screen relative flex items-center justify-center">
 
-{serverError && (
-  <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-4">
-    {serverError}
-  </div>
-)}
-      <div className="w-full max-w-md">
+    {/* Background image */}
+    <div 
+      className="absolute inset-0 bg-cover bg-center"
+      style={{ backgroundImage: "url('/map-bg.jpg')" }}
+    ></div>
 
-        {/* HEADER */}
-        <div className="text-center mb-8 animate-float">
+    {/* Overlay sombre */}
+    <div className="absolute inset-0 bg-black/70"></div>
 
-          <h1 className="text-xl tracking-widest text-yellow-400 font-semibold mb-4">
-            CRÉATION DE COMPTE
-          </h1>
+    {/* Content */}
+    <div className="relative z-10 w-full max-w-md px-6 text-white">
 
-          {/* Progress bar */}
-          <div className="flex items-center justify-between mb-6 animate-float">
+      {serverError && (
+        <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-4">
+          {serverError}
+        </div>
+      )}
 
-            <div className="h-1 w-1/3 bg-yellow-400 rounded-full"></div>
+      {/* HEADER */}
+      <div className="text-center mb-8 animate-float">
+        <h1 className="text-xl tracking-widest text-yellow-400 font-semibold mb-4">
+          CRÉATION DE COMPTE
+        </h1>
 
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40 animate-float">
-  <ShieldCheckIcon className="w-8 h-8 text-white" />
-</div>
+        {/* Progress bar */}
+        <div className="flex items-center justify-between mb-6 animate-float">
+          <div className="h-1 w-1/3 bg-yellow-400 rounded-full"></div>
 
-            <div className="h-1 w-1/3 bg-yellow-400 rounded-ful"></div>
-
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40">
+            <ShieldCheckIcon className="w-8 h-8 text-white" />
           </div>
 
+          <div className="h-1 w-1/3 bg-yellow-400 rounded-full"></div>
         </div>
+      </div>
 
         {/* CARD */}
         <div className="bg-white/5 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl">
@@ -207,7 +214,7 @@ const strength = getPasswordStrength()
 )}
 
             {/* Bouton circulaire */}
-            <div className="flex justify-center mt-6 animate-float animate-pulseGlow">
+            <div className="flex justify-center mt-6 animate-float ">
               <button
                 type="submit"
                 disabled={loading}
