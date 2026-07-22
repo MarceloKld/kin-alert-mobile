@@ -49,6 +49,9 @@ const blueTempIcon = new L.Icon({
   iconUrl: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
   iconSize: [32, 32],
 });
+const [loadingFilters, setLoadingFilters] = useState(true);
+
+
 
 
   
@@ -71,13 +74,17 @@ const blueTempIcon = new L.Icon({
 
   //Charger incidents depuis API
   useEffect(() => {
+    
   api.get("/incidents?all=true")
     .then((res) => {
-      // Laravel pagination probable
       const data = res.data.data || res.data;
       setIncidents(data);
     })
-    .catch(() => console.log("Erreur chargement incidents"));
+    .catch(() => console.log("Erreur chargement incidents"))
+    .finally(() => {
+      setLoadingFilters(false);
+    });
+
 }, []);
 
 const openIncidentModal = (incident) => {
@@ -292,52 +299,63 @@ return (
 
     <div className="bg-[#0E223A] px-0.5 py-1">
 
-  <div className="flex gap-2 overflow-x-auto px-2 pb-1 scrollbar-hide">
-  {["all", "valide", "en_attente", "rejete"].map((status) => {
+ <div className="flex gap-2 overflow-x-auto px-2 pb-1 scrollbar-hide">
 
-    const count = incidents.filter(
-      (i) => status === "all" ? true : i.statut === status
-    ).length;
+  {loadingFilters ? (
+    <>
+      <div className="h-7 w-16 bg-white/10 rounded-full animate-pulse"></div>
+      <div className="h-7 w-20 bg-white/10 rounded-full animate-pulse"></div>
+      <div className="h-7 w-24 bg-white/10 rounded-full animate-pulse"></div>
+      <div className="h-7 w-20 bg-white/10 rounded-full animate-pulse"></div>
+    </>
+  ) : (
+    ["all", "valide", "en_attente", "rejete"].map((status) => {
 
-    const isActive = mapFilter === status;
+      const count = incidents.filter(
+        (i) => status === "all" ? true : i.statut === status
+      ).length;
 
-    return (
-      <button
-        key={status}
-        onClick={() => setMapFilter(status)}
-        className={`
-          flex items-center gap-1
-          px-3 py-1.5
-          rounded-full
-          text-xs font-medium
-          whitespace-nowrap
-          transition-all duration-200
-          ${
-            isActive
-              ? "bg-orange-500 text-white shadow-md scale-105"
-              : "bg-white/10 text-white border border-white/20 hover:bg-white/20"
-          }
-        `}
-      >
-        {status === "all"
-          ? "Tous"
-          : status.replace("_", " ")}
+      const isActive = mapFilter === status;
 
-        <span
+      return (
+        <button
+          key={status}
+          onClick={() => setMapFilter(status)}
           className={`
-            text-[10px] px-1.5 py-0.5 rounded-full
+            flex items-center gap-1
+            px-3 py-1.5
+            rounded-full
+            text-xs font-medium
+            whitespace-nowrap
+            transition-all duration-200
             ${
               isActive
-                ? "bg-white/20 text-white"
-                : "bg-white/10 text-gray-200"
+                ? "bg-orange-500 text-white shadow-md scale-105"
+                : "bg-white/10 text-white border border-white/20 hover:bg-white/20"
             }
           `}
         >
-          {count}
-        </span>
-      </button>
-    );
-  })}
+          {status === "all"
+            ? "Tous"
+            : status.replace("_", " ")}
+
+          <span
+            className={`
+              text-[10px] px-1.5 py-0.5 rounded-full
+              ${
+                isActive
+                  ? "bg-white/20 text-white"
+                  : "bg-white/10 text-gray-200"
+              }
+            `}
+          >
+            {count}
+          </span>
+        </button>
+      );
+    })
+  )}
+
 </div>
 
 </div>
