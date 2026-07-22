@@ -8,6 +8,7 @@ import DashboardPage from "./pages/DashboardPage";
 import SettingsPage from "./pages/SettingsPage";
 import RegisterPage from "./pages/RegisterPage"
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"
+import ResetPasswordPage from "./pages/ResetPasswordPage"
 
 import MobileLayout from "./layouts/MobileLayout";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
@@ -22,6 +23,7 @@ function App() {
       {/* Ajoute ta route d'inscription ici */}
   <Route path="/register" element={<RegisterPage />} />
   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+  <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       <Route
         path="/home"
