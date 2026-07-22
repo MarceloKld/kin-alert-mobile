@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
 import SettingsPage from "./pages/SettingsPage";
+import RegisterPage from "./pages/RegisterPage"
 
 import MobileLayout from "./layouts/MobileLayout";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
@@ -17,6 +18,8 @@ function App() {
     <Routes>
 
       <Route path="/" element={<LoginPage />} />
+      {/* Ajoute ta route d'inscription ici */}
+  <Route path="/register" element={<RegisterPage />} />
 
       <Route
         path="/home"
