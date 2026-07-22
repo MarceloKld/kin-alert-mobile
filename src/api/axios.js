@@ -9,8 +9,8 @@ const api = axios.create({
 
 // Interceptor
 api.interceptors.request.use((config) => {
-  //const token = localStorage.getItem("token");
-  const token = sessionStorage.getItem("token"); // ✅ plus sûr que localStorage
+  const token = localStorage.getItem("token");
+ 
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
