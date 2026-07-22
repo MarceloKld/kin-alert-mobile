@@ -148,7 +148,7 @@ function LoginPage() {
               disabled={loading}
               className="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 font-semibold shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition duration-300"
             >
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "Connexion en cours..." : "Se connecter"}
             </button>
 
           </form>
