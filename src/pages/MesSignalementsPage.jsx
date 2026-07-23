@@ -157,58 +157,59 @@ useEffect(() => {
 )}
 
       {/* ==========================
-          FILTRES + STATS
-      =========================== */}
+    FILTRES + STATS
+=========================== */}
 
-    {stats && (
-  <div className="flex gap-2 mb-5 overflow-x-auto">
+{stats && (
+  <div className="flex gap-1.5 sm:gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
 
     <button
       onClick={() => setSelectedStatus("all")}
-      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+      className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all ${
         selectedStatus === "all"
           ? "bg-blue-500 text-white"
           : "bg-[#142E4C] text-gray-400"
       }`}
     >
-      Tous ({stats.total_mes_incidents})
+      Tous <span className="text-[10px] opacity-80">({stats.total_mes_incidents})</span>
     </button>
 
     <button
       onClick={() => setSelectedStatus("valide")}
-      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+      className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all ${
         selectedStatus === "valide"
           ? "bg-green-500 text-white"
           : "bg-[#142E4C] text-gray-400"
       }`}
     >
-      Validés ({stats.mes_valides})
+      Validés <span className="text-[10px] opacity-80">({stats.mes_valides})</span>
     </button>
 
     <button
       onClick={() => setSelectedStatus("en_attente")}
-      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+      className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all ${
         selectedStatus === "en_attente"
           ? "bg-yellow-500 text-white"
           : "bg-[#142E4C] text-gray-400"
       }`}
     >
-      En attente ({stats.mes_en_attente})
+      En attente <span className="text-[10px] opacity-80">({stats.mes_en_attente})</span>
     </button>
 
     <button
       onClick={() => setSelectedStatus("rejete")}
-      className={`px-3 py-1.5 rounded-full text-[11px] font-medium transition-all ${
+      className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all ${
         selectedStatus === "rejete"
           ? "bg-red-500 text-white"
           : "bg-[#142E4C] text-gray-400"
       }`}
     >
-      Rejetés ({stats.mes_rejetes})
+      Rejetés <span className="text-[10px] opacity-80">({stats.mes_rejetes})</span>
     </button>
 
   </div>
 )}
+
 
       {/* ==========================
           LISTE INCIDENTS
