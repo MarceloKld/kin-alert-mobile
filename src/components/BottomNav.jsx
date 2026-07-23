@@ -3,16 +3,12 @@ import { Bell, User, Settings, LayoutGrid } from "lucide-react";
 
 function BottomNav() {
   return (
-    <div className="fixed bottom-4 left-1/2 
-                    -translate-x-1/2 
-                    w-[92%] max-w-md 
-                    bg-[#0E223A] 
-                    rounded-3xl 
-                    shadow-[0_10px_40px_rgba(0,0,0,0.4)] 
-                    px-4 py-1">
+    <div className="fixed bottom-0 left-0 w-full bg-[#0E223A] shadow-[0_-4px_20px_rgba(0,0,0,0.5)] px-4 py-2 z-50">
 
-      <div className="flex justify-between items-center">
-
+      <div className="flex justify-between items-center max-w-md mx-auto">
+        
+        {/* Tes liens NavLink restent exactement identiques ici */}
+        
         {/* ✅ ALERTES */}
         <NavLink
           to="/home"
@@ -48,23 +44,22 @@ function BottomNav() {
           <User size={20} />
           <span className="text-xs mt-1">MES INFOS</span>
         </NavLink>
-        
 
         {/* ✅ MES SIGNALEMENTS */}
         <NavLink
-  to="/mes-signalements"
-  className={({ isActive }) =>
-    `flex flex-col items-center justify-center 
-     px-4 py-2 rounded-2xl transition ${
-       isActive
-         ? "bg-orange-500 text-white"
-         : "text-gray-400"
-     }`
-  }
->
-  <LayoutGrid size={20} />
-  <span className="text-xs mt-1">MES SIGNAL.</span>
-</NavLink>
+          to="/mes-signalements"
+          className={({ isActive }) =>
+            `flex flex-col items-center justify-center 
+             px-4 py-2 rounded-2xl transition ${
+               isActive
+                 ? "bg-orange-500 text-white"
+                 : "text-gray-400"
+             }`
+          }
+        >
+          <LayoutGrid size={20} />
+          <span className="text-xs mt-1">MES SIGNAL.</span>
+        </NavLink>
 
         {/* ✅ PARAMÈTRES */}
         <NavLink
