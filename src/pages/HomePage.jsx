@@ -299,7 +299,8 @@ return (
 
     <div className="bg-[#0E223A] px-0.5 py-1">
 
- <div className="flex gap-2 overflow-x-auto px-2 pb-1 scrollbar-hide">
+ <div className="flex gap-1.5 sm:gap-2 overflow-x-auto px-2 pb-1 no-scrollbar">
+
 
   {loadingFilters ? (
     <>
@@ -322,12 +323,12 @@ return (
           key={status}
           onClick={() => setMapFilter(status)}
           className={`
-            flex items-center gap-1
-            px-3 py-1.5
-            rounded-full
-            text-xs font-medium
-            whitespace-nowrap
-            transition-all duration-200
+           shrink-0 whitespace-nowrap
+  flex items-center gap-1
+  px-2.5 py-1 sm:px-3 sm:py-1.5
+  rounded-full
+  text-[11px] sm:text-xs font-medium
+  transition-all duration-200
             ${
               isActive
                 ? "bg-orange-500 text-white shadow-md scale-105"
