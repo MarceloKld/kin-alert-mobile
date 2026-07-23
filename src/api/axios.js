@@ -4,10 +4,11 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
 });
 
-// Interceptor
+// Interceptor pour ajouter le token Sanctum
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
