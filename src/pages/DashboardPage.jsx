@@ -267,17 +267,14 @@ useEffect(() => {
 ========================== */}
 
 <div className="flex items-center gap-2 mb-4">
-
   <span className="text-blue-400 text-sm">📰</span>
-
   <h2 className="text-base font-semibold tracking-tight">
     Fil d’Actualité
   </h2>
-
 </div>
 
-     {!loadingStats && stats && (
-  <div className="flex gap-2 mb-5 overflow-x-auto">
+{!loadingStats && stats && (
+  <div className="flex gap-1.5 sm:gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
 
     {[
       { key: "all", label: "Tous", value: stats.total_incidents },
@@ -288,15 +285,15 @@ useEffect(() => {
       <button
         key={item.key}
         onClick={() => setStatusFilter(item.key)}
-        className={`px-3 py-1.5 rounded-full text-xs font-medium transition
+        className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition
           ${
             statusFilter === item.key
               ? "bg-orange-500 text-white"
               : "bg-[#1A3A5A] text-gray-300"
           }`}
       >
-        {item.label}
-        <span className="ml-1 text-[10px] opacity-80">
+        {item.label}{" "}
+        <span className="text-[10px] opacity-80">
           ({item.value})
         </span>
       </button>
@@ -304,6 +301,7 @@ useEffect(() => {
 
   </div>
 )}
+
 
 
 
@@ -379,36 +377,47 @@ useEffect(() => {
 </p>
           </div>
 
-          <div className="flex gap-3 mt-4">
+         <div className="flex gap-1.5 sm:gap-3 mt-4 w-full">
 
-            <button
-  onClick={() => confirmIncident(incident.id)}
-  disabled={loadingConfirm === incident.id}
-  className="bg-gradient-to-r from-blue-500 to-indigo-600 
-             px-4 py-2 rounded-xl text-sm font-medium 
-             shadow-md hover:scale-105 transition-all duration-200
-             disabled:opacity-50"
->
-  {loadingConfirm === incident.id ? "..." : "Confirmer"}
-</button>
+  {/* ✅ CONFIRMER */}
+  <button
+    onClick={() => confirmIncident(incident.id)}
+    disabled={loadingConfirm === incident.id}
+    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 
+               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
+               text-[11px] sm:text-xs font-medium text-white 
+               shadow-md hover:scale-105 transition-all duration-200
+               disabled:opacity-50 flex items-center justify-center text-center"
+  >
+    {loadingConfirm === incident.id ? "..." : "Confirmer"}
+  </button>
 
-            <button
-  onClick={() => setSelectedIncident(incident)}
-  className="bg-gray-700 px-4 py-2 rounded-xl text-sm font-medium 
-             hover:bg-gray-600 transition-all duration-200"
->
-  Commenter
-</button>
+  {/* ✅ COMMENTER */}
+  <button
+    onClick={() => setSelectedIncident(incident)}
+    className="flex-1 bg-gray-700 
+               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
+               text-[11px] sm:text-xs font-medium text-white 
+               hover:bg-gray-600 transition-all duration-200 
+               flex items-center justify-center text-center"
+  >
+    Commenter
+  </button>
 
-<button
-  onClick={() => openCommentsModal(incident)}
-  className="bg-gradient-to-r from-purple-600 to-pink-600 
-             px-4 py-2 rounded-xl text-sm font-medium 
-             shadow-md hover:scale-105 transition-all duration-200"
->
-  Voir les commentaires
-</button>
-          </div>
+  {/* ✅ VOIR LES COMMENTAIRES */}
+  <button
+    onClick={() => openCommentsModal(incident)}
+    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 
+               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
+               text-[10px] sm:text-xs font-medium text-white leading-tight
+               shadow-md hover:scale-105 transition-all duration-200 
+               flex items-center justify-center text-center"
+  >
+    Voir avis
+  </button>
+
+</div>
+
         </div>
       ))}
 
