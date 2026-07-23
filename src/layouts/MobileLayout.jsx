@@ -7,7 +7,7 @@ function MobileLayout({ children }) {
     
 
     {/* ✅ Contenu principal */}
-    <div className="pb-">
+    <div className="pb-20">
       {children}
     </div>
 
