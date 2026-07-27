@@ -13,10 +13,20 @@ import ResetPasswordPage from "./pages/ResetPasswordPage"
 import MobileLayout from "./layouts/MobileLayout";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
 import MesSignalementsPage from "./pages/MesSignalementsPage";
+import usePWA from "./hooks/usePWA";
 
 function App() {
+  const { isInstalled } = usePWA();
 
   return (
+    <>
+      {/* Bannière PWA affichée uniquement si l'application est installée */}
+      {isInstalled && (
+        <div className="bg-yellow-400 text-black text-center py-2 font-semibold">
+          ⭐ Version Premium Installée - Merci pour votre confiance
+        </div>
+      )}
+    
     <Routes>
 
       <Route path="/" element={<LoginPage />} />
@@ -93,7 +103,8 @@ function App() {
 
 
     </Routes>
-  );
+      </> 
+    );
 }
 
 export default App;
