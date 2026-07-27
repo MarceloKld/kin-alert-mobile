@@ -78,12 +78,7 @@ function BottomNav() {
         </NavLink>
 
       </div>
-
-      {/* ✅ iPhone home indicator */}
-      <div className="flex justify-center mt-1">
-        <div className="w-20 h-1 bg-white/30 rounded-full" />
-      </div>
-
+    
     </div>
   );
 }
