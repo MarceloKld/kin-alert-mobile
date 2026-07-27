@@ -14,15 +14,27 @@ import MobileLayout from "./layouts/MobileLayout";
 import IncidentDetailPage from "./pages/IncidentDetailPage";
 import MesSignalementsPage from "./pages/MesSignalementsPage";
 import usePWA from "./hooks/usePWA";
+import { useEffect, useState } from "react";
 
 function App() {
   const { isInstalled } = usePWA();
+  // ✅ initialisation intelligente
+  const [showBanner, setShowBanner] = useState(isInstalled);
+
+  useEffect(() => {
+    if (!isInstalled) return;
+
+    const timer = setTimeout(() => {
+      setShowBanner(false);
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [isInstalled]);
 
   return (
     <>
-      {/* Bannière PWA affichée uniquement si l'application est installée */}
-      {isInstalled && (
-        <div className="bg-yellow-400 text-black text-center py-2 font-semibold">
+      {showBanner && (
+        <div className="bg-yellow-500 text-black text-center py-3 font-semibold">
           ⭐ Version Premium Installée - Merci pour votre confiance
         </div>
       )}
