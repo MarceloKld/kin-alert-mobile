@@ -279,7 +279,7 @@ useEffect(() => {
     {[
       { key: "all", label: "Tous", value: stats.total_incidents },
       { key: "valide", label: "Validé", value: stats.valide },
-      { key: "en_attente", label: "Attente", value: stats.en_attente },
+      { key: "en_attente", label: "En attente", value: stats.en_attente },
       { key: "rejete", label: "Rejeté", value: stats.rejete },
     ].map((item) => (
       <button
@@ -363,7 +363,7 @@ useEffect(() => {
   {incident.statut === "valide"
     ? "Validé"
     : incident.statut === "en_attente"
-    ? "Attente"
+    ? "attente"
     : "Rejeté"}
 </span>
             
