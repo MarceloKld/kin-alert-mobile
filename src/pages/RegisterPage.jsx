@@ -231,10 +231,7 @@ const strength = getPasswordStrength()
         {/* Footer */}
 <p className="text-center text-sm mt-6 text-gray-300">
   Avez-vous déjà un compte ?{" "}
-  <Link
-    to="http://localhost:5173"
-    className="text-yellow-400 hover:underline"
-  >
+ <Link to="/" className="text-yellow-400 hover:underline">
     Se connecter
   </Link>
         </p>
