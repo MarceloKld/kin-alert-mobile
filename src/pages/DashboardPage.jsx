@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import { BarChart3, Newspaper, TrendingUp } from "lucide-react";
+import { 
+  MapPin, 
+  ThumbsUp, 
+  MessageSquare, 
+  Eye, 
+  Calendar, 
+  AlertCircle, 
+  CheckCircle2, 
+  Clock 
+} from "lucide-react";
 
 function DashboardPage() {
 
@@ -44,46 +55,50 @@ const [stats, setStats] = useState({
 
 }, []);
   // ✅ Confirmer incident
-  const confirmIncident = async (id) => {
-  setLoadingConfirm(id);
+ const confirmIncident = async (id) => {
+    // On évite de relancer si c'est déjà en cours
+    if (loadingConfirm === id) return;
 
-  try {
-    await api.post(`/incidents/${id}/confirm`);
+    setLoadingConfirm(id);
 
-    // ✅ Mise à jour complète depuis backend si possible
-    setIncidents((prev) =>
-      prev.map((incident) =>
-        incident.id === id
-          ? {
-              ...incident,
-              nombre_confirmations:
-                (incident.nombre_confirmations || 0) + 1,
-            }
-          : incident
-      )
-    );
+    try {
+      await api.post(`/incidents/${id}/confirm`);
 
-    setToast({
-      type: "success",
-      message: "✅ Confirmation enregistrée",
-    });
+      setIncidents((prev) =>
+        prev.map((incident) =>
+          incident.id === id
+            ? {
+                ...incident,
+                nombre_confirmations: (incident.nombre_confirmations || 0) + 1,
+              }
+            : incident
+        )
+      );
 
-    setTimeout(() => setToast(null), 3000);
+      setToast({
+        type: "success",
+        message: "✅ Confirmation enregistrée",
+      });
 
-  } catch (error) {
-    setToast({
-      type: "error",
-      message:
-        error.response?.data?.message ||
-        "Erreur lors de la confirmation",
-    });
+    } catch (error) {
+      // Si statut 409 (déjà confirmé)
+      const errorMsg = error.response?.status === 409
+        ? "Vous avez déjà confirmé cet incident."
+        : "Erreur lors de la confirmation.";
 
-    setTimeout(() => setToast(null), 3000);
+      setToast({
+        type: "error",
+        message: errorMsg,
+      });
 
-  } finally {
-    setLoadingConfirm(null);
-  }
-};
+    } finally {
+      // Réinitialisation de l'état de chargement
+      setLoadingConfirm(null);
+
+      // Auto-fermeture du toast après 3 secondes
+      setTimeout(() => setToast(null), 3000);
+    }
+  };
 
 //Charger MES incidents
 
@@ -212,65 +227,74 @@ useEffect(() => {
                     from-[#0E223A] to-[#091522] 
                     text-white pb-28 px-4">
                       {toast && (
-  <div className="fixed top-6 right-6 z-50 
-                  animate-slideIn">
+          <div
+            key={toast.message}
+            className="fixed top-6 right-6 z-50 animate-slideIn"
+          >
+            <div
+              className={`px-4 py-3 rounded-xl shadow-2xl text-white text-sm font-bold flex items-center gap-2 ${
+                toast.type === "error" ? "bg-red-500" : "bg-green-500"
+              }`}
+            >
+              {toast.message}
+            </div>
+          </div>
+        )}
 
-    <div className={`px-4 py-3 rounded-xl shadow-2xl 
-                    text-white text-sm 
-                    ${
-                      toast.type === "error"
-                        ? "bg-red-500"
-                        : "bg-green-500"
-                    }`}>
-
-      {toast.message}
-
-    </div>
-
-  </div>
-)}
-
-      {/* ==========================
+   {/* ==========================
     HEADER DASHBOARD PREMIUM
 ========================== */}
-
-<div className="pt-6 mb-6">
-
+<div className="pt-6 mb-8">
   {/* Ligne principale */}
-  <div className="flex items-center gap-3">
-
-    <div className="w-10 h-10 flex items-center justify-center 
+  <div className="flex items-center gap-4">
+    {/* Icone SVG avec dégradé et ombre portée */}
+    <div className="w-12 h-12 flex items-center justify-center 
                     rounded-2xl 
-                    bg-gradient-to-br 
-                    from-indigo-500 to-blue-600 
-                    shadow-lg">
-      📊
+                    bg-gradient-to-br from-indigo-500 to-blue-600 
+                    shadow-[0_8px_20px_rgba(79,70,229,0.3)]
+                    border border-white/10">
+      <BarChart3 size={24} className="text-white" strokeWidth={2.5} />
     </div>
 
-    <div>
-      <h1 className="text-2xl font-bold tracking-tight">
-        Mes Infos
-        <div className="w-15 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mt-1"></div>
-      </h1>
-      <p className="text-xs text-gray-400">
-        Vue globale de votre activité
+    <div className="flex-1">
+      <div className="flex items-center gap-2">
+        <h1 className="text-2xl font-black tracking-tighter text-white uppercase">
+          Mes Infos
+        </h1>
+        <div className="px-2 py-0.5 bg-blue-500/20 rounded-md">
+           <TrendingUp size={12} className="text-blue-400" />
+        </div>
+      </div>
+      
+      {/* Barre décorative dégradée */}
+      <div className="w-20 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mt-1.5 shadow-sm"></div>
+      
+      <p className="text-[11px] text-gray-400 font-medium mt-1 tracking-wide uppercase opacity-70">
+        Statistiques & Activités globales
       </p>
     </div>
-
   </div>
-
 </div>
 
 
 {/* ==========================
     SECTION ACTUALITÉ
 ========================== */}
-
-<div className="flex items-center gap-2 mb-4">
-  <span className="text-blue-400 text-sm">📰</span>
-  <h2 className="text-base font-semibold tracking-tight">
-    Fil d’Actualité
-  </h2>
+<div className="flex items-center justify-between mb-5 px-1">
+  <div className="flex items-center gap-3">
+    <div className="p-2 bg-blue-500/10 rounded-lg border border-blue-500/20">
+      <Newspaper size={18} className="text-blue-400" strokeWidth={2.5} />
+    </div>
+    <h2 className="text-lg font-extrabold tracking-tight text-white uppercase">
+      Fil d’Actualité
+    </h2>
+  </div>
+  
+  {/* Petit badge "Live" pour le côté Premium */}
+  <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full">
+    <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping"></span>
+    <span className="text-[10px] font-bold text-red-500 uppercase">En Direct</span>
+  </div>
 </div>
 
 {!loadingStats && stats && (
@@ -304,123 +328,133 @@ useEffect(() => {
 
 
 
-
+{/* --- SKELETON LOADING PREMIUM --- */}
 {loading && (
-  <div className="space-y-4 mt-6">
-    {[1,2,3].map((i) => (
-      <div
-        key={i}
-        className="bg-[#142E4C] rounded-2xl p-4 animate-pulse"
-      >
-        <div className="h-4 bg-gray-600 rounded w-1/2 mb-3"></div>
-        <div className="h-3 bg-gray-700 rounded w-3/4"></div>
+  <div className="space-y-5 mt-6 px-1">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="bg-[#142E4C]/50 border border-white/5 rounded-[2rem] p-5 animate-pulse">
+        <div className="flex justify-between mb-4">
+          <div className="h-4 bg-gray-700 rounded-full w-24"></div>
+          <div className="h-4 bg-gray-700 rounded-full w-16"></div>
+        </div>
+        <div className="h-6 bg-gray-600 rounded-xl w-3/4 mb-3"></div>
+        <div className="h-4 bg-gray-700 rounded-lg w-1/2"></div>
+        <div className="flex gap-2 mt-6">
+          <div className="h-10 bg-gray-700 rounded-xl flex-1"></div>
+          <div className="h-10 bg-gray-700 rounded-xl flex-1"></div>
+        </div>
       </div>
     ))}
   </div>
 )}
 
-      {!loading && incidents
-  .filter((incident) => {
-  if (statusFilter === "all") return true;
-  return incident.statut === statusFilter;
-})
+{/* --- LISTE DES INCIDENTS --- */}
+{!loading && incidents
+  .filter((incident) => statusFilter === "all" ? true : incident.statut === statusFilter)
   .map((incident) => (
-        <div
-          key={incident.id}
-         className="relative bg-[#142E4C] rounded-2xl p-4 mb-4 shadow-lg animate-fadeUp overflow-hidden">
-{/* Petite barre latérale colorée selon le statut */}
-    <div className={`absolute left-0 top-0 bottom-0 w-1 ${
-      incident.statut === "valide"
-        ? "bg-green-400"
-        : incident.statut === "en_attente"
-        ? "bg-yellow-400"
-        : "bg-red-400"
-    }`} />
-          <div className="flex justify-between items-center">
+    <div
+      key={incident.id}
+      className="relative bg-gradient-to-b from-[#142E4C] to-[#112641] 
+                 rounded-[2.5rem] p-5 mb-5 shadow-2xl border border-white/5 
+                 animate-fadeUp active:scale-[0.98] transition-transform overflow-hidden"
+    >
+      {/* Barre latérale d'état dynamique */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
+        incident.statut === "valide" ? "bg-green-500" : 
+        incident.statut === "en_attente" ? "bg-yellow-500" : "bg-red-500"
+      }`} />
 
-            <div>
-              <p className="text-xs uppercase tracking-widest text-blue-300 font-medium">
-                {incident.type?.titre}
-              </p>
-              <h3 className="text-lg font-semibold tracking-wide">
-                {incident.titre}
-              </h3>
-              <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
-                📍 {incident.localisation?.commune?.nom}
-              </p>
-            </div>
-{/* ✅ BADGE STATUT */}
-<span
-  className={`text-[10px] px-2 py-0.5 rounded-full font-medium
-    ${
-      incident.statut === "valide"
-        ? "bg-green-500/20 text-green-400"
-        : incident.statut === "en_attente"
-        ? "bg-yellow-500/20 text-yellow-400"
-        : "bg-red-500/20 text-red-400"
-    }`}
->
-  {incident.statut === "valide"
-    ? "Validé"
-    : incident.statut === "en_attente"
-    ? "attente"
-    : "Rejeté"}
-</span>
-            
-
-            <span className="text-[9px] text-gray-400 ">
-              {incident.date_creation}
-            </span>
-            
-           <p className="text-[11px] text-blue-400 mt-1 font-medium">
-  👍 {incident.nombre_confirmations || 0} confirmations
-</p>
-          </div>
-
-         <div className="flex gap-1.5 sm:gap-3 mt-4 w-full">
-
-  {/* ✅ CONFIRMER */}
-  <button
-    onClick={() => confirmIncident(incident.id)}
-    disabled={loadingConfirm === incident.id}
-    className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 
-               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
-               text-[11px] sm:text-xs font-medium text-white 
-               shadow-md hover:scale-105 transition-all duration-200
-               disabled:opacity-50 flex items-center justify-center text-center"
-  >
-    {loadingConfirm === incident.id ? "..." : "Confirmer"}
-  </button>
-
-  {/* ✅ COMMENTER */}
-  <button
-    onClick={() => setSelectedIncident(incident)}
-    className="flex-1 bg-gray-700 
-               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
-               text-[11px] sm:text-xs font-medium text-white 
-               hover:bg-gray-600 transition-all duration-200 
-               flex items-center justify-center text-center"
-  >
-    Commenter
-  </button>
-
-  {/* ✅ VOIR LES COMMENTAIRES */}
-  <button
-    onClick={() => openCommentsModal(incident)}
-    className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 
-               px-1.5 py-1.5 sm:px-4 sm:py-2 rounded-xl 
-               text-[10px] sm:text-xs font-medium text-white leading-tight
-               shadow-md hover:scale-105 transition-all duration-200 
-               flex items-center justify-center text-center"
-  >
-    Voir avis
-  </button>
-
-</div>
-
+      {/* Header de la carte */}
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <span className="text-[10px] font-black uppercase tracking-[0.15em] text-blue-400/80">
+            {incident.type?.titre || "Incident"}
+          </span>
+          <h3 className="text-lg font-extrabold text-white leading-tight mt-0.5">
+            {incident.titre}
+          </h3>
         </div>
-      ))}
+        
+        {/* Badge Statut Premium */}
+        <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-bold uppercase border ${
+          incident.statut === "valide" ? "bg-green-500/10 border-green-500/20 text-green-400" : 
+          incident.statut === "en_attente" ? "bg-yellow-500/10 border-yellow-500/20 text-yellow-400" : 
+          "bg-red-500/10 border-red-500/20 text-red-400"
+        }`}>
+          {incident.statut === "valide" && <CheckCircle2 size={10} />}
+          {incident.statut === "en_attente" && <Clock size={10} />}
+          {incident.statut === "rejete" && <AlertCircle size={10} />}
+          {incident.statut}
+        </div>
+      </div>
 
+      {/* Localisation et Date */}
+      <div className="flex flex-col gap-1.5 mb-4">
+        <div className="flex items-center gap-2 text-gray-400">
+          <MapPin size={14} className="text-blue-500" />
+          <span className="text-xs font-medium">{incident.localisation?.commune?.nom}</span>
+        </div>
+        <div className="flex items-center gap-2 text-gray-500">
+          <Calendar size={14} />
+          <span className="text-[10px] uppercase font-bold">{incident.date_creation}</span>
+        </div>
+      </div>
+
+      {/* Compteur de confirmations */}
+      <div className="flex items-center justify-between bg-white/5 rounded-2xl px-4 py-2 mb-5">
+        <div className="flex items-center gap-2">
+          <ThumbsUp size={14} className="text-blue-400" />
+          <span className="text-xs font-bold text-blue-100">
+            {incident.nombre_confirmations || 0} Confirmations
+          </span>
+        </div>
+        <div className="h-1.5 w-20 bg-gray-700 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-blue-500 rounded-full" 
+            style={{ width: `${Math.min((incident.nombre_confirmations || 0) * 10, 100)}%` }}
+          ></div>
+        </div>
+      </div>
+
+      {/* ACTIONS BOUTONS PREMIUM */}
+      <div className="flex gap-2 w-full">
+        {/* CONFIRMER */}
+        <button
+            onClick={() => confirmIncident(incident.id)}
+            disabled={loadingConfirm === incident.id}
+            className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 h-12 rounded-2xl flex items-center justify-center gap-2 text-[11px] font-black text-white shadow-lg active:scale-95 disabled:opacity-50 transition-all"
+          >
+            {/* Structure DOM fixe pour éviter le bug removeChild */}
+            <div className="flex items-center gap-2">
+              {loadingConfirm === incident.id ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <ThumbsUp size={14} strokeWidth={3} />
+              )}
+              <span>{loadingConfirm === incident.id ? "CHARGEMENT..." : "CONFIRMER"}</span>
+            </div>
+          </button>
+
+        {/* COMMENTER */}
+        <button
+          onClick={() => setSelectedIncident(incident)}
+          className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl 
+                     flex items-center justify-center text-white active:scale-95 transition-all"
+        >
+          <MessageSquare size={18} />
+        </button>
+
+        {/* VOIR AVIS */}
+        <button
+          onClick={() => openCommentsModal(incident)}
+          className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl 
+                     flex items-center justify-center text-white active:scale-95 transition-all"
+        >
+          <Eye size={18} />
+        </button>
+      </div>
+    </div>
+  ))}
       {/* ✅ Modal Commentaire */}
       {selectedIncident && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
