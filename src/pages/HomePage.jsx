@@ -50,7 +50,7 @@ const blueTempIcon = new L.Icon({
   iconSize: [32, 32],
 });
 const [loadingFilters, setLoadingFilters] = useState(true);
-
+const [sosLoading, setSosLoading] = useState(false);
 
 
 
@@ -200,35 +200,30 @@ useEffect(() => {
 
 const handleSOS = async () => {
   if (!userPosition) {
-    setToast({ type: "error", message: "Position non trouvée !" });
+    setToast({ type: "error", message: "Position GPS non détectée !" });
     return;
   }
-
-  setLoadingConfirm(true); // Utilise un loader global
-  
+  setSosLoading(true);
   try {
-    // On crée un signalement automatique "Urgence Absolue"
     const formData = new FormData();
-    formData.append("titre", "⚠️ URGENCE : DANGER IMMÉDIAT");
-    formData.append("description", "Alerte de sécurité critique lancée via le bouton SOS.");
-    formData.append("type_incident_id", 1); // ID correspondant à "Agression" ou "Sécurité" dans ta BDD
+    formData.append("titre", "🚨 DANGER IMMÉDIAT");
+    formData.append("description", "Alerte SOS lancée en un clic via le bouton d'urgence.");
+    formData.append("type_incident_id", 1); // ID à vérifier dans ta table types_incidents
     formData.append("latitude", userPosition[0]);
     formData.append("longitude", userPosition[1]);
+    formData.append("commune_id", 1); // Par défaut ou à détecter
+    formData.append("avenue", "Position GPS Précise");
     formData.append("statut", "en_attente");
-    formData.append("commune_id", 1); // Par défaut ou détection rapide
-    formData.append("avenue", "Position GPS précise");
 
     await api.post("/incidents", formData);
     
-    setToast({ type: "success", message: "ALERTE SOS ENVOYÉE ! Les secours sont informés." });
-    // Vibration du téléphone si supporté
+    setToast({ type: "success", message: "SOS ENVOYÉ ! Restez en lieu sûr." });
     if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
-
   } catch (error) {
-    console.error("Erreur lors de l'envoi SOS :", error);
-    setToast({ type: "error", message: "Échec de l'envoi SOS" });
+    console.error(error);
+    setToast({ type: "error", message: "Échec de l'envoi du SOS." });
   } finally {
-    setLoadingConfirm(false);
+    setSosLoading(false);
   }
 };
 
@@ -240,7 +235,7 @@ const handleSOS = async () => {
 
 
 return (
-  <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-hidden">
+  <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-y-auto no-scrollbar pb-32">
 {toast && (
   <div
     className={`fixed top-4 right-4 
@@ -517,48 +512,69 @@ return (
         </div>
       </div>
 
-      {/* BOUTON SOS PANIC */}
-<button
-  onClick={handleSOS}
-  className="fixed bottom-28 right-4 w-16 h-16 bg-red-600 rounded-full 
-             flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.8)]
-             z-[50] border-4 border-white animate-pulse active:scale-90 transition-transform"
->
-  <span className="text-white font-black text-xl">SOS</span>
-</button>
+      {/* --- ZONE D'ACTION PREMIUM --- */}
+<div className="flex flex-col items-center gap-8 mt-10 px-6 pb-20">
+  
+  {/* Bouton Signaler Central - Effet Glow */}
+  <button
+    onClick={() => selectedPosition ? navigate("/report", { state: { selectedPosition } }) : setToast({type:"error", message:"Sélectionnez votre position"})}
+    className="w-40 h-40 rounded-full bg-gradient-to-tr from-orange-600 to-orange-400 
+               shadow-[0_0_50px_rgba(234,88,12,0.3)] border-8 border-[#0E223A]
+               flex flex-col items-center justify-center text-white font-black
+               animate-pulseGlow active:scale-95 transition-all duration-300"
+  >
+    <span className="text-2xl">SIGNALER</span>
+    <span className="text-[10px] font-light tracking-[0.2em] opacity-80">INCIDENT</span>
+  </button>
 
-      {/* ✅ BOUTON CENTRAL */}
-      <div className="absolute left-1/2 
-                -translate-x-1/2 
-                bottom-25">
+  {/* BOUTON SOS PANIC - Version Améliorée */}
+       <button
+        onClick={handleSOS}
+        disabled={sosLoading}
+        className={`w-full py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.4)] transition-all active:scale-95 z-40
+          ${sosLoading ? 'bg-red-900' : 'bg-red-600 animate-pulse'}`}
+      >
+        {sosLoading ? (
+          <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : (
+          <>
+             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+               <Siren size={20} className="text-white" />
+             </div>
+             <span className="text-white font-black text-lg tracking-tighter">SOS DANGER IMMÉDIAT</span>
+          </>
+        )}
+      </button>
 
-        <button
-          onClick={() => {
-  if (!selectedPosition) {
-    setToast({
-      type: "error",
-      message: "Veuillez d'abord sélectionner votre position."
-    });
-    return;
-  }
-
-  navigate("/report", { state: { selectedPosition } });
-}}
-          className="w-36 h-36 rounded-full 
-             bg-gradient-to-b 
-             from-orange-400 to-orange-600 
-             shadow-[0_15px_40px_rgba(255,140,0,0.5)]
-             text-white font-bold text-base
-             flex flex-col items-center justify-center
-             leading-tight
-             transition active:scale-95 animate-float"
-        >
-          SIGNALER
-          <br />
-          UNE ALERTE
-        </button>
-
+  {/* DESCRIPTIONS PREMIUM */}
+  <div className="w-full space-y-4">
+    <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-4 animate-fadeUp">
+      <div className="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-400">
+        🛡️
       </div>
+      <div>
+        <h4 className="text-white text-sm font-bold">Protection Kuluna</h4>
+        <p className="text-[10px] text-gray-400">Signalement instantané aux patrouilles d'intervention.</p>
+      </div>
+    </div>
+
+    <div 
+      className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-4 animate-fadeUp" 
+      style={{ animationDelay: '0.1s' }}
+    >
+      <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400">
+        📡
+      </div>
+      <div>
+        <h4 className="text-white text-sm font-bold">Réseau d'Alerte</h4>
+        <p className="text-[10px] text-gray-400">Votre communauté est prévenue en moins de 5 secondes.</p>
+      </div>
+    </div>
+  </div>
+
+  {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
+  <div className="h-10"></div>
+</div>
 
     </div>
 {showModal && selectedIncident && (
