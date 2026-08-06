@@ -2,9 +2,12 @@ import { useState, useEffect } from "react";
 import api from "../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
 
+
 function ReportIncidentPage() {
   const navigate = useNavigate();
   const location = useLocation();
+
+
 
   const initialPosition = location?.state?.selectedPosition || null;
 
@@ -69,6 +72,24 @@ function ReportIncidentPage() {
   }
 }, [latitude]);
 
+
+// 🔒 Détection intelligente des termes militaires
+  const checkMilitaryContent = (text) => {
+    if (!text) return false;
+
+    // Regex sans erreurs ESLint (gère les points, espaces et tirets : F.A.R.D.C, F-A-R-D-C, F A R D C)
+    const fardcRegex = /f[.\s-]*a[.\s-]*r[.\s-]*d[.\s-]*c/i;
+    if (fardcRegex.test(text)) return true;
+
+    const forbiddenWords = [
+      "militaire", "soldat", "armée", "convoi", "patrouille", "fard", "efardc",
+      "général", "colonel", "wazalendo", "garde républicaine", "base militaire"
+    ];
+
+    const lowerText = text.toLowerCase();
+    return forbiddenWords.some((word) => lowerText.includes(word));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,6 +100,19 @@ function ReportIncidentPage() {
 
     if (!titre || !description || !typeIncidentId || !communeId || !avenue) {
       setToast({ type: "error", message: "Tous les champs sont obligatoires." });
+      return;
+    }
+
+    // 🔒 Détection des mots interdits (FARDC / Mouvements militaires)
+    // 🔒 Détection des mots interdits (FARDC / Mouvements militaires)
+    const contentToScan = `${titre} ${description}`;
+
+    if (checkMilitaryContent(contentToScan)) {
+      setToast({
+        type: "error",
+        message:
+          "⚠️ Sécurité : Il est strictement interdit de partager des informations sur les mouvements militaires (FARDC).",
+      });
       return;
     }
 
