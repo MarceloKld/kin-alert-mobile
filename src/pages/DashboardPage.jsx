@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import { BarChart3, Newspaper, TrendingUp } from "lucide-react";
+import { BarChart3, Newspaper, TrendingUp,LayoutGrid, CheckCircle2, Clock, XCircle, MapPin } from "lucide-react";
 import { 
-  MapPin, 
   ThumbsUp, 
   MessageSquare, 
   Eye, 
   Calendar, 
   AlertCircle, 
-  CheckCircle2, 
-  Clock 
 } from "lucide-react";
 
 function DashboardPage() {
@@ -297,51 +294,77 @@ useEffect(() => {
   </div>
 </div>
 
+{/* --- FILTRES DE STATUT PREMIUM --- */}
 {!loadingStats && stats && (
-  <div className="flex gap-1.5 sm:gap-2 mb-5 overflow-x-auto pb-1 no-scrollbar">
-
+  <div className="flex gap-3 mb-8 overflow-x-auto py-2 no-scrollbar scroll-smooth">
     {[
-      { key: "all", label: "Tous", value: stats.total_incidents },
-      { key: "valide", label: "Validé", value: stats.valide },
-      { key: "en_attente", label: "En attente", value: stats.en_attente },
-      { key: "rejete", label: "Rejeté", value: stats.rejete },
-    ].map((item) => (
-      <button
-        key={item.key}
-        onClick={() => setStatusFilter(item.key)}
-        className={`shrink-0 whitespace-nowrap px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition
-          ${
-            statusFilter === item.key
-              ? "bg-orange-500 text-white"
-              : "bg-[#1A3A5A] text-gray-300"
-          }`}
-      >
-        {item.label}{" "}
-        <span className="text-[10px] opacity-80">
-          ({item.value})
-        </span>
-      </button>
-    ))}
+      { key: "all", label: "Tous", value: stats.total_incidents, icon: LayoutGrid, color: "orange" },
+      { key: "valide", label: "Validé", value: stats.valide, icon: CheckCircle2, color: "green" },
+      { key: "en_attente", label: "Attente", value: stats.en_attente, icon: Clock, color: "yellow" },
+      { key: "rejete", label: "Rejeté", value: stats.rejete, icon: XCircle, color: "red" },
+    ].map((item) => {
+      const isActive = statusFilter === item.key;
+      const Icon = item.icon;
+      
+      // Classes dynamiques pour les couleurs
+      const activeStyles = {
+        orange: "bg-orange-500 border-orange-400 shadow-orange-900/40",
+        green: "bg-green-600 border-green-400 shadow-green-900/40",
+        yellow: "bg-yellow-500 border-yellow-300 shadow-yellow-900/40",
+        red: "bg-red-600 border-red-400 shadow-red-900/40",
+      };
 
+      return (
+        <button
+          key={item.key}
+          onClick={() => setStatusFilter(item.key)}
+          className={`shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all duration-300 active:scale-90
+            ${isActive 
+              ? `${activeStyles[item.color]} text-white shadow-xl scale-105` 
+              : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
+            }`}
+        >
+          <Icon size={16} strokeWidth={isActive ? 3 : 2} className={isActive ? "animate-pulse" : "opacity-60"} />
+          
+          <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "opacity-100" : "opacity-80"}`}>
+            {item.label}
+          </span>
+
+          <span className={`flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-lg text-[10px] font-black
+            ${isActive ? "bg-white/20 text-white" : "bg-white/10 text-gray-500"}`}>
+            {item.value || 0}
+          </span>
+        </button>
+      );
+    })}
   </div>
 )}
 
-
-
 {/* --- SKELETON LOADING PREMIUM --- */}
 {loading && (
-  <div className="space-y-5 mt-6 px-1">
+  <div className="space-y-6 mt-4 px-1">
     {[1, 2, 3].map((i) => (
-      <div key={i} className="bg-[#142E4C]/50 border border-white/5 rounded-[2rem] p-5 animate-pulse">
-        <div className="flex justify-between mb-4">
-          <div className="h-4 bg-gray-700 rounded-full w-24"></div>
-          <div className="h-4 bg-gray-700 rounded-full w-16"></div>
+      <div key={i} className="bg-[#142E4C]/50 border border-white/5 rounded-[2.5rem] p-6 animate-pulse">
+        {/* Header du skeleton */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="space-y-2">
+            <div className="h-3 bg-gray-700 rounded-full w-20"></div>
+            <div className="h-6 bg-gray-600 rounded-xl w-48"></div>
+          </div>
+          <div className="h-6 bg-gray-700 rounded-full w-20"></div>
         </div>
-        <div className="h-6 bg-gray-600 rounded-xl w-3/4 mb-3"></div>
-        <div className="h-4 bg-gray-700 rounded-lg w-1/2"></div>
-        <div className="flex gap-2 mt-6">
-          <div className="h-10 bg-gray-700 rounded-xl flex-1"></div>
-          <div className="h-10 bg-gray-700 rounded-xl flex-1"></div>
+
+        {/* Corps du skeleton (Localisation) */}
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-4 h-4 bg-gray-700 rounded-full"></div>
+          <div className="h-4 bg-gray-700 rounded-lg w-32"></div>
+        </div>
+
+        {/* Footer du skeleton (Actions) */}
+        <div className="flex gap-3">
+          <div className="h-12 bg-gray-700 rounded-2xl flex-1"></div>
+          <div className="h-12 bg-gray-700 rounded-2xl w-12"></div>
+          <div className="h-12 bg-gray-700 rounded-2xl w-12"></div>
         </div>
       </div>
     ))}
