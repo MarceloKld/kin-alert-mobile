@@ -117,6 +117,58 @@ function ReportIncidentPage() {
     }
   };
 
+  // Ajoute cette fonction dans ReportIncidentPage.jsx avant le useEffect de géolocalisation
+
+const reverseGeocode = async (lat, lon) => {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`
+    );
+    const data = await response.json();
+    
+    if (data.address) {
+      // 1. Récupérer l'avenue (road dans Nominatim)
+      const road = data.address.road || data.address.pedestrian || "Avenue non détectée";
+      setAvenue(road);
+
+      // 2. Récupérer la commune (suburb ou city_district)
+      const detectedCommune = data.address.suburb || data.address.city_district || "";
+      
+      // 3. Matcher automatiquement avec ton array 'communes' venant de la BDD
+      if (detectedCommune && communes.length > 0) {
+        const match = communes.find(c => 
+          detectedCommune.toLowerCase().includes(c.nom.toLowerCase()) || 
+          c.nom.toLowerCase().includes(detectedCommune.toLowerCase())
+        );
+        if (match) setCommuneId(match.id);
+      }
+    }
+  } catch (error) {
+    console.error("Erreur reverse geocoding", error);
+  }
+};
+
+// Modifie ton useEffect de géolocalisation pour appeler cette fonction
+useEffect(() => {
+  if (latitude === null && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setLatitude(lat);
+        setLongitude(lng);
+        // APPEL ICI
+        if (communes.length > 0) reverseGeocode(lat, lng);
+      },
+      (error) => { console.error("Erreur lors de la géolocalisation :", error); }
+    );
+  }
+}, [latitude, communes]); // Ajoute communes en dépendance
+
+
+
+
+
   return (
     <div className="min-h-screen 
                 bg-gradient-to-br 

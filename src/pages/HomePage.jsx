@@ -198,6 +198,40 @@ useEffect(() => {
   }
 }, [toast]);
 
+const handleSOS = async () => {
+  if (!userPosition) {
+    setToast({ type: "error", message: "Position non trouvée !" });
+    return;
+  }
+
+  setLoadingConfirm(true); // Utilise un loader global
+  
+  try {
+    // On crée un signalement automatique "Urgence Absolue"
+    const formData = new FormData();
+    formData.append("titre", "⚠️ URGENCE : DANGER IMMÉDIAT");
+    formData.append("description", "Alerte de sécurité critique lancée via le bouton SOS.");
+    formData.append("type_incident_id", 1); // ID correspondant à "Agression" ou "Sécurité" dans ta BDD
+    formData.append("latitude", userPosition[0]);
+    formData.append("longitude", userPosition[1]);
+    formData.append("statut", "en_attente");
+    formData.append("commune_id", 1); // Par défaut ou détection rapide
+    formData.append("avenue", "Position GPS précise");
+
+    await api.post("/incidents", formData);
+    
+    setToast({ type: "success", message: "ALERTE SOS ENVOYÉE ! Les secours sont informés." });
+    // Vibration du téléphone si supporté
+    if (navigator.vibrate) navigator.vibrate([500, 200, 500]);
+
+  } catch (error) {
+    console.error("Erreur lors de l'envoi SOS :", error);
+    setToast({ type: "error", message: "Échec de l'envoi SOS" });
+  } finally {
+    setLoadingConfirm(false);
+  }
+};
+
 
 
 
@@ -482,6 +516,16 @@ return (
 
         </div>
       </div>
+
+      {/* BOUTON SOS PANIC */}
+<button
+  onClick={handleSOS}
+  className="fixed bottom-28 right-4 w-16 h-16 bg-red-600 rounded-full 
+             flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.8)]
+             z-[50] border-4 border-white animate-pulse active:scale-90 transition-transform"
+>
+  <span className="text-white font-black text-xl">SOS</span>
+</button>
 
       {/* ✅ BOUTON CENTRAL */}
       <div className="absolute left-1/2 
