@@ -8,6 +8,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Bell, Siren, ShieldCheck, Radio } from "lucide-react";
 import { ShieldAlert,LayoutGrid, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { MapPin, CheckCircle } from "lucide-react";
 
 
 
@@ -363,19 +364,30 @@ return (
   </div>
 </div>
 
-<div className="px-4 mb-3">
+<div className="px-4 mb-4">
   <button
     onClick={selectMyPosition}
     disabled={!!selectedPosition}
-    className={`w-full py-2 rounded-xl font-semibold shadow-md transition 
-    active:scale-95
+    className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-all active:scale-95 
     ${
       selectedPosition
-        ? "bg-green-600 text-white cursor-not-allowed"
-        : "bg-blue-600 text-white"
+        ? "bg-green-600 text-white cursor-not-allowed opacity-90"
+        : "bg-blue-600 text-white shadow-blue-900/20"
     }`}
   >
-    {selectedPosition ? "✅ Position sélectionnée" : "📍 Sélectionner ma position"}
+    {selectedPosition ? (
+      <>
+        {/* Icône de succès */}
+        <CheckCircle size={18} strokeWidth={3} />
+        <span>Position Verrouillée</span>
+      </>
+    ) : (
+      <>
+        {/* Icône de localisation qui pulse */}
+        <MapPin size={18} strokeWidth={2.5} className="animate-pulse" />
+        <span>Sélectionner ma position</span>
+      </>
+    )}
   </button>
 </div>
 
