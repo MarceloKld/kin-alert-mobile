@@ -11,7 +11,10 @@ import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import { Bell, Siren } from "lucide-react";
+import { Bell, Siren, ShieldCheck, Radio } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+
+
 
 // ✅ Icônes personnalisées selon statut
 
@@ -273,55 +276,28 @@ return (
 
   <div className="flex justify-between items-center">
 
-    {/* Notifications */}
-    <div className="relative flex items-center justify-center 
-                    w-10 h-10 
-                    rounded-xl 
-                    bg-white/10 backdrop-blur-sm">
-
-      <span className="absolute -top-1 -right-1 
-                       bg-red-600 text-white 
-                       text-[10px] font-semibold 
-                       rounded-full 
-                       min-w-[18px] h-[18px] 
-                       flex items-center justify-center">
-        3
-      </span>
-
-      <Bell size={20} strokeWidth={2} className="animate-pulse"/>
-    </div>
-
-
-    {/* Titre */}
-    <div className="text-center">
-      <h1 className="text-xl font-bold tracking-wide">
-        Kin‑Alert
-      </h1>
-      <p className="text-[11px] text-orange-100">
-        Sécurité communautaire
-      </p>
-    </div>
-
-
-    {/* Alertes */}
-    <div className="relative flex items-center justify-center 
-                    w-10 h-10 
-                    rounded-xl 
-                    bg-white/10 backdrop-blur-sm">
-
-      <span className="absolute -top-1 -right-1 
-                       bg-red-600 text-white 
-                       text-[10px] font-semibold 
-                       rounded-full 
-                       min-w-[18px] h-[18px] 
-                       flex items-center justify-center">
-        6
-      </span>
-
-      <Siren size={20} strokeWidth={2} className="text-red-200" />
-    </div>
-
+  {/* Notification avec indicateur pulsé */}
+  <div className="relative p-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+    <Bell size={22} className="text-white/90" />
+    <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 border-2 border-orange-600 rounded-full animate-ping"></span>
+    <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 border-2 border-orange-600 rounded-full"></span>
   </div>
+
+  {/* Titre KIN-ALERT */}
+  <div className="text-center">
+    <h1 className="text-2xl font-black tracking-tighter text-white">KIN-ALERT</h1>
+    <div className="flex items-center justify-center gap-1">
+      <ShieldCheck size={12} className="text-orange-200" />
+      <span className="text-[10px] uppercase tracking-widest font-bold text-orange-100">Protection Civile</span>
+    </div>
+  </div>
+
+  {/* Icône Alerte */}
+  <div className="p-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
+    <Siren size={22} className="text-red-200 animate-pulse" />
+  </div>
+
+</div>
 
 </div>
 
@@ -546,32 +522,47 @@ return (
         )}
       </button>
 
-  {/* DESCRIPTIONS PREMIUM */}
-  <div className="w-full space-y-4">
-    <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-4 animate-fadeUp">
-      <div className="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-400">
-        🛡️
-      </div>
-      <div>
-        <h4 className="text-white text-sm font-bold">Protection Kuluna</h4>
-        <p className="text-[10px] text-gray-400">Signalement instantané aux patrouilles d'intervention.</p>
-      </div>
-    </div>
+ {/* DESCRIPTIONS PREMIUM AVEC SVGs */}
+<div className="w-full space-y-4 px-2">
 
-    <div 
-      className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-4 animate-fadeUp" 
-      style={{ animationDelay: '0.1s' }}
-    >
-      <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400">
-        📡
-      </div>
-      <div>
-        <h4 className="text-white text-sm font-bold">Réseau d'Alerte</h4>
-        <p className="text-[10px] text-gray-400">Votre communauté est prévenue en moins de 5 secondes.</p>
-      </div>
+  {/* Item 1: Protection Kuluna */}
+  <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp">
+    <div className="w-14 h-14 flex-none bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 shadow-lg shadow-orange-900/20">
+      <ShieldAlert
+        size={28}
+        className="text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]"
+        strokeWidth={2}
+      />
+    </div>
+    <div>
+      <h4 className="text-white text-base font-extrabold tracking-tight">Protection Kuluna</h4>
+      <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+        Signalement prioritaire envoyé directement aux unités mobiles d'intervention.
+      </p>
     </div>
   </div>
 
+  {/* Item 2: Réseau d'Alerte */}
+  <div
+    className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp"
+    style={{ animationDelay: '0.15s' }}
+  >
+    <div className="w-14 h-14 flex-none bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 shadow-lg shadow-blue-900/20">
+      <Radio
+        size={28}
+        className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)] animate-pulse"
+        strokeWidth={2}
+      />
+    </div>
+    <div>
+      <h4 className="text-white text-base font-extrabold tracking-tight">Réseau d'Alerte</h4>
+      <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+        Diffusion instantanée aux citoyens dans un rayon de 2km pour une vigilance collective.
+      </p>
+    </div>
+  </div>
+
+</div>
   {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
   <div className="h-10"></div>
 </div>
