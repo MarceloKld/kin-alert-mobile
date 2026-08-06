@@ -1,18 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-} from "react-leaflet";
+import { MapContainer,TileLayer,Marker,Popup,} from "react-leaflet";
 import L from "leaflet";
 import api from "../api/axios";
 import "leaflet/dist/leaflet.css";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import { Bell, Siren, ShieldCheck, Radio } from "lucide-react";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert,LayoutGrid, CheckCircle2, Clock, XCircle } from "lucide-react";
 
 
 
@@ -300,70 +295,72 @@ return (
 </div>
 
 </div>
+<div className="bg-[#0E223A] px-2 py-4">
+  <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
+    
+    {loadingFilters ? (
+      // --- SKELETON LOADING PREMIUM ---
+      <>
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="h-11 w-28 bg-white/5 border border-white/10 rounded-2xl animate-pulse shrink-0"></div>
+        ))}
+      </>
+    ) : (
+      // --- FILTRES ACTIFS ---
+      [
+        { id: "all", label: "Tous", icon: LayoutGrid },
+        { id: "valide", label: "Validés", icon: CheckCircle2 },
+        { id: "en_attente", label: "Attente", icon: Clock },
+        { id: "rejete", label: "Rejetés", icon: XCircle }
+      ].map((statusObj) => {
+        
+        const count = incidents.filter(
+          (i) => statusObj.id === "all" ? true : i.statut === statusObj.id
+        ).length;
 
+        const isActive = mapFilter === statusObj.id;
+        const Icon = statusObj.icon;
 
-    <div className="bg-[#0E223A] px-0.5 py-1">
-
- <div className="flex gap-1.5 sm:gap-2 overflow-x-auto px-2 pb-1 no-scrollbar">
-
-
-  {loadingFilters ? (
-    <>
-      <div className="h-7 w-16 bg-white/10 rounded-full animate-pulse"></div>
-      <div className="h-7 w-20 bg-white/10 rounded-full animate-pulse"></div>
-      <div className="h-7 w-24 bg-white/10 rounded-full animate-pulse"></div>
-      <div className="h-7 w-20 bg-white/10 rounded-full animate-pulse"></div>
-    </>
-  ) : (
-    ["all", "valide", "en_attente", "rejete"].map((status) => {
-
-      const count = incidents.filter(
-        (i) => status === "all" ? true : i.statut === status
-      ).length;
-
-      const isActive = mapFilter === status;
-
-      return (
-        <button
-          key={status}
-          onClick={() => setMapFilter(status)}
-          className={`
-           shrink-0 whitespace-nowrap
-  flex items-center gap-1
-  px-2.5 py-1 sm:px-3 sm:py-1.5
-  rounded-full
-  text-[11px] sm:text-xs font-medium
-  transition-all duration-200
-            ${
-              isActive
-                ? "bg-orange-500 text-white shadow-md scale-105"
-                : "bg-white/10 text-white border border-white/20 hover:bg-white/20"
-            }
-          `}
-        >
-          {status === "all"
-            ? "Tous"
-            : status.replace("_", " ")}
-
-          <span
+        return (
+          <button
+            key={statusObj.id}
+            onClick={() => setMapFilter(statusObj.id)}
             className={`
-              text-[10px] px-1.5 py-0.5 rounded-full
-              ${
-                isActive
-                  ? "bg-white/20 text-white"
-                  : "bg-white/10 text-gray-200"
+              shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all duration-300 active:scale-90
+              ${isActive
+                ? "bg-orange-600 border-orange-400 text-white shadow-[0_8px_20px_rgba(234,88,12,0.3)] scale-105"
+                : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
               }
             `}
           >
-            {count}
-          </span>
-        </button>
-      );
-    })
-  )}
+            {/* Icône SVG avec animation si actif */}
+            <Icon 
+              size={16} 
+              strokeWidth={isActive ? 3 : 2} 
+              className={isActive ? "animate-pulse" : "opacity-60"} 
+            />
 
-</div>
+            <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "opacity-100" : "opacity-80"}`}>
+              {statusObj.label}
+            </span>
 
+            {/* Badge de compteur stylisé */}
+            <span
+              className={`
+                flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-lg text-[10px] font-black
+                ${isActive
+                  ? "bg-white/20 text-white"
+                  : "bg-white/10 text-gray-500"
+                }
+              `}
+            >
+              {count}
+            </span>
+          </button>
+        );
+      })
+    )}
+  </div>
 </div>
 
 <div className="px-4 mb-3">
