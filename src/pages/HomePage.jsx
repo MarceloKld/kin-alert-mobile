@@ -235,9 +235,9 @@ const handleSOS = async () => {
 
 return (
   <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-y-auto no-scrollbar pb-32">
-{toast && (
-  <div
-    className={`fixed top-4 right-4 
+    {toast && (
+      <div
+        className={`fixed top-4 right-4 
     px-4 py-2 
     rounded-lg 
     shadow-lg 
@@ -249,423 +249,582 @@ return (
       toast.type === "success"
         ? "bg-green-600"
         : toast.type === "error"
-        ? "bg-red-600"
-        : "bg-blue-600"
+          ? "bg-red-600"
+          : "bg-blue-600"
     }`}
-  >
-    {toast.message}
-  </div>
-)}
+      >
+        {toast.message}
+      </div>
+    )}
 
-
-{/* ==========================
+    {/* ==========================
     HEADER HOME PREMIUM SVG
 ========================== */}
 
-<div className="bg-gradient-to-br 
+    <div
+      className="bg-gradient-to-br 
                 from-orange-500 
                 via-orange-600 
                 to-orange-700
                 text-white 
                 pt-3 pb-6 px-5
-                shadow-lg">
+                shadow-lg"
+    >
+      <div className="flex justify-between items-center">
+        {/* ========================================
+    BOUTON NOTIFICATION
+    - Badge numérique
+    - Double ping animation
+    - Hover effect
+======================================== */}
+        <button
+          className="group relative 
+             p-3 
+             bg-white/10 backdrop-blur-md 
+             rounded-2xl 
+             border border-white/20 
+             shadow-lg 
+             hover:bg-white/20 
+             transition-all duration-300 
+             hover:scale-105 active:scale-95
+             shrink-0"
+        >
+          {/* Glow au hover */}
+          <div
+            className="absolute inset-0 
+                  bg-gradient-to-br from-red-500/20 to-orange-500/20 
+                  rounded-2xl 
+                  opacity-0 group-hover:opacity-100 
+                  transition-opacity duration-300"
+          />
 
-  <div className="flex justify-between items-center">
+          {/* Icône Bell */}
+          <Bell size={22} className="relative text-white drop-shadow-lg" />
 
-  {/* Notification avec indicateur pulsé */}
-  <div className="relative p-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
-    <Bell size={22} className="text-white/90" />
-    <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 border-2 border-orange-600 rounded-full animate-ping"></span>
-    <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 border-2 border-orange-600 rounded-full"></span>
-  </div>
+          {/* Badge notification avec nombre */}
+          <span className="absolute -top-1 -right-1 flex h-5 w-5">
+            {/* Animation ping (cercle externe) */}
+            <span
+              className="animate-ping 
+                     absolute inline-flex 
+                     h-full w-full 
+                     rounded-full 
+                     bg-red-500 
+                     opacity-75"
+            ></span>
 
-  {/* Titre KIN-ALERT VERSION  */}
-  <div className="text-center">
-    <h1 className="text-2xl font-black tracking-tighter text-white">KIN-ALERT</h1>
-    <div className="flex items-center justify-center gap-1">
-      <ShieldCheck size={12} className="text-orange-200" />
-      <span className="text-[10px] uppercase tracking-widest font-bold text-orange-100">Protection Civile</span>
+            {/* Badge fixe avec nombre */}
+            <span
+              className="relative 
+                     inline-flex items-center justify-center 
+                     rounded-full 
+                     h-5 w-5 
+                     bg-gradient-to-br from-red-500 to-red-600 
+                     border-2 border-white 
+                     shadow-lg 
+                     text-[10px] font-bold text-white"
+            ></span>
+          </span>
+        </button>
+
+        {/* ========================================
+    TITRE CENTRAL KIN-ALERT
+    - Glassmorphism
+    - Gradient text
+    - Point live
+======================================== */}
+        <div
+          className="flex-1 
+                text-center 
+                px-4 py-2.5
+                bg-white/10 backdrop-blur-xl 
+                rounded-2xl 
+                border border-white/20 
+                shadow-2xl 
+                relative
+                max-w-xs mx-auto"
+        >
+          {/* Glow derrière */}
+          <div
+            className="absolute inset-0 
+                  bg-white/20 
+                  blur-2xl 
+                  rounded-full 
+                  -z-10"
+          />
+
+          {/* Titre principal */}
+          <h1
+            className="text-2xl 
+                 font-black 
+                 tracking-tighter 
+                 leading-tight"
+          >
+            <span
+              className="bg-gradient-to-r 
+                     from-white via-orange-100 to-white 
+                     bg-clip-text text-transparent 
+                     drop-shadow-lg"
+            >
+              KIN-ALERT
+            </span>
+          </h1>
+
+          {/* Sous-titre avec icône */}
+          <div className="flex items-center justify-center gap-1.5 mt-1">
+            <ShieldCheck size={14} className="text-orange-200 drop-shadow" />
+
+            <span
+              className="text-[10px] 
+                     uppercase 
+                     tracking-widest 
+                     font-bold 
+                     bg-gradient-to-r from-orange-100 to-white 
+                     bg-clip-text text-transparent"
+            >
+              Protection Civile
+            </span>
+
+            {/* Point live */}
+            <span className="flex h-2 w-2 ml-1">
+              <span
+                className="animate-ping 
+                       absolute inline-flex 
+                       h-2 w-2 
+                       rounded-full 
+                       bg-green-400 
+                       opacity-75"
+              ></span>
+              <span
+                className="relative 
+                       inline-flex 
+                       rounded-full 
+                       h-2 w-2 
+                       bg-green-400 
+                       shadow-lg shadow-green-400/50"
+              ></span>
+            </span>
+          </div>
+        </div>
+
+        {/* ========================================
+    BOUTON ALERTE SOS
+    - Badge LIVE
+    - Glow rouge pulsant
+    - Animation wiggle
+======================================== */}
+        <button
+          className="group relative 
+             p-3 
+             bg-white/10 backdrop-blur-md 
+             rounded-2xl 
+             border border-white/20 
+             shadow-lg 
+             hover:bg-white/20 
+             transition-all duration-300 
+             hover:scale-110 active:scale-95
+             shrink-0"
+        >
+          {/* Glow rouge pulsant */}
+          <div
+            className="absolute inset-0 
+                  bg-red-500 
+                  rounded-2xl 
+                  blur-xl 
+                  opacity-30 
+                  animate-pulse"
+          />
+
+          {/* Icône Siren avec wiggle */}
+          <Siren
+            size={22}
+            className="relative 
+                    text-red-200 
+                    drop-shadow-lg 
+                    animate-wiggle"
+          />
+
+        </button>
+
+
+      </div>
     </div>
-  </div>
 
-  {/* Icône Alerte */}
-  <div className="p-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-inner">
-    <Siren size={22} className="text-red-200 animate-pulse" />
-  </div>
+    <div className="bg-[#0E223A] px-2 py-4">
+      <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
+        {loadingFilters ? (
+          // --- SKELETON LOADING PREMIUM ---
+          <>
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-11 w-28 bg-white/5 border border-white/10 rounded-2xl animate-pulse shrink-0"
+              ></div>
+            ))}
+          </>
+        ) : (
+          // --- FILTRES ACTIFS ---
+          [
+            { id: "all", label: "Tous", icon: LayoutGrid },
+            { id: "valide", label: "Validés", icon: CheckCircle2 },
+            { id: "en_attente", label: "Attente", icon: Clock },
+            { id: "rejete", label: "Rejetés", icon: XCircle },
+          ].map((statusObj) => {
+            const count = incidents.filter((i) =>
+              statusObj.id === "all" ? true : i.statut === statusObj.id,
+            ).length;
 
-</div>
+            const isActive = mapFilter === statusObj.id;
+            const Icon = statusObj.icon;
 
-</div>
-<div className="bg-[#0E223A] px-2 py-4">
-  <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
-    
-    {loadingFilters ? (
-      // --- SKELETON LOADING PREMIUM ---
-      <>
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-11 w-28 bg-white/5 border border-white/10 rounded-2xl animate-pulse shrink-0"></div>
-        ))}
-      </>
-    ) : (
-      // --- FILTRES ACTIFS ---
-      [
-        { id: "all", label: "Tous", icon: LayoutGrid },
-        { id: "valide", label: "Validés", icon: CheckCircle2 },
-        { id: "en_attente", label: "Attente", icon: Clock },
-        { id: "rejete", label: "Rejetés", icon: XCircle }
-      ].map((statusObj) => {
-        
-        const count = incidents.filter(
-          (i) => statusObj.id === "all" ? true : i.statut === statusObj.id
-        ).length;
-
-        const isActive = mapFilter === statusObj.id;
-        const Icon = statusObj.icon;
-
-        return (
-          <button
-            key={statusObj.id}
-            onClick={() => setMapFilter(statusObj.id)}
-            className={`
+            return (
+              <button
+                key={statusObj.id}
+                onClick={() => setMapFilter(statusObj.id)}
+                className={`
               shrink-0 flex items-center gap-2.5 px-4 py-2.5 rounded-2xl border transition-all duration-300 active:scale-90
-              ${isActive
-                ? "bg-orange-600 border-orange-400 text-white shadow-[0_8px_20px_rgba(234,88,12,0.3)] scale-105"
-                : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
+              ${
+                isActive
+                  ? "bg-orange-600 border-orange-400 text-white shadow-[0_8px_20px_rgba(234,88,12,0.3)] scale-105"
+                  : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10"
               }
             `}
-          >
-            {/* Icône SVG avec animation si actif */}
-            <Icon 
-              size={16} 
-              strokeWidth={isActive ? 3 : 2} 
-              className={isActive ? "animate-pulse" : "opacity-60"} 
-            />
+              >
+                {/* Icône SVG avec animation si actif */}
+                <Icon
+                  size={16}
+                  strokeWidth={isActive ? 3 : 2}
+                  className={isActive ? "animate-pulse" : "opacity-60"}
+                />
 
-            <span className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "opacity-100" : "opacity-80"}`}>
-              {statusObj.label}
-            </span>
+                <span
+                  className={`text-[11px] font-black uppercase tracking-tight ${isActive ? "opacity-100" : "opacity-80"}`}
+                >
+                  {statusObj.label}
+                </span>
 
-            {/* Badge de compteur stylisé */}
-            <span
-              className={`
+                {/* Badge de compteur stylisé */}
+                <span
+                  className={`
                 flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-lg text-[10px] font-black
-                ${isActive
-                  ? "bg-white/20 text-white"
-                  : "bg-white/10 text-gray-500"
+                ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-white/10 text-gray-500"
                 }
               `}
-            >
-              {count}
-            </span>
-          </button>
-        );
-      })
-    )}
-  </div>
-</div>
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })
+        )}
+      </div>
+    </div>
 
-<div className="px-4 mb-4">
-  <button
-    onClick={selectMyPosition}
-    disabled={!!selectedPosition}
-    className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-all active:scale-95 
+    <div className="px-4 mb-4">
+      <button
+        onClick={selectMyPosition}
+        disabled={!!selectedPosition}
+        className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-all active:scale-95 
     ${
       selectedPosition
         ? "bg-green-600 text-white cursor-not-allowed opacity-90"
         : "bg-blue-600 text-white shadow-blue-900/20"
     }`}
-  >
-    {selectedPosition ? (
-      <>
-        {/* Icône de succès */}
-        <CheckCircle size={18} strokeWidth={3} />
-        <span>Position Verrouillée</span>
-      </>
-    ) : (
-      <>
-        {/* Icône de localisation qui pulse */}
-        <MapPin size={18} strokeWidth={2.5} className="animate-pulse" />
-        <span>Sélectionner ma position</span>
-      </>
-    )}
-  </button>
-</div>
+      >
+        {selectedPosition ? (
+          <>
+            {/* Icône de succès */}
+            <CheckCircle size={18} strokeWidth={3} />
+            <span>Position Verrouillée</span>
+          </>
+        ) : (
+          <>
+            {/* Icône de localisation qui pulse */}
+            <MapPin size={18} strokeWidth={2.5} className="animate-pulse" />
+            <span>Sélectionner ma position</span>
+          </>
+        )}
+      </button>
+    </div>
 
     {/* ✅ ZONE BLEU FONCÉ */}
     <div className="flex-1 bg-[#0E223A]  relative">
-
       {/* ✅ CARTE */}
       <div className="mt-0">
         <div className="rounded-t-3xl overflow-hidden shadow-2xl">
-
           <MapContainer
-  center={userPosition || [-4.3, 15.3]}
-  zoom={13}
-  style={{ height: "30vh", width: "100%" }}
->
+            center={userPosition || [-4.3, 15.3]}
+            zoom={13}
+            style={{ height: "30vh", width: "100%" }}
+          >
             <TileLayer
               attribution="© OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
             {incidents
-  .filter(
-    (incident) =>
-      incident.localisation &&
-      typeof incident.localisation.latitude === "number" &&
-      typeof incident.localisation.longitude === "number"
-  )
-  .filter((incident) =>
-    mapFilter === "all"
-      ? true
-      : incident.statut === mapFilter
-  )
-  .map((incident) => (
-    <Marker
-  key={incident.id}
-  position={[
-    incident.localisation.latitude,
-    incident.localisation.longitude,
-  ]}
-  icon={redIcon}
->
-<Popup>
-  <div className="w-56 text-sm space-y-2">
+              .filter(
+                (incident) =>
+                  incident.localisation &&
+                  typeof incident.localisation.latitude === "number" &&
+                  typeof incident.localisation.longitude === "number",
+              )
+              .filter((incident) =>
+                mapFilter === "all" ? true : incident.statut === mapFilter,
+              )
+              .map((incident) => (
+                <Marker
+                  key={incident.id}
+                  position={[
+                    incident.localisation.latitude,
+                    incident.localisation.longitude,
+                  ]}
+                  icon={redIcon}
+                >
+                  <Popup>
+                    <div className="w-56 text-sm space-y-2">
+                      <h3 className="font-semibold text-base">
+                        {incident.titre}
+                      </h3>
 
-    <h3 className="font-semibold text-base">
-      {incident.titre}
-    </h3>
+                      <p className="text-xs text-gray-500">
+                        {incident.type?.titre}
+                      </p>
 
-    <p className="text-xs text-gray-500">
-      {incident.type?.titre}
-    </p>
+                      <p className="text-xs text-gray-400">
+                        📍 {incident.localisation?.commune?.nom}
+                      </p>
 
-    <p className="text-xs text-gray-400">
-      📍 {incident.localisation?.commune?.nom}
-    </p>
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          incident.statut === "valide"
+                            ? "bg-green-500/20 text-green-600"
+                            : incident.statut === "en_attente"
+                              ? "bg-yellow-500/20 text-yellow-600"
+                              : "bg-red-500/20 text-red-600"
+                        }`}
+                      >
+                        {incident.statut}
+                      </span>
+                      {/* ✅ COMPTEUR CONFIRMATIONS */}
+                      <div className="mt-3 flex items-center justify-between text-xs">
+                        <span className="text-gray-400">Confirmations</span>
 
-    <span
-      className={`text-xs px-2 py-1 rounded-full ${
-        incident.statut === "valide"
-          ? "bg-green-500/20 text-green-600"
-          : incident.statut === "en_attente"
-          ? "bg-yellow-500/20 text-yellow-600"
-          : "bg-red-500/20 text-red-600"
-      }`}
-    >
-      {incident.statut}
-    </span>
-    {/* ✅ COMPTEUR CONFIRMATIONS */}
-<div className="mt-3 flex items-center justify-between text-xs">
-          <span className="text-gray-400">
-            Confirmations
-          </span>
+                        <span
+                          className={`font-medium ${
+                            incident.statut === "valide"
+                              ? "text-green-400"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          ✓ {incident.nombre_confirmations}
+                        </span>
+                      </div>
 
-          <span className={`font-medium ${
-            incident.statut === "valide"
-              ? "text-green-400"
-              : "text-gray-300"
-          }`}>
-            ✓ {incident.nombre_confirmations}
-          </span>
-        </div>
-
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        openIncidentModal(incident);
-      }}
-      className="mt-2 w-full bg-blue-500 text-white py-1 rounded-lg text-xs"
-    >
-      Voir détails
-    </button>
-
-  </div>
-</Popup>
-</Marker>
-))}
-{selectedPosition && (
-          <Marker
-            position={[selectedPosition.lat, selectedPosition.lng]}
-            icon={blueTempIcon}
-          >
-            <Popup>📍 Votre position sélectionnée</Popup>
-          </Marker>
-        )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openIncidentModal(incident);
+                        }}
+                        className="mt-2 w-full bg-blue-500 text-white py-1 rounded-lg text-xs"
+                      >
+                        Voir détails
+                      </button>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            {selectedPosition && (
+              <Marker
+                position={[selectedPosition.lat, selectedPosition.lng]}
+                icon={blueTempIcon}
+              >
+                <Popup>📍 Votre position sélectionnée</Popup>
+              </Marker>
+            )}
           </MapContainer>
-
         </div>
       </div>
 
       {/* --- ZONE D'ACTION PREMIUM --- */}
-<div className="flex flex-col items-center gap-8 mt-10 px-6 pb-20">
-  
-  {/* Bouton Signaler Central - Effet Glow */}
-  <button
-    onClick={() => selectedPosition ? navigate("/report", { state: { selectedPosition } }) : setToast({type:"error", message:"Sélectionnez votre position"})}
-    className="w-40 h-40 rounded-full bg-gradient-to-tr from-orange-600 to-orange-400 
+      <div className="flex flex-col items-center gap-8 mt-10 px-6 pb-20">
+        {/* Bouton Signaler Central - Effet Glow */}
+        <button
+          onClick={() =>
+            selectedPosition
+              ? navigate("/report", { state: { selectedPosition } })
+              : setToast({
+                  type: "error",
+                  message: "Sélectionnez votre position",
+                })
+          }
+          className="w-40 h-40 rounded-full bg-gradient-to-tr from-orange-600 to-orange-400 
                shadow-[0_0_50px_rgba(234,88,12,0.3)] border-8 border-[#0E223A]
                flex flex-col items-center justify-center text-white font-black
                animate-pulseGlow active:scale-95 transition-all duration-300"
-  >
-    <span className="text-2xl">SIGNALER</span>
-    <span className="text-[10px] font-light tracking-[0.2em] opacity-80">INCIDENT</span>
-  </button>
-
-  {/* BOUTON SOS PANIC - Version Améliorée */}
-       <button
-        onClick={handleSOS}
-        disabled={sosLoading}
-        className={`w-full py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.4)] transition-all active:scale-95 z-40
-          ${sosLoading ? 'bg-red-900' : 'bg-red-600 animate-pulse'}`}
-      >
-        {sosLoading ? (
-          <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-        ) : (
-          <>
-             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-               <Siren size={20} className="text-white" />
-             </div>
-             <span className="text-white font-black text-lg tracking-tighter">SOS DANGER IMMÉDIAT</span>
-          </>
-        )}
-      </button>
-
- {/* DESCRIPTIONS PREMIUM AVEC SVGs */}
-<div className="w-full space-y-4 px-2">
-
-  {/* Item 1: Protection Kuluna */}
-  <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp">
-    <div className="w-14 h-14 flex-none bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 shadow-lg shadow-orange-900/20">
-      <ShieldAlert
-        size={28}
-        className="text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]"
-        strokeWidth={2}
-      />
-    </div>
-    <div>
-      <h4 className="text-white text-base font-extrabold tracking-tight">Protection Kuluna</h4>
-      <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
-        Signalement prioritaire envoyé directement aux unités mobiles d'intervention.
-      </p>
-    </div>
-  </div>
-
-  {/* Item 2: Réseau d'Alerte */}
-  <div
-    className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp"
-    style={{ animationDelay: '0.15s' }}
-  >
-    <div className="w-14 h-14 flex-none bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 shadow-lg shadow-blue-900/20">
-      <Radio
-        size={28}
-        className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)] animate-pulse"
-        strokeWidth={2}
-      />
-    </div>
-    <div>
-      <h4 className="text-white text-base font-extrabold tracking-tight">Réseau d'Alerte</h4>
-      <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
-        Diffusion instantanée aux citoyens dans un rayon de 2km pour une vigilance collective.
-      </p>
-    </div>
-  </div>
-
-</div>
-  {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
-  <div className="h-10"></div>
-</div>
-
-    </div>
-{showModal && selectedIncident && (
- <div className="fixed inset-0 flex items-center justify-center z-[9999]">
-
-   <div
-  className="absolute inset-0 backdrop-blur-[3px] bg-black/5"
-  onClick={() => setShowModal(false)}
-/>
-
-
-    <div className="relative bg-[#142E4C] text-white 
-                    rounded-3xl p-6 w-[90%] max-w-md shadow-2xl">
-
-      <h2 className="text-lg font-semibold">
-        {selectedIncident.titre}
-      </h2>
-      {modalMessage && (
-        <div
-          className={`mt-3 px-3 py-2 rounded-lg text-xs ${
-            modalMessage.type === "success"
-              ? "bg-green-500/20 text-green-400"
-              : "bg-red-500/20 text-red-400"
-          }`}
         >
-          {modalMessage.text}
+          <span className="text-2xl">SIGNALER</span>
+          <span className="text-[10px] font-light tracking-[0.2em] opacity-80">
+            INCIDENT
+          </span>
+        </button>
+
+        {/* BOUTON SOS PANIC - Version Améliorée */}
+        <button
+          onClick={handleSOS}
+          disabled={sosLoading}
+          className={`w-full py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.4)] transition-all active:scale-95 z-40
+          ${sosLoading ? "bg-red-900" : "bg-red-600 animate-pulse"}`}
+        >
+          {sosLoading ? (
+            <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <>
+              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                <Siren size={20} className="text-white" />
+              </div>
+              <span className="text-white font-black text-lg tracking-tighter">
+                SOS DANGER IMMÉDIAT
+              </span>
+            </>
+          )}
+        </button>
+
+        {/* DESCRIPTIONS PREMIUM AVEC SVGs */}
+        <div className="w-full space-y-4 px-2">
+          {/* Item 1: Protection Kuluna */}
+          <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp">
+            <div className="w-14 h-14 flex-none bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 shadow-lg shadow-orange-900/20">
+              <ShieldAlert
+                size={28}
+                className="text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]"
+                strokeWidth={2}
+              />
+            </div>
+            <div>
+              <h4 className="text-white text-base font-extrabold tracking-tight">
+                Protection Kuluna
+              </h4>
+              <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+                Signalement prioritaire envoyé directement aux unités mobiles
+                d'intervention.
+              </p>
+            </div>
+          </div>
+
+          {/* Item 2: Réseau d'Alerte */}
+          <div
+            className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp"
+            style={{ animationDelay: "0.15s" }}
+          >
+            <div className="w-14 h-14 flex-none bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 shadow-lg shadow-blue-900/20">
+              <Radio
+                size={28}
+                className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)] animate-pulse"
+                strokeWidth={2}
+              />
+            </div>
+            <div>
+              <h4 className="text-white text-base font-extrabold tracking-tight">
+                Réseau d'Alerte
+              </h4>
+              <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+                Diffusion instantanée aux citoyens dans un rayon de 2km pour une
+                vigilance collective.
+              </p>
+            </div>
+          </div>
         </div>
-      )}
-
-      <p className="text-sm text-gray-300 mt-2">
-        {selectedIncident.description}
-      </p>
-
-      <p className="text-xs text-gray-400 mt-1">
-        📍 {selectedIncident.localisation?.commune?.nom}
-      </p>
-
-      <div className="mt-3 flex justify-between items-center">
-
-  <span
-    className={`text-xs px-3 py-1 rounded-full ${
-      selectedIncident.statut === "valide"
-        ? "bg-green-500/20 text-green-400"
-        : selectedIncident.statut === "en_attente"
-        ? "bg-yellow-500/20 text-yellow-400"
-        : "bg-red-500/20 text-red-400"
-    }`}
-  >
-    {selectedIncident.statut}
-  </span>
-
-  <span className="text-xs text-gray-400">
-    ✅ {selectedIncident.nombre_confirmations} confirmation
-    {selectedIncident.nombre_confirmations > 1 && "s"}
-  </span>
-
-</div>
-      <button
-        onClick={confirmIncident}
-        disabled={loadingConfirm}
-        className="mt-4 w-full bg-blue-500 py-2 rounded-lg text-sm"
-      >
-        {loadingConfirm ? "..." : "Confirmer"}
-      </button>
-
-      <textarea
-        value={commentText}
-        onChange={(e) => setCommentText(e.target.value)}
-        placeholder="Votre commentaire..."
-        className="w-full mt-3 p-3 rounded-lg bg-[#0E223A] text-white text-sm"
-        rows="3"
-      />
-
-      <button
-        onClick={submitComment}
-        disabled={loadingComment}
-        className="mt-3 w-full bg-gray-700 py-2 rounded-lg text-sm"
-      >
-        {loadingComment ? "..." : "Envoyer"}
-      </button>
-
-      <button
-        onClick={() => setShowModal(false)}
-        className="mt-4 w-full text-gray-400 text-sm"
-      >
-        Fermer
-      </button>
-
+        {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
+        <div className="h-10"></div>
+      </div>
     </div>
-  </div>
-)}
+    {showModal && selectedIncident && (
+      <div className="fixed inset-0 flex items-center justify-center z-[9999]">
+        <div
+          className="absolute inset-0 backdrop-blur-[3px] bg-black/5"
+          onClick={() => setShowModal(false)}
+        />
+
+        <div
+          className="relative bg-[#142E4C] text-white 
+                    rounded-3xl p-6 w-[90%] max-w-md shadow-2xl"
+        >
+          <h2 className="text-lg font-semibold">{selectedIncident.titre}</h2>
+          {modalMessage && (
+            <div
+              className={`mt-3 px-3 py-2 rounded-lg text-xs ${
+                modalMessage.type === "success"
+                  ? "bg-green-500/20 text-green-400"
+                  : "bg-red-500/20 text-red-400"
+              }`}
+            >
+              {modalMessage.text}
+            </div>
+          )}
+
+          <p className="text-sm text-gray-300 mt-2">
+            {selectedIncident.description}
+          </p>
+
+          <p className="text-xs text-gray-400 mt-1">
+            📍 {selectedIncident.localisation?.commune?.nom}
+          </p>
+
+          <div className="mt-3 flex justify-between items-center">
+            <span
+              className={`text-xs px-3 py-1 rounded-full ${
+                selectedIncident.statut === "valide"
+                  ? "bg-green-500/20 text-green-400"
+                  : selectedIncident.statut === "en_attente"
+                    ? "bg-yellow-500/20 text-yellow-400"
+                    : "bg-red-500/20 text-red-400"
+              }`}
+            >
+              {selectedIncident.statut}
+            </span>
+
+            <span className="text-xs text-gray-400">
+              ✅ {selectedIncident.nombre_confirmations} confirmation
+              {selectedIncident.nombre_confirmations > 1 && "s"}
+            </span>
+          </div>
+          <button
+            onClick={confirmIncident}
+            disabled={loadingConfirm}
+            className="mt-4 w-full bg-blue-500 py-2 rounded-lg text-sm"
+          >
+            {loadingConfirm ? "..." : "Confirmer"}
+          </button>
+
+          <textarea
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            placeholder="Votre commentaire..."
+            className="w-full mt-3 p-3 rounded-lg bg-[#0E223A] text-white text-sm"
+            rows="3"
+          />
+
+          <button
+            onClick={submitComment}
+            disabled={loadingComment}
+            className="mt-3 w-full bg-gray-700 py-2 rounded-lg text-sm"
+          >
+            {loadingComment ? "..." : "Envoyer"}
+          </button>
+
+          <button
+            onClick={() => setShowModal(false)}
+            className="mt-4 w-full text-gray-400 text-sm"
+          >
+            Fermer
+          </button>
+        </div>
+      </div>
+    )}
   </div>
 );
 }
