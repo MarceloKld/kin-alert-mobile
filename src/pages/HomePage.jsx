@@ -401,7 +401,7 @@ return (
           <MapContainer
   center={userPosition || [-4.3, 15.3]}
   zoom={13}
-  style={{ height: "50vh", width: "100%" }}
+  style={{ height: "30vh", width: "100%" }}
 >
             <TileLayer
               attribution="© OpenStreetMap"
