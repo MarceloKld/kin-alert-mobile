@@ -496,7 +496,6 @@ useEffect(() => {
           ))}
         </div>
       )}
-      
 
       {/* --- LISTE DES INCIDENTS --- */}
       {!loading &&
@@ -627,74 +626,324 @@ useEffect(() => {
               </div>
             </div>
           ))}
-      {/* ✅ Modal Commentaire */}
+
+      {/* ========================================
+    MODAL COMMENTAIRE - Premium & Léger
+    - Glassmorphism & Halo lumineux
+    - En-tête avec icône et bouton X
+    - Textarea moderne avec focus soigné
+    - 100% CSS pur (Performance max à 60 FPS)
+======================================== */}
       {selectedIncident && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-[#142E4C] p-6 rounded-2xl w-[90%] max-w-sm">
-            <h3 className="font-semibold mb-4">Commenter</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+          {/* Conteneur principal de la modale */}
+          <div
+            className="
+      relative overflow-hidden
+      bg-gradient-to-br from-[#142E4C] via-[#11253c] to-[#0E223A] 
+      border border-white/15 
+      p-6 md:p-8 
+      rounded-[2rem] 
+      w-full max-w-md 
+      shadow-2xl shadow-black/50 
+      text-white
+    "
+          >
+            {/* Halo lumineux d'ambiance en arrière-plan */}
+            <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            <textarea
-              value={commentText}
-              onChange={(e) => setCommentText(e.target.value)}
-              className="w-full p-3 rounded-lg bg-[#0E223A] text-white"
-              rows="3"
-            />
+            {/* ===== HEADER DE LA MODALE ===== */}
+            <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/10">
+              {/* Titre et Icône */}
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 shadow-inner">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-lg tracking-tight">
+                    Commenter
+                  </h3>
+                  <p className="text-[11px] text-gray-400 font-medium">
+                    Partagez votre avis ou information
+                  </p>
+                </div>
+              </div>
 
-            <div className="flex justify-end gap-3 mt-4">
+              {/* Bouton de fermeture "X" */}
               <button
                 onClick={() => setSelectedIncident(null)}
-                className="text-gray-400"
+                className="p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* ===== ZONE DE SAISIE (TEXTAREA) ===== */}
+            <div className="mb-6">
+              <textarea
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+                placeholder="Écrivez votre commentaire ici..."
+                className="
+            w-full p-4 
+            rounded-2xl 
+            bg-black/30 
+            border border-white/10 
+            text-white placeholder-gray-500 
+            text-sm font-medium
+            outline-none 
+            focus:border-blue-500/60 focus:ring-2 focus:ring-blue-500/20 
+            transition-all 
+            resize-none 
+            shadow-inner
+          "
+                rows={4}
+              />
+            </div>
+
+            {/* ===== BOUTONS D'ACTION ===== */}
+            <div className="flex items-center justify-end gap-3">
+              {/* Bouton Annuler */}
+              <button
+                onClick={() => setSelectedIncident(null)}
+                className="
+            px-5 py-3 
+            rounded-xl 
+            bg-white/5 hover:bg-white/10 
+            text-gray-300 font-bold text-xs uppercase tracking-wider 
+            transition-all
+          "
               >
                 Annuler
               </button>
 
+              {/* Bouton Envoyer */}
               <button
                 onClick={submitComment}
-                className="bg-blue-500 px-4 py-2 rounded-lg"
-                disabled={loadingComment}
+                disabled={loadingComment || !commentText.trim()}
+                className="
+            px-6 py-3 
+            rounded-xl 
+            bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 
+            text-white font-black text-xs uppercase tracking-widest 
+            shadow-lg shadow-blue-500/30 
+            hover:shadow-blue-500/50 hover:scale-[1.02] 
+            active:scale-95 
+            transition-all 
+            disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+            flex items-center gap-2
+          "
               >
-                {loadingComment ? "..." : "Envoyer"}
+                {loadingComment ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Envoi...</span>
+                  </>
+                ) : (
+                  <span>Envoyer</span>
+                )}
               </button>
             </div>
           </div>
         </div>
       )}
 
+      {/* ========================================
+    MODAL LISTE DES COMMENTAIRES - Premium & Léger
+    - Glassmorphism & Halo lumineux d'ambiance
+    - Cartes de commentaires individuelles avec avatar initiales
+    - Skeleton loading amélioré & État vide design
+    - 100% CSS pur (Performance max à 60 FPS)
+======================================== */}
       {commentsModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#142E4C] p-6 rounded-2xl w-[95%] max-w-md max-h-[80vh] overflow-y-auto">
-            <h3 className="font-semibold mb-4">Commentaires</h3>
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fade-in">
+          {/* Conteneur principal de la modale */}
+          <div
+            className="
+      relative overflow-hidden
+      bg-gradient-to-br from-[#142E4C] via-[#11253c] to-[#0E223A] 
+      border border-white/15 
+      p-6 md:p-8 
+      rounded-[2rem] 
+      w-full max-w-md 
+      max-h-[85vh] 
+      flex flex-col 
+      shadow-2xl shadow-black/50 
+      text-white
+    "
+          >
+            {/* Halo lumineux d'ambiance en arrière-plan */}
+            <div className="absolute -top-12 -right-12 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-            {loadingComments ? (
-              <div className="space-y-3">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-4 bg-gray-600 rounded animate-pulse"
-                  />
-                ))}
-              </div>
-            ) : comments.length > 0 ? (
-              comments.map((comment) => (
-                <div
-                  key={comment.id}
-                  className="border-b border-gray-600 py-2 text-sm"
-                >
-                  <p className="text-gray-300">{comment.contenu}</p>
-
-                  <p className="text-xs text-gray-400 mt-1">
-                    Par {comment.utilisateur?.nom}
+            {/* ===== HEADER DE LA MODALE ===== */}
+            <div className="flex items-center justify-between mb-5 pb-3 border-b border-white/10 shrink-0">
+              {/* Titre et Icône */}
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-blue-500/10 border border-blue-500/20 rounded-xl text-blue-400 shadow-inner">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                    />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-lg tracking-tight">
+                    Commentaires
+                  </h3>
+                  <p className="text-[11px] text-gray-400 font-medium">
+                    Échanges et retours sur l'incident
                   </p>
                 </div>
-              ))
-            ) : (
-              <p className="text-gray-400 text-sm">Aucun commentaire</p>
-            )}
+              </div>
 
-            <div className="flex justify-end mt-4">
+              {/* Bouton de fermeture "X" */}
               <button
                 onClick={() => setCommentsModal(null)}
-                className="text-gray-400"
+                className="p-2 text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-xl transition-colors"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* ===== CORPS DE LA MODALE (SCROLLABLE) ===== */}
+            <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 no-scrollbar">
+              {loadingComments ? (
+                // --- SKELETON LOADING PREMIUM ---
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="p-4 bg-white/5 border border-white/5 rounded-2xl animate-pulse space-y-2"
+                    >
+                      <div className="h-3.5 bg-white/10 rounded-full w-24"></div>
+                      <div className="h-4 bg-white/15 rounded-lg w-full"></div>
+                    </div>
+                  ))}
+                </div>
+              ) : comments.length > 0 ? (
+                // --- LISTE DES COMMENTAIRES ---
+                comments.map((comment) => (
+                  <div
+                    key={comment.id}
+                    className="
+                p-4 
+                bg-white/5 backdrop-blur-sm 
+                border border-white/5 hover:border-white/10 
+                rounded-2xl 
+                transition-all 
+                space-y-2
+              "
+                  >
+                    {/* Auteur & Date */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {/* Avatar avec initiale */}
+                        <div className="w-6 h-6 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-[10px] font-bold text-blue-300">
+                          {comment.utilisateur?.nom
+                            ? comment.utilisateur.nom.charAt(0).toUpperCase()
+                            : "U"}
+                        </div>
+                        <span className="text-xs font-bold text-gray-200">
+                          {comment.utilisateur?.nom || "Utilisateur anonyme"}
+                        </span>
+                      </div>
+
+                      {comment.created_at && (
+                        <span className="text-[10px] text-gray-500 font-medium">
+                          {new Date(comment.created_at).toLocaleDateString()}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Contenu du commentaire */}
+                    <p className="text-sm text-gray-300 font-medium pl-8 leading-relaxed">
+                      {comment.contenu}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                // --- ÉTAT VIDE DESIGN ---
+                <div className="py-12 text-center flex flex-col items-center justify-center text-gray-400">
+                  <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-3 text-gray-500 shadow-inner">
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-300">
+                    Aucun commentaire
+                  </p>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    Soyez le premier à réagir sur cet incident.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* ===== FOOTER DE LA MODALE ===== */}
+            <div className="pt-4 mt-4 border-t border-white/10 shrink-0 flex justify-end">
+              <button
+                onClick={() => setCommentsModal(null)}
+                className="
+            px-6 py-2.5 
+            rounded-xl 
+            bg-white/5 hover:bg-white/10 
+            text-gray-300 font-bold text-xs uppercase tracking-wider 
+            transition-all
+          "
               >
                 Fermer
               </button>
@@ -702,6 +951,8 @@ useEffect(() => {
           </div>
         </div>
       )}
+
+      
     </div>
   );
 }
