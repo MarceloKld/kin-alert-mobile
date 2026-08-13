@@ -5,6 +5,8 @@ export default {
   theme: {
     extend: {
       animation: {
+        "slide-in-right": "slideInRight 0.3s ease-out",
+        "progress-bar": "progressBar 3s linear forwards",
         // Animations légères
         shimmer: "shimmer 3s ease-in-out infinite",
         "gradient-x": "gradient-x 3s ease infinite",
@@ -76,6 +78,20 @@ export default {
           "0%, 100%": { transform: "rotate(0deg)" },
           "25%": { transform: "rotate(10deg)" },
           "75%": { transform: "rotate(-10deg)" },
+        },
+        slideInRight: {
+          "0%": {
+            transform: "translateX(100%)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "translateX(0)",
+            opacity: "1",
+          },
+        },
+        progressBar: {
+          "0%": { width: "100%" },
+          "100%": { width: "0%" },
         },
       },
     },

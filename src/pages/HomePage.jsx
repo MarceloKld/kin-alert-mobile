@@ -235,27 +235,109 @@ const handleSOS = async () => {
 
 return (
   <div className="h-screen flex flex-col relative bg-[#0E223A] overflow-y-auto no-scrollbar pb-32">
+    {/* ========================================
+    TOAST NOTIFICATION
+    - Animations CSS pures
+    - Auto-dismiss
+    - Icons selon type
+======================================== */}
     {toast && (
       <div
-        className={`fixed top-4 right-4 
-    px-4 py-2 
-    rounded-lg 
-    shadow-lg 
-    text-sm 
-    font-medium 
-    text-white 
-    z-[9999]
-    ${
-      toast.type === "success"
-        ? "bg-green-600"
-        : toast.type === "error"
-          ? "bg-red-600"
-          : "bg-blue-600"
-    }`}
+        className={`
+      fixed top-4 right-4 
+      px-5 py-4
+      rounded-2xl 
+      shadow-2xl
+      text-sm font-semibold
+      text-white 
+      z-[9999]
+      backdrop-blur-xl
+      border-2
+      flex items-center gap-3
+      animate-slide-in-right
+      ${
+        toast.type === "success"
+          ? "bg-gradient-to-r from-emerald-600 to-green-600 border-emerald-400/50 shadow-emerald-500/50"
+          : toast.type === "error"
+            ? "bg-gradient-to-r from-red-600 to-rose-600 border-red-400/50 shadow-red-500/50"
+            : "bg-gradient-to-r from-blue-600 to-cyan-600 border-blue-400/50 shadow-blue-500/50"
+      }
+    `}
       >
-        {toast.message}
+        {/* Glow effect */}
+        <div
+          className={`
+      absolute inset-0 rounded-2xl blur-xl opacity-50 -z-10
+      ${toast.type === "success" ? "bg-emerald-600" : ""}
+      ${toast.type === "error" ? "bg-red-600" : ""}
+      ${toast.type === "info" ? "bg-blue-600" : ""}
+    `}
+        />
+
+        {/* Icône selon type */}
+        <div className="shrink-0">
+          {toast.type === "success" && (
+            <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          )}
+
+          {toast.type === "error" && (
+            <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          )}
+
+          {toast.type === "info" && (
+            <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+
+        {/* Message */}
+        <span className="flex-1 drop-shadow-lg">{toast.message}</span>
+
+        {/* Bouton fermer */}
+        <button
+          onClick={() => setToast(null)}
+          className="shrink-0 w-5 h-5 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all hover:scale-110 active:scale-95"
+        >
+          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+
+        {/* Barre de progression auto-dismiss */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-b-2xl overflow-hidden">
+          <div className="h-full bg-white/50 animate-progress-bar" />
+        </div>
       </div>
     )}
+
+    
 
     {/* ==========================
     HEADER HOME PREMIUM SVG
@@ -443,10 +525,7 @@ return (
                     drop-shadow-lg 
                     animate-wiggle"
           />
-
         </button>
-
-
       </div>
     </div>
 
@@ -523,20 +602,17 @@ return (
       </div>
     </div>
 
-
-
-
-   {/* ========================================
+    {/* ========================================
     BOUTON SÉLECTION POSITION
     - État actif/verrouillé
     - Animations CSS pures
     - Badge de confirmation
 ======================================== */}
-<div className="px-4 mb-4">
-  <button
-    onClick={selectMyPosition}
-    disabled={!!selectedPosition}
-    className={`
+    <div className="px-4 mb-4">
+      <button
+        onClick={selectMyPosition}
+        disabled={!!selectedPosition}
+        className={`
       relative w-full overflow-hidden
       flex items-center justify-center gap-3 
       py-4 px-6
@@ -545,90 +621,106 @@ return (
       shadow-2xl
       transition-all duration-300
       active:scale-95
-      ${selectedPosition
-        ? "bg-gradient-to-r from-emerald-600 to-green-600 text-white cursor-not-allowed"
-        : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:shadow-blue-500/50 hover:scale-[1.02]"
+      ${
+        selectedPosition
+          ? "bg-gradient-to-r from-emerald-600 to-green-600 text-white cursor-not-allowed"
+          : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:shadow-blue-500/50 hover:scale-[1.02]"
       }
     `}
-  >
-    {/* Glow animé */}
-    <div className={`
+      >
+        {/* Glow animé */}
+        <div
+          className={`
       absolute inset-0 
-      ${selectedPosition 
-        ? "bg-gradient-to-r from-emerald-600 to-green-600" 
-        : "bg-gradient-to-r from-blue-600 to-cyan-600"
+      ${
+        selectedPosition
+          ? "bg-gradient-to-r from-emerald-600 to-green-600"
+          : "bg-gradient-to-r from-blue-600 to-cyan-600"
       }
       blur-xl 
       opacity-50
       -z-10
-    `} />
+    `}
+        />
 
-    {/* Shine effect (état actif seulement) */}
-    {!selectedPosition && (
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-shimmer" />
-    )}
+        {/* Shine effect (état actif seulement) */}
+        {!selectedPosition && (
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-shimmer" />
+        )}
 
-    {selectedPosition ? (
-      // ===== ÉTAT VERROUILLÉ =====
-      <>
-        {/* Icône succès */}
-        <CheckCircle size={22} strokeWidth={2.5} className="drop-shadow-lg" />
+        {selectedPosition ? (
+          // ===== ÉTAT VERROUILLÉ =====
+          <>
+            {/* Icône succès */}
+            <CheckCircle
+              size={22}
+              strokeWidth={2.5}
+              className="drop-shadow-lg"
+            />
 
-        {/* Texte */}
-        <span className="relative z-10">Position Verrouillée</span>
+            {/* Texte */}
+            <span className="relative z-10">Position Verrouillée</span>
 
-        {/* Badge OK */}
-        <div className="px-2 py-1 bg-white/20 rounded-lg text-[10px] font-bold border border-white/30">
-          ✓ OK
-        </div>
-      </>
-    ) : (
-      // ===== ÉTAT ACTIF =====
-      <>
-        {/* Icône localisation avec pulse */}
-        <div className="relative">
-          {/* Cercle pulsant derrière */}
-          <span className="absolute inset-0 flex items-center justify-center">
-            <span className="flex h-8 w-8">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-30"></span>
-            </span>
-          </span>
-          
-          {/* Icône */}
-          <MapPin size={22} strokeWidth={2.5} className="relative drop-shadow-lg animate-bounce-slow" />
-        </div>
+            {/* Badge OK */}
+            <div className="px-2 py-1 bg-white/20 rounded-lg text-[10px] font-bold border border-white/30">
+              ✓ OK
+            </div>
+          </>
+        ) : (
+          // ===== ÉTAT ACTIF =====
+          <>
+            {/* Icône localisation avec pulse */}
+            <div className="relative">
+              {/* Cercle pulsant derrière */}
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="flex h-8 w-8">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-30"></span>
+                </span>
+              </span>
 
-        {/* Texte */}
-        <span className="relative z-10">Sélectionner ma position</span>
+              {/* Icône */}
+              <MapPin
+                size={22}
+                strokeWidth={2.5}
+                className="relative drop-shadow-lg animate-bounce-slow"
+              />
+            </div>
 
-        {/* Chevron animé */}
-        <svg 
-          className="w-5 h-5 animate-pulse" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-          strokeWidth={3}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </>
-    )}
-  </button>
+            {/* Texte */}
+            <span className="relative z-10">Sélectionner ma position</span>
 
-  {/* Message d'aide contextuel */}
-  {!selectedPosition && (
-    <p className="mt-3 text-center text-xs text-gray-400 flex items-center justify-center gap-2 animate-fade-in">
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-      </svg>
-      <span>Cliquez sur la carte pour définir votre position</span>
-    </p>
-  )}
-</div>
+            {/* Chevron animé */}
+            <svg
+              className="w-5 h-5 animate-pulse"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </>
+        )}
+      </button>
 
-
-
-
+      {/* Message d'aide contextuel */}
+      {!selectedPosition && (
+        <p className="mt-3 text-center text-xs text-gray-400 flex items-center justify-center gap-2 animate-fade-in">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <span>Cliquez sur la carte pour définir votre position</span>
+        </p>
+      )}
+    </div>
 
     {/* ✅ ZONE BLEU FONCÉ */}
     <div className="flex-1 bg-[#0E223A]  relative">
