@@ -279,7 +279,7 @@ return (
     <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 border-2 border-orange-600 rounded-full"></span>
   </div>
 
-  {/* Titre KIN-ALERT */}
+  {/* Titre KIN-ALERT VERSION  */}
   <div className="text-center">
     <h1 className="text-2xl font-black tracking-tighter text-white">KIN-ALERT</h1>
     <div className="flex items-center justify-center gap-1">
