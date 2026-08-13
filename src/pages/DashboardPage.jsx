@@ -225,20 +225,96 @@ useEffect(() => {
                     from-[#0E223A] to-[#091522] 
                     text-white pb-28 px-4"
     >
+      {/* ========================================
+    TOAST NOTIFICATION - Premium & Léger
+    - Glassmorphism & Halo lumineux d'ambiance
+    - Icônes SVG intégrées (Succès / Erreur)
+    - Barre de progression animée
+    - 100% CSS pur (Performance max à 60 FPS)
+======================================== */}
       {toast && (
         <div
           key={toast.message}
-          className="fixed top-6 right-6 z-50 animate-slideIn"
+          className="fixed top-6 right-6 z-[9999] animate-slide-in-right"
         >
           <div
-            className={`px-4 py-3 rounded-xl shadow-2xl text-white text-sm font-bold flex items-center gap-2 ${
-              toast.type === "error" ? "bg-red-500" : "bg-green-500"
-            }`}
+            className={`
+        relative overflow-hidden
+        px-5 py-4 
+        rounded-2xl 
+        shadow-2xl shadow-black/40
+        text-white text-xs md:text-sm font-bold 
+        flex items-center gap-3.5
+        backdrop-blur-xl
+        border
+        ${
+          toast.type === "error"
+            ? "bg-gradient-to-r from-red-600/90 via-rose-600/90 to-red-700/90 border-red-400/40 shadow-red-500/30"
+            : "bg-gradient-to-r from-emerald-600/90 via-green-600/90 to-emerald-700/90 border-emerald-400/40 shadow-emerald-500/30"
+        }
+      `}
           >
-            {toast.message}
+            {/* Halo lumineux d'arrière-plan (Glow) */}
+            <div
+              className={`
+        absolute inset-0 blur-xl opacity-40 -z-10
+        ${toast.type === "error" ? "bg-red-500" : "bg-emerald-500"}
+      `}
+            />
+
+            {/* ===== ICÔNE SELON LE TYPE ===== */}
+            <div className="shrink-0">
+              {toast.type === "error" ? (
+                <div className="w-7 h-7 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center text-white shadow-inner">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
+              ) : (
+                <div className="w-7 h-7 rounded-xl bg-white/20 border border-white/30 flex items-center justify-center text-white shadow-inner">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+              )}
+            </div>
+
+            {/* ===== MESSAGE ===== */}
+            <span className="tracking-wide pr-2 drop-shadow-sm">
+              {toast.message}
+            </span>
+
+            {/* ===== BARRE DE PROGRESSION ANIMÉE (Optionnel mais ultra-pro) ===== */}
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 overflow-hidden rounded-b-2xl">
+              <div
+                className={`h-full animate-progress-bar ${toast.type === "error" ? "bg-red-200" : "bg-emerald-200"}`}
+              />
+            </div>
           </div>
         </div>
       )}
+      
+
       {/* ========================================
     HEADER DASHBOARD PREMIUM - Ultra Léger
     - Ambiance lumineuse (Glow)
@@ -951,8 +1027,6 @@ useEffect(() => {
           </div>
         </div>
       )}
-
-      
     </div>
   );
 }
