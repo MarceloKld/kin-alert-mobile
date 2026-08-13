@@ -1047,55 +1047,202 @@ return (
           </div>
         )}
 
-
-
-        
-
-        {/* DESCRIPTIONS PREMIUM AVEC SVGs */}
+        {/* ========================================
+    DESCRIPTIONS PREMIUM
+    - Cards glassmorphism
+    - Effets hover légers
+    - Animations CSS pures
+======================================== */}
         <div className="w-full space-y-4 px-2">
-          {/* Item 1: Protection Kuluna */}
-          <div className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp">
-            <div className="w-14 h-14 flex-none bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl flex items-center justify-center border border-orange-500/30 shadow-lg shadow-orange-900/20">
+          {/* ===== ITEM 1 : PROTECTION KULUNA ===== */}
+          <div
+            className="group relative overflow-hidden
+                  bg-white/5 backdrop-blur-md 
+                  p-5 rounded-[2rem] 
+                  border border-white/10 
+                  flex items-center gap-5 
+                  transition-all duration-300
+                  hover:bg-white/10 hover:border-orange-500/40
+                  hover:scale-[1.02]
+                  animate-fade-in-up"
+          >
+            {/* Glow au hover */}
+            <div
+              className="absolute inset-0 
+                    bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-transparent 
+                    opacity-0 group-hover:opacity-100 
+                    transition-opacity duration-300"
+            />
+
+            {/* Shimmer effect */}
+            <div
+              className="absolute inset-0 
+                    bg-gradient-to-r from-transparent via-white/5 to-transparent 
+                    -translate-x-full group-hover:translate-x-full 
+                    transition-transform duration-1000 pointer-events-none"
+            />
+
+            {/* Icône */}
+            <div
+              className="relative w-14 h-14 flex-none 
+                    bg-gradient-to-br from-orange-500/20 to-red-500/20 
+                    rounded-2xl 
+                    flex items-center justify-center 
+                    border border-orange-500/30 
+                    shadow-lg shadow-orange-900/20
+                    group-hover:scale-110 group-hover:border-orange-400/50
+                    transition-all duration-300"
+            >
               <ShieldAlert
                 size={28}
                 className="text-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.4)]"
                 strokeWidth={2}
               />
             </div>
-            <div>
-              <h4 className="text-white text-base font-extrabold tracking-tight">
-                Protection Kuluna
-              </h4>
-              <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+
+            {/* Contenu */}
+            <div className="relative flex-1">
+              {/* Titre avec badge */}
+              <div className="flex items-center gap-2">
+                <h4 className="text-white text-base font-extrabold tracking-tight">
+                  Protection Kuluna
+                </h4>
+                {/* Badge prioritaire */}
+                <span
+                  className="px-2 py-0.5 
+                         bg-orange-500/20 
+                         text-orange-400 
+                         text-[9px] font-bold uppercase tracking-wider 
+                         rounded-md 
+                         border border-orange-500/30"
+                >
+                  Prioritaire
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className="text-[11px] text-gray-400 leading-tight mt-1 font-medium">
                 Signalement prioritaire envoyé directement aux unités mobiles
                 d'intervention.
               </p>
             </div>
+
+            {/* Chevron indicateur */}
+            <svg
+              className="w-5 h-5 text-gray-500 group-hover:text-orange-400 
+                 group-hover:translate-x-1 transition-all duration-300 flex-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </div>
 
-          {/* Item 2: Réseau d'Alerte */}
+          {/* ===== ITEM 2 : RÉSEAU D'ALERTE ===== */}
           <div
-            className="bg-white/5 backdrop-blur-md p-5 rounded-[2rem] border border-white/10 flex items-center gap-5 animate-fadeUp"
+            className="group relative overflow-hidden
+                  bg-white/5 backdrop-blur-md 
+                  p-5 rounded-[2rem] 
+                  border border-white/10 
+                  flex items-center gap-5 
+                  transition-all duration-300
+                  hover:bg-white/10 hover:border-blue-500/40
+                  hover:scale-[1.02]
+                  animate-fade-in-up"
             style={{ animationDelay: "0.15s" }}
           >
-            <div className="w-14 h-14 flex-none bg-gradient-to-br from-blue-500/20 to-indigo-500/20 rounded-2xl flex items-center justify-center border border-blue-500/30 shadow-lg shadow-blue-900/20">
+            {/* Glow au hover */}
+            <div
+              className="absolute inset-0 
+                    bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent 
+                    opacity-0 group-hover:opacity-100 
+                    transition-opacity duration-300"
+            />
+
+            {/* Shimmer effect */}
+            <div
+              className="absolute inset-0 
+                    bg-gradient-to-r from-transparent via-white/5 to-transparent 
+                    -translate-x-full group-hover:translate-x-full 
+                    transition-transform duration-1000 pointer-events-none"
+            />
+
+            {/* Icône */}
+            <div
+              className="relative w-14 h-14 flex-none 
+                    bg-gradient-to-br from-blue-500/20 to-indigo-500/20 
+                    rounded-2xl 
+                    flex items-center justify-center 
+                    border border-blue-500/30 
+                    shadow-lg shadow-blue-900/20
+                    group-hover:scale-110 group-hover:border-blue-400/50
+                    transition-all duration-300"
+            >
               <Radio
                 size={28}
                 className="text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.4)] animate-pulse"
                 strokeWidth={2}
               />
             </div>
-            <div>
-              <h4 className="text-white text-base font-extrabold tracking-tight">
-                Réseau d'Alerte
-              </h4>
-              <p className="text-[11px] text-gray-400 leading-tight mt-0.5 font-medium">
+
+            {/* Contenu */}
+            <div className="relative flex-1">
+              {/* Titre avec badge */}
+              <div className="flex items-center gap-2">
+                <h4 className="text-white text-base font-extrabold tracking-tight">
+                  Réseau d'Alerte
+                </h4>
+                {/* Badge en direct */}
+                <span
+                  className="flex items-center gap-1 px-2 py-0.5 
+                         bg-blue-500/20 
+                         text-blue-400 
+                         text-[9px] font-bold uppercase tracking-wider 
+                         rounded-md 
+                         border border-blue-500/30"
+                >
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse" />
+                  Live
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className="text-[11px] text-gray-400 leading-tight mt-1 font-medium">
                 Diffusion instantanée aux citoyens dans un rayon de 2km pour une
                 vigilance collective.
               </p>
             </div>
+
+            {/* Chevron indicateur */}
+            <svg
+              className="w-5 h-5 text-gray-500 group-hover:text-blue-400 
+                 group-hover:translate-x-1 transition-all duration-300 flex-none"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
           </div>
         </div>
+
+
+
+
+
+        
+
         {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
         <div className="h-10"></div>
       </div>
