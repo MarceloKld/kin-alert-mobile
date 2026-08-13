@@ -11,6 +11,7 @@ export default {
         "bounce-slow": "bounce 3s ease-in-out infinite",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "pulse-fast": "pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "fade-in": "fadeIn 0.5s ease-in",
         wiggle: "wiggle 2s ease-in-out infinite",
         tap: "tap 0.2s ease-in-out",
         fadeIn: "fadeIn 0.7s ease-out",
@@ -76,8 +77,6 @@ export default {
           "25%": { transform: "rotate(10deg)" },
           "75%": { transform: "rotate(-10deg)" },
         },
-
-        
       },
     },
   },

@@ -523,32 +523,112 @@ return (
       </div>
     </div>
 
-    <div className="px-4 mb-4">
-      <button
-        onClick={selectMyPosition}
-        disabled={!!selectedPosition}
-        className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg transition-all active:scale-95 
-    ${
-      selectedPosition
-        ? "bg-green-600 text-white cursor-not-allowed opacity-90"
-        : "bg-blue-600 text-white shadow-blue-900/20"
-    }`}
-      >
-        {selectedPosition ? (
-          <>
-            {/* Icône de succès */}
-            <CheckCircle size={18} strokeWidth={3} />
-            <span>Position Verrouillée</span>
-          </>
-        ) : (
-          <>
-            {/* Icône de localisation qui pulse */}
-            <MapPin size={18} strokeWidth={2.5} className="animate-pulse" />
-            <span>Sélectionner ma position</span>
-          </>
-        )}
-      </button>
-    </div>
+
+
+
+   {/* ========================================
+    BOUTON SÉLECTION POSITION
+    - État actif/verrouillé
+    - Animations CSS pures
+    - Badge de confirmation
+======================================== */}
+<div className="px-4 mb-4">
+  <button
+    onClick={selectMyPosition}
+    disabled={!!selectedPosition}
+    className={`
+      relative w-full overflow-hidden
+      flex items-center justify-center gap-3 
+      py-4 px-6
+      rounded-2xl 
+      font-black text-sm uppercase tracking-widest
+      shadow-2xl
+      transition-all duration-300
+      active:scale-95
+      ${selectedPosition
+        ? "bg-gradient-to-r from-emerald-600 to-green-600 text-white cursor-not-allowed"
+        : "bg-gradient-to-r from-blue-600 to-cyan-600 text-white hover:shadow-blue-500/50 hover:scale-[1.02]"
+      }
+    `}
+  >
+    {/* Glow animé */}
+    <div className={`
+      absolute inset-0 
+      ${selectedPosition 
+        ? "bg-gradient-to-r from-emerald-600 to-green-600" 
+        : "bg-gradient-to-r from-blue-600 to-cyan-600"
+      }
+      blur-xl 
+      opacity-50
+      -z-10
+    `} />
+
+    {/* Shine effect (état actif seulement) */}
+    {!selectedPosition && (
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 animate-shimmer" />
+    )}
+
+    {selectedPosition ? (
+      // ===== ÉTAT VERROUILLÉ =====
+      <>
+        {/* Icône succès */}
+        <CheckCircle size={22} strokeWidth={2.5} className="drop-shadow-lg" />
+
+        {/* Texte */}
+        <span className="relative z-10">Position Verrouillée</span>
+
+        {/* Badge OK */}
+        <div className="px-2 py-1 bg-white/20 rounded-lg text-[10px] font-bold border border-white/30">
+          ✓ OK
+        </div>
+      </>
+    ) : (
+      // ===== ÉTAT ACTIF =====
+      <>
+        {/* Icône localisation avec pulse */}
+        <div className="relative">
+          {/* Cercle pulsant derrière */}
+          <span className="absolute inset-0 flex items-center justify-center">
+            <span className="flex h-8 w-8">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-30"></span>
+            </span>
+          </span>
+          
+          {/* Icône */}
+          <MapPin size={22} strokeWidth={2.5} className="relative drop-shadow-lg animate-bounce-slow" />
+        </div>
+
+        {/* Texte */}
+        <span className="relative z-10">Sélectionner ma position</span>
+
+        {/* Chevron animé */}
+        <svg 
+          className="w-5 h-5 animate-pulse" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+          strokeWidth={3}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </>
+    )}
+  </button>
+
+  {/* Message d'aide contextuel */}
+  {!selectedPosition && (
+    <p className="mt-3 text-center text-xs text-gray-400 flex items-center justify-center gap-2 animate-fade-in">
+      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+      </svg>
+      <span>Cliquez sur la carte pour définir votre position</span>
+    </p>
+  )}
+</div>
+
+
+
+
 
     {/* ✅ ZONE BLEU FONCÉ */}
     <div className="flex-1 bg-[#0E223A]  relative">
