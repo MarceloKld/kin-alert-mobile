@@ -55,12 +55,11 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center">
-
       {/* Background image map */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
-          backgroundImage: "url('/map-bg.jpg')"
+          backgroundImage: "url('/map-bg.jpg')",
         }}
       ></div>
 
@@ -69,101 +68,237 @@ function LoginPage() {
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md px-6">
+        {/* ========================================
+    LOGO / HEADER SECTION - Premium & Léger
+    - Icône avec halo lumineux (Glow)
+    - Titre en dégradé doré
+    - Sous-titre élégant et structuré
+    - 100% CSS pur (Performance max à 60 FPS)
+======================================== */}
+        <div className="relative text-center mb-8">
+          {/* Halo lumineux d'arrière-plan (Ambiance Glow) */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none -z-10" />
 
-        {/* Logo */}
-        <div className="text-center mb-8">
+          {/* Container de l'icône avec glassmorphism et effet hover */}
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg shadow-yellow-500/40">
-              <ShieldExclamationIcon className="w-8 h-8 text-white" />
+            <div className="relative group cursor-pointer">
+              {/* Glow interne pulsant au survol */}
+              <div className="absolute inset-0 bg-yellow-400 rounded-3xl blur-xl opacity-40 group-hover:opacity-75 transition-opacity duration-300" />
+
+              {/* Boîte de l'icône */}
+              <div
+                className="
+        relative
+        w-16 h-16 
+        rounded-3xl 
+        bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 
+        flex items-center justify-center 
+        shadow-xl shadow-yellow-500/30 
+        border border-yellow-300/40
+        group-hover:scale-105
+        transition-transform duration-300
+      "
+              >
+                {/* Icône (Texte en couleur sombre pour contraster magnifiquement avec le fond doré) */}
+                <ShieldExclamationIcon className="w-8 h-8 text-slate-950 drop-shadow-md" />
+              </div>
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold text-yellow-400 tracking-widest">
+          {/* Titre avec gradient doré et espacement moderne */}
+          <h1 className="text-3xl font-black tracking-widest bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-300 bg-clip-text text-transparent drop-shadow-sm">
             KIN ALERT
           </h1>
 
-          <p className="text-gray-300 text-sm mt-2">
+          {/* Sous-titre structuré (style badge/metadata) */}
+          <p className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] mt-2">
             Plateforme communautaire d'alerte
           </p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white/10 backdrop-blur-xl border border-yellow-400/30 rounded-3xl p-6 shadow-2xl text-white">
+        {/* ========================================
+    CARTE FORMULAIRE DE CONNEXION - Premium & Léger
+    - Glassmorphism & Halo lumineux d'ambiance
+    - Champs de saisie modernes avec icônes SVG
+    - Bouton interactif avec effet Shine
+    - 100% CSS pur (Performance max à 60 FPS)
+======================================== */}
+        <div className="relative group bg-gradient-to-br from-white/10 via-white/5 to-white/[0.02] backdrop-blur-2xl border border-yellow-400/30 rounded-3xl p-6 md:p-8 shadow-2xl overflow-hidden text-white">
+          {/* Halo lumineux d'ambiance en arrière-plan */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
+          {/* Alerte Erreur Serveur (Stylisée) */}
           {serverError && (
-            <div className="bg-red-500/20 text-red-400 p-3 rounded-lg text-sm mb-4">
-              {serverError}
+            <div className="bg-red-500/15 border border-red-500/30 text-red-300 p-4 rounded-2xl text-xs font-semibold mb-6 flex items-center gap-3 shadow-lg">
+              <svg
+                className="w-5 h-5 text-red-400 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <span>{serverError}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
-            {/* Email */}
+            {/* ===== CHAMP EMAIL ===== */}
             <div>
-              <input
-                type="email"
-                name="email"
-                placeholder="Adresse Email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
-              />
+              <div className="relative">
+                {/* Icône Mail à gauche */}
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-yellow-400/70">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Adresse Email"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-black/20 border border-yellow-400/40 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 outline-none transition-all text-sm font-medium"
+                />
+              </div>
               {errors.email && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.email[0]}
+                <p className="text-red-400 text-xs font-semibold mt-1.5 ml-1 flex items-center gap-1">
+                  <span>•</span> {errors.email[0]}
                 </p>
               )}
             </div>
 
-            {/* Password */}
+            {/* ===== CHAMP MOT DE PASSE ===== */}
             <div>
-              <input
-                type="password"
-                name="password"
-                placeholder="Mot de passe"
-                value={form.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl bg-transparent border border-yellow-400/40 focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 outline-none transition"
-              />
+              <div className="relative">
+                {/* Icône Lock à gauche */}
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-yellow-400/70">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Mot de passe"
+                  value={form.password}
+                  onChange={handleChange}
+                  className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-black/20 border border-yellow-400/40 text-white placeholder-gray-400 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 outline-none transition-all text-sm font-medium"
+                />
+              </div>
               {errors.password && (
-                <p className="text-red-400 text-sm mt-1">
-                  {errors.password[0]}
+                <p className="text-red-400 text-xs font-semibold mt-1.5 ml-1 flex items-center gap-1">
+                  <span>•</span> {errors.password[0]}
                 </p>
               )}
             </div>
 
-            <div className="flex justify-end mt-2">
- <Link
-  to="/forgot-password"
-  className="flex items-center gap-1 text-sm text-yellow-400 hover:text-yellow-300 transition"
->
-  <KeyIcon className="w-4 h-4" />
-  Mot de passe oublié ?
-</Link>
-</div>
+            {/* ===== LIEN MOT DE PASSE OUBLIÉ ===== */}
+            <div className="flex justify-end pt-1">
+              <Link
+                to="/forgot-password"
+                className="flex items-center gap-1.5 text-xs font-bold text-yellow-400 hover:text-yellow-300 transition-colors"
+              >
+                <KeyIcon className="w-4 h-4" />
+                Mot de passe oublié ?
+              </Link>
+            </div>
 
-            {/* Button */}
+            {/* ===== BOUTON DE CONNEXION ===== */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 font-semibold shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition duration-300"
+              className="
+        relative w-full overflow-hidden
+        py-4 px-6 mt-2
+        rounded-2xl
+        bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600
+        text-white font-black text-xs uppercase tracking-widest
+        shadow-lg shadow-orange-500/30
+        hover:shadow-orange-500/50 hover:scale-[1.02]
+        active:scale-95
+        transition-all duration-300
+        flex items-center justify-center gap-2.5
+        group/btn
+        disabled:opacity-80 disabled:cursor-wait
+      "
             >
-              {loading ? "Connexion en cours..." : "Se connecter"}
-            </button>
+              {/* Effet de brillance (Shine) au survol */}
+              {!loading && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 pointer-events-none" />
+              )}
 
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="relative z-10">Connexion en cours...</span>
+                </>
+              ) : (
+                <>
+                  <span className="relative z-10">Se connecter</span>
+                  <svg
+                    className="w-4 h-4 relative z-10 group-hover/btn:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </>
+              )}
+            </button>
           </form>
 
-          <p className="text-center text-sm mt-6 text-gray-300">
+          {/* ===== FOOTER CREATION DE COMPTE ===== */}
+          <p className="text-center text-xs mt-6 text-gray-400 font-medium">
             Pas encore de compte ?{" "}
-            <Link to="/register" className="text-yellow-400 hover:underline">
+            <Link
+              to="/register"
+              className="text-yellow-400 font-bold hover:underline"
+            >
               Créer un compte
             </Link>
           </p>
-
         </div>
+
+
+
+        
       </div>
     </div>
-  )
+  );
 }
 
 export default LoginPage
