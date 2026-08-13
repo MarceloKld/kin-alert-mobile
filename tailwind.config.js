@@ -5,6 +5,10 @@ export default {
   theme: {
     extend: {
       animation: {
+        "pulse-soft": "pulseSoft 2s ease-in-out infinite",
+        "spin-slow": "spin 20s linear infinite",
+        "ping-slow": "pingSlow 2.5s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "scale-in": "scaleIn 0.3s ease-out",
         "fade-in-up": "fadeInUp 0.5s ease-out forwards",
         "pulse-urgent": "pulseUrgent 1s ease-in-out infinite",
         "pulse-border": "pulseBorder 0.8s ease-in-out infinite",
@@ -12,10 +16,8 @@ export default {
         blink: "blink 0.8s ease-in-out infinite",
         "wave-expand": "waveExpand 2s ease-out infinite",
         "progress-bar": "progressBar 3s linear forwards",
-        "ping-slow": "pingSlow 2s cubic-bezier(0, 0, 0.2, 1) infinite",
         "float-up": "floatUp 2s ease-out infinite",
         "fade-in": "fadeIn 0.5s ease-in",
-        "spin-slow": "spin 20s linear infinite",
         "slide-in-right": "slideInRight 0.3s ease-out",
         // Animations légères
         shimmer: "shimmer 3s ease-in-out infinite",
@@ -35,6 +37,18 @@ export default {
         pulseGlow: "pulseGlow 2s infinite",
       },
       keyframes: {
+        pulseSoft: {
+          "0%, 100%": { opacity: "0.4", transform: "scale(1)" },
+          "50%": { opacity: "0.7", transform: "scale(1.05)" },
+        },
+        pingSlow: {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "75%, 100%": { transform: "scale(1.5)", opacity: "0" },
+        },
+        scaleIn: {
+          "0%": { transform: "scale(0) rotate(-180deg)", opacity: "0" },
+          "100%": { transform: "scale(1) rotate(0deg)", opacity: "1" },
+        },
         fadeInUp: {
           "0%": {
             opacity: "0",

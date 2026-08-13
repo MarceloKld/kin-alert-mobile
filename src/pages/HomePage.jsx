@@ -820,8 +820,24 @@ return (
       </div>
 
       {/* --- ZONE D'ACTION PREMIUM --- */}
-      <div className="flex flex-col items-center gap-8 mt-10 px-6 pb-20">
-        {/* Bouton Signaler Central - Effet Glow */}
+      <div className="relative flex flex-col items-center justify-center gap-6 mt-8 px-6 pb-24 overflow-hidden">
+        {/* 1. Ambiance lumineuse de fond (Radial Glow subtil) */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-orange-600/15 rounded-full blur-3xl pointer-events-none -z-10" />
+
+        {/* 2. Badge de statut contextuel au-dessus du bouton */}
+        <div className="flex items-center gap-2 px-3.5 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-[10px] font-bold tracking-widest uppercase text-gray-300">
+            Réseau KIN-ALERT • Opérationnel
+          </span>
+        </div>
+
+        {/* ========================================
+    BOUTON SIGNALER - CSS PUR
+    - Glow pulsant
+    - Shine rotatif
+    - Badge de statut
+======================================== */}
         <button
           onClick={() =>
             selectedPosition
@@ -831,16 +847,118 @@ return (
                   message: "Sélectionnez votre position",
                 })
           }
-          className="w-40 h-40 rounded-full bg-gradient-to-tr from-orange-600 to-orange-400 
-               shadow-[0_0_50px_rgba(234,88,12,0.3)] border-8 border-[#0E223A]
-               flex flex-col items-center justify-center text-white font-black
-               animate-pulseGlow active:scale-95 transition-all duration-300"
+          className="
+    relative group
+    w-40 h-40
+    rounded-full
+    bg-gradient-to-tr from-orange-600 via-orange-500 to-red-600
+    border-8 border-[#0E223A]
+    shadow-2xl shadow-orange-600/40
+    flex flex-col items-center justify-center
+    text-white font-black
+    overflow-hidden
+    transition-all duration-300
+    active:scale-95 hover:scale-105
+  "
         >
-          <span className="text-2xl">SIGNALER</span>
-          <span className="text-[10px] font-light tracking-[0.2em] opacity-80">
-            INCIDENT
-          </span>
+          {/* Glow externe pulsant */}
+          <div
+            className="
+    absolute inset-0 -z-10
+    bg-gradient-to-tr from-orange-600 to-red-600
+    rounded-full blur-2xl opacity-50
+    animate-pulse-soft
+  "
+          />
+
+          {/* Shine rotatif */}
+          <div
+            className="
+    absolute inset-0
+    bg-gradient-to-tr from-transparent via-white/20 to-transparent
+    animate-spin-slow
+  "
+          />
+
+          {/* Anneau interne pulsant */}
+          <div
+            className="
+    absolute inset-0 rounded-full
+    border-4 border-white/30
+    animate-ping-slow
+  "
+          />
+
+          {/* Contenu */}
+          <div className="relative z-10 flex flex-col items-center justify-center">
+            <span className="text-2xl tracking-tight drop-shadow-lg">
+              SIGNALER
+            </span>
+            <span className="text-[10px] font-semibold tracking-[0.3em] opacity-90 uppercase mt-1">
+              Incident
+            </span>
+          </div>
+
+          {/* Badge "position prête" */}
+          {selectedPosition && (
+            <div
+              className="
+      absolute -top-2 -right-2
+      w-7 h-7
+      bg-gradient-to-br from-green-500 to-emerald-600
+      border-[3px] border-[#0E223A]
+      rounded-full
+      flex items-center justify-center
+      shadow-lg shadow-green-500/50
+      animate-scale-in
+    "
+            >
+              <svg
+                className="w-4 h-4 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          )}
+
+          {/* Bordure interne décorative */}
+          <div className="absolute inset-4 rounded-full border border-white/20 pointer-events-none" />
         </button>
+
+        {/* Indicateur de statut sous le bouton */}
+        <div
+          className={`
+  mt-4 flex items-center gap-2 px-4 py-2 rounded-full
+  backdrop-blur-sm border transition-all duration-300
+  ${
+    selectedPosition
+      ? "bg-green-500/20 border-green-500/40"
+      : "bg-orange-500/20 border-orange-500/40"
+  }
+`}
+        >
+          <div
+            className={`
+    w-2 h-2 rounded-full
+    ${selectedPosition ? "bg-green-500" : "bg-orange-500 animate-pulse"}
+  `}
+          />
+          <span
+            className={`
+    text-xs font-bold uppercase tracking-wider
+    ${selectedPosition ? "text-green-400" : "text-orange-400"}
+  `}
+          >
+            {selectedPosition ? "Prêt à signaler" : "Définir position"}
+          </span>
+        </div>
+        
 
         {/* ========================================
     BOUTON SOS PANIC
@@ -1236,12 +1354,6 @@ return (
             </svg>
           </div>
         </div>
-
-
-
-
-
-        
 
         {/* ESPACE DE SÉCURITÉ FINAL (Pour ne pas être masqué par la barre de navigation) */}
         <div className="h-10"></div>
