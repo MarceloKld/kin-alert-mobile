@@ -1,81 +1,108 @@
-import { useState } from "react"
-import axios from "../api/axios"
-import { Link, useNavigate } from "react-router-dom"
-import { ShieldExclamationIcon } from "@heroicons/react/24/solid"
-import { KeyIcon } from "@heroicons/react/24/outline"
+import { useState } from "react";
+import axios from "../api/axios";
+import { Link, useNavigate } from "react-router-dom";
+import { ShieldExclamationIcon } from "@heroicons/react/24/solid";
+import { KeyIcon } from "@heroicons/react/24/outline";
 
 function LoginPage() {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
 
-  const [errors, setErrors] = useState({})
-  const [serverError, setServerError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
-    })
-  }
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setErrors({})
-    setServerError("")
+    e.preventDefault();
+    setLoading(true);
+    setErrors({});
+    setServerError("");
 
     try {
-      const response = await axios.post("/login", form)
+      const response = await axios.post("/login", form);
 
       // ✅ Stocker le token
-      localStorage.setItem("token", response.data.token)
+      localStorage.setItem("token", response.data.token);
 
-      navigate("/Home")
-
+      navigate("/Home");
     } catch (error) {
-
       if (error.response?.status === 422) {
-        setErrors(error.response.data.errors || {})
+        setErrors(error.response.data.errors || {});
       } else if (error.response?.status === 401) {
-        setServerError("Email ou mot de passe incorrect.")
+        setServerError("Email ou mot de passe incorrect.");
       } else {
-        setServerError("Une erreur est survenue.")
+        setServerError("Une erreur est survenue.");
       }
-
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center">
-      {/* Background image map */}
+    <div className="min-h-screen relative flex items-center justify-center overflow-hidden py-10">
+      {/* ===== STYLES CSS INLINE POUR LES ANIMATIONS UX-FLOW ===== */}
+      <style>{`
+        @keyframes fadeInDown {
+          0% { opacity: 0; transform: translateY(-25px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+          0% { opacity: 0; transform: translateY(35px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes subtleZoom {
+          0% { transform: scale(1); }
+          100% { transform: scale(1.1); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          20%, 60% { transform: translateX(-6px); }
+          40%, 80% { transform: translateX(6px); }
+        }
+        .animate-zoom-bg {
+          animation: subtleZoom 20s ease-in-out infinite alternate;
+        }
+        .animate-header-flow {
+          animation: fadeInDown 3.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .animate-card-flow {
+          animation: fadeInUp 5.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          animation-delay: 1.2s;
+          opacity: 0;
+        }
+        .animate-shake-error {
+          animation: shake 3.5s ease-in-out;
+        }
+      `}</style>
+
+      {/* Background image map avec zoom subtil */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-center animate-zoom-bg"
         style={{
           backgroundImage: "url('/map-bg.jpg')",
         }}
       ></div>
 
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/70"></div>
+      {/* Dark overlay avec effet de profondeur */}
+      <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md px-6">
         {/* ========================================
-    LOGO / HEADER SECTION - Premium & Léger
-    - Icône avec halo lumineux (Glow)
-    - Titre en dégradé doré
-    - Sous-titre élégant et structuré
-    - 100% CSS pur (Performance max à 60 FPS)
-======================================== */}
-        <div className="relative text-center mb-8">
+            BLOC 1 : LOGO / HEADER (Arrivée en 1er)
+        ======================================== */}
+        <div className="relative text-center mb-8 animate-header-flow">
           {/* Halo lumineux d'arrière-plan (Ambiance Glow) */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 bg-yellow-500/15 rounded-full blur-3xl pointer-events-none -z-10" />
 
@@ -88,19 +115,18 @@ function LoginPage() {
               {/* Boîte de l'icône */}
               <div
                 className="
-        relative
-        w-16 h-16 
-        rounded-3xl 
-        bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 
-        flex items-center justify-center 
-        shadow-xl shadow-yellow-500/30 
-        border border-yellow-300/40
-        group-hover:scale-105
-        transition-transform duration-300
-      "
+                  relative
+                  w-20 h-20 
+                  rounded-3xl 
+                  bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 
+                  flex items-center justify-center 
+                  shadow-xl shadow-yellow-500/30 
+                  border border-yellow-300/40
+                  group-hover:scale-105
+                  transition-transform duration-300
+                "
               >
-                {/* Icône (Texte en couleur sombre pour contraster magnifiquement avec le fond doré) */}
-                <ShieldExclamationIcon className="w-8 h-8 text-slate-950 drop-shadow-md" />
+                <ShieldExclamationIcon className="w-14 h-14 text-slate-950 drop-shadow-md" />
               </div>
             </div>
           </div>
@@ -110,26 +136,22 @@ function LoginPage() {
             KIN ALERT
           </h1>
 
-          {/* Sous-titre structuré (style badge/metadata) */}
+          {/* Sous-titre structuré */}
           <p className="text-gray-400 text-[11px] font-bold uppercase tracking-[0.2em] mt-2">
             Plateforme communautaire d'alerte
           </p>
         </div>
 
         {/* ========================================
-    CARTE FORMULAIRE DE CONNEXION - Premium & Léger
-    - Glassmorphism & Halo lumineux d'ambiance
-    - Champs de saisie modernes avec icônes SVG
-    - Bouton interactif avec effet Shine
-    - 100% CSS pur (Performance max à 60 FPS)
-======================================== */}
-        <div className="relative group bg-gradient-to-br from-white/10 via-white/5 to-white/[0.02] backdrop-blur-2xl border border-yellow-400/30 rounded-3xl p-6 md:p-8 shadow-2xl overflow-hidden text-white">
-          {/* Halo lumineux d'ambiance en arrière-plan */}
+            BLOC 2 : CARTE FORMULAIRE (Arrivée en 2e)
+        ======================================== */}
+        <div className="relative group bg-gradient-to-br from-white/10 via-white/5 to-white/[0.02] backdrop-blur-2xl border border-yellow-400/30 rounded-3xl p-6 md:p-8 shadow-2xl overflow-hidden text-white animate-card-flow">
+          {/* Halo lumineux d'arrière-plan */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
 
-          {/* Alerte Erreur Serveur (Stylisée) */}
+          {/* Alerte Erreur Serveur (Stylisée avec animation secousse) */}
           {serverError && (
-            <div className="bg-red-500/15 border border-red-500/30 text-red-300 p-4 rounded-2xl text-xs font-semibold mb-6 flex items-center gap-3 shadow-lg">
+            <div className="bg-red-500/15 border border-red-500/30 text-red-300 p-4 rounded-2xl text-xs font-semibold mb-6 flex items-center gap-3 shadow-lg animate-shake-error">
               <svg
                 className="w-5 h-5 text-red-400 shrink-0"
                 fill="none"
@@ -236,19 +258,19 @@ function LoginPage() {
               type="submit"
               disabled={loading}
               className="
-        relative w-full overflow-hidden
-        py-4 px-6 mt-2
-        rounded-2xl
-        bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600
-        text-white font-black text-xs uppercase tracking-widest
-        shadow-lg shadow-orange-500/30
-        hover:shadow-orange-500/50 hover:scale-[1.02]
-        active:scale-95
-        transition-all duration-300
-        flex items-center justify-center gap-2.5
-        group/btn
-        disabled:opacity-80 disabled:cursor-wait
-      "
+                relative w-full overflow-hidden
+                py-4 px-6 mt-2
+                rounded-2xl
+                bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600
+                text-white font-black text-xs uppercase tracking-widest
+                shadow-lg shadow-orange-500/30
+                hover:shadow-orange-500/50 hover:scale-[1.02]
+                active:scale-95
+                transition-all duration-300
+                flex items-center justify-center gap-2.5
+                group/btn
+                disabled:opacity-80 disabled:cursor-wait
+              "
             >
               {/* Effet de brillance (Shine) au survol */}
               {!loading && (
@@ -292,13 +314,9 @@ function LoginPage() {
             </Link>
           </p>
         </div>
-
-
-
-        
       </div>
     </div>
   );
 }
 
-export default LoginPage
+export default LoginPage;
