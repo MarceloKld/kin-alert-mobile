@@ -337,8 +337,6 @@ return (
       </div>
     )}
 
-    
-
     {/* ==========================
     HEADER HOME PREMIUM SVG
 ========================== */}
@@ -844,26 +842,214 @@ return (
           </span>
         </button>
 
-        {/* BOUTON SOS PANIC - Version Améliorée */}
+        {/* ========================================
+    BOUTON SOS PANIC
+    - Effet d'urgence maximal
+    - Animations CSS pures
+    - Feedback visuel intense
+======================================== */}
         <button
           onClick={handleSOS}
           disabled={sosLoading}
-          className={`w-full py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(220,38,38,0.4)] transition-all active:scale-95 z-40
-          ${sosLoading ? "bg-red-900" : "bg-red-600 animate-pulse"}`}
+          className={`
+    relative w-full overflow-hidden
+    py-6 px-6
+    rounded-3xl
+    shadow-2xl
+    transition-all duration-300
+    active:scale-95
+    z-40
+    ${
+      sosLoading
+        ? "bg-gradient-to-r from-red-900 to-red-950 cursor-wait"
+        : "bg-gradient-to-r from-red-600 via-red-700 to-red-800 hover:shadow-red-500/60"
+    }
+  `}
         >
-          {sosLoading ? (
-            <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
+          {/* Glow externe pulsant (urgence) */}
+          {!sosLoading && (
+            <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 blur-2xl opacity-60 animate-pulse-urgent -z-10" />
+          )}
+
+          {/* Bordure pulsante */}
+          {!sosLoading && (
+            <div className="absolute inset-0 border-4 border-red-400 rounded-3xl animate-pulse-border" />
+          )}
+
+          {/* Rayons d'alerte rotatifs */}
+          {!sosLoading && (
+            <div className="absolute inset-0 opacity-10 animate-spin-slow">
+              {[...Array(12)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute top-1/2 left-1/2 w-1 h-full bg-white origin-top"
+                  style={{
+                    transform: `rotate(${i * 30}deg) translateX(-50%)`,
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Contenu du bouton */}
+          <div className="relative z-10 flex items-center justify-center gap-3">
+            {sosLoading ? (
+              // ===== ÉTAT CHARGEMENT =====
+              <>
+                {/* Spinner avec point central */}
+                <div className="relative">
+                  <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                  </div>
+                </div>
+
+                {/* Texte chargement */}
+                <div className="flex flex-col items-start">
+                  <span className="text-white font-black text-base tracking-tight">
+                    Envoi en cours...
+                  </span>
+                  {/* Points animés */}
+                  <div className="flex gap-1 mt-1">
+                    {[...Array(3)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-1.5 h-1.5 bg-white/60 rounded-full animate-bounce"
+                        style={{ animationDelay: `${i * 0.15}s` }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              // ===== ÉTAT ACTIF =====
+              <>
+                {/* Icône Siren avec animations */}
+                <div className="relative">
+                  {/* Cercle pulsant */}
+                  <div className="absolute inset-0 bg-white rounded-full opacity-50 animate-ping-slow -m-2" />
+
+                  {/* Container icône */}
+                  <div className="relative w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30">
+                    <Siren
+                      size={24}
+                      className="text-white drop-shadow-lg animate-wiggle-urgent"
+                    />
+
+                    {/* Badge "!" */}
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 border-2 border-red-600 rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                      <span className="text-red-900 text-xs font-black">!</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Texte principal */}
+                <div className="flex flex-col items-start">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white font-black text-xl tracking-tight drop-shadow-lg">
+                      SOS
+                    </span>
+                    {/* Points clignotants */}
+                    <div className="flex gap-1">
+                      {[...Array(3)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-blink"
+                          style={{ animationDelay: `${i * 0.2}s` }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <span className="text-red-100 font-bold text-sm uppercase tracking-wider">
+                    Danger Immédiat
+                  </span>
+                </div>
+
+                {/* Chevron animé */}
+                <svg
+                  className="ml-auto w-6 h-6 text-white animate-pulse"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={3}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </>
+            )}
+          </div>
+
+          {/* Barre de progression (loading) */}
+          {sosLoading && (
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 rounded-full overflow-hidden">
+              <div className="h-full bg-white/50 animate-progress-bar" />
+            </div>
+          )}
+
+          {/* Waves d'alerte (actif seulement) */}
+          {!sosLoading && (
             <>
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                <Siren size={20} className="text-white" />
-              </div>
-              <span className="text-white font-black text-lg tracking-tighter">
-                SOS DANGER IMMÉDIAT
-              </span>
+              {[...Array(3)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute inset-0 border-4 border-white rounded-3xl animate-wave-expand"
+                  style={{ animationDelay: `${i * 0.6}s` }}
+                />
+              ))}
+            </>
+          )}
+
+          {/* Particules de danger */}
+          {!sosLoading && (
+            <>
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute bottom-4 w-2 h-2 bg-yellow-400 rounded-full shadow-lg shadow-yellow-400/50 animate-float-up"
+                  style={{
+                    left: `${20 + i * 12}%`,
+                    animationDelay: `${i * 0.3}s`,
+                  }}
+                />
+              ))}
             </>
           )}
         </button>
+
+        {/* Message d'avertissement */}
+        {!sosLoading && (
+          <div className="mt-3 px-4 py-3 bg-red-500/10 backdrop-blur-sm border border-red-500/30 rounded-2xl animate-fade-in">
+            <div className="flex items-start gap-3">
+              <svg
+                className="w-5 h-5 text-red-400 shrink-0 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <div className="flex-1">
+                <p className="text-red-400 font-bold text-xs">
+                  À utiliser en cas d'urgence uniquement
+                </p>
+                <p className="text-red-300/70 text-[10px] mt-1">
+                  Les autorités seront immédiatement alertées de votre position
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+
+
+        
 
         {/* DESCRIPTIONS PREMIUM AVEC SVGs */}
         <div className="w-full space-y-4 px-2">
