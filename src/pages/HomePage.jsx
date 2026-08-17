@@ -205,12 +205,12 @@ const handleSOS = async () => {
   setSosLoading(true);
   try {
     const formData = new FormData();
-    formData.append("titre", "🚨 DANGER IMMÉDIAT");
+    formData.append("titre", "⚠️ DANGER IMMÉDIAT");
     formData.append("description", "Alerte SOS lancée en un clic via le bouton d'urgence.");
     formData.append("type_incident_id", 1); // ID à vérifier dans ta table types_incidents
     formData.append("latitude", userPosition[0]);
     formData.append("longitude", userPosition[1]);
-    formData.append("commune_id", 1); // Par défaut ou à détecter
+    formData.append("commune_id", 11); // Par défaut ou à détecter
     formData.append("avenue", "Position GPS Précise");
     formData.append("statut", "en_attente");
 
