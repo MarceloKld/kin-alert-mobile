@@ -6,7 +6,7 @@ R/http://192.168.56.1:5173/
 
 # 3.ADRESSE IP
 R/npm run dev
-
+npm run build
 # 4.ERREUR
 R/console.error(error);
 

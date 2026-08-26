@@ -15,6 +15,8 @@ import IncidentDetailPage from "./pages/IncidentDetailPage";
 import MesSignalementsPage from "./pages/MesSignalementsPage";
 import usePWA from "./hooks/usePWA";
 import { useEffect, useState } from "react";
+// 🔔 Page notifications
+import Notification from "./pages/Notification";
 
 function App() {
   const { isInstalled } = usePWA();
@@ -38,85 +40,93 @@ function App() {
           ⭐ Version Premium Installée - Merci pour votre confiance
         </div>
       )}
-    
-    <Routes>
 
-      <Route path="/" element={<LoginPage />} />
-      {/* Ajoute ta route d'inscription ici */}
-  <Route path="/register" element={<RegisterPage />} />
-  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-  <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        {/* Ajoute ta route d'inscription ici */}
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
-      <Route
-        path="/home"
-        element={
-          <PrivateRoute>
-            <MobileLayout>
-              <HomePage />
-            </MobileLayout>
-          </PrivateRoute>
-        }
-      />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <HomePage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
 
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute>
-           <MobileLayout>
-              <DashboardPage />
-            </MobileLayout>
-          </PrivateRoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <DashboardPage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
 
-      <Route
-        path="/settings"
-        element={
-          <PrivateRoute>
-           <MobileLayout>
-              <SettingsPage />
-            </MobileLayout>
-          </PrivateRoute>
-        }
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <SettingsPage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/report"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <ReportIncidentPage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/incident/:id"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <IncidentDetailPage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mes-signalements"
+          element={
+            <PrivateRoute>
+              <MobileLayout>
+                <MesSignalementsPage />
+              </MobileLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <Notification />
+            </PrivateRoute>
+          }
+        />
+
+
         
-      />
-
-      <Route
-  path="/report"
-  element={
-    <PrivateRoute>
-      <MobileLayout>
-        <ReportIncidentPage />
-      </MobileLayout>
-    </PrivateRoute>
-  }
-/>
-
-<Route
-  path="/incident/:id"
-  element={
-    <PrivateRoute>
-      <MobileLayout>
-        <IncidentDetailPage />
-      </MobileLayout>
-    </PrivateRoute>
-  }
-/>
-<Route
-  path="/mes-signalements"
-  element={
-    <PrivateRoute>
-      <MobileLayout>
-        <MesSignalementsPage />
-      </MobileLayout>
-    </PrivateRoute>
-  }
-/>
-
-
-    </Routes>
-      </> 
-    );
+      </Routes>
+    </>
+  );
 }
 
 export default App;
